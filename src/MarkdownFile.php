@@ -9,7 +9,7 @@ use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class MarkdownFile
 {
-    private const MARKDOWN_INCLUDED_RESOURCE_REGEX = '/\!\[(?<text>.*?)\]\((?<link>.+)\)/';
+    private const INCLUDED_RESOURCE_REGEX = '/\!\[(?<text>.*?)\]\((?<link>.+)\)/';
 
     private SmartFileInfo $fileInfo;
 
@@ -25,7 +25,7 @@ final class MarkdownFile
     {
         $markdownString = $this->fileInfo->getContents();
 
-        $count = preg_match_all(self::MARKDOWN_INCLUDED_RESOURCE_REGEX, $markdownString, $matches);
+        $count = preg_match_all(self::INCLUDED_RESOURCE_REGEX, $markdownString, $matches);
 
         if ($count === 0) {
             return [];
@@ -39,18 +39,35 @@ final class MarkdownFile
         );
     }
 
-    public function extractIncludedResource(string $markdownLine): SmartFileInfo
-    {
-        $result = preg_match(self::MARKDOWN_INCLUDED_RESOURCE_REGEX, $markdownLine, $matches);
-        if ($result !== 1) {
-            throw new RuntimeException('Could not extract included resource from line: ' . $markdownLine);
-        }
-
-        return new SmartFileInfo($this->fileInfo->getRealPathDirectory() . '/' . $matches['link']);
-    }
-
     public function contents(): string
     {
         return $this->fileInfo->getContents();
+    }
+
+    public function contentsWithIncludedMarkdownResourcesInlined(): string
+    {
+        // A missing feature in Markua: the ability to include other .md files using standard resource notation ![]().
+        $output = [];
+        $lines = explode("\n", $this->contents());
+        foreach ($lines as $line) {
+            if (! str_starts_with($line, '![')) {
+                $output[] = $line;
+                continue;
+            }
+
+            $result = preg_match(self::INCLUDED_RESOURCE_REGEX, $line, $matches);
+            if ($result !== 1) {
+                throw new RuntimeException('Could not extract included resource from line: ' . $line);
+            }
+
+            if (! str_ends_with($matches['link'], '.md')) {
+                continue;
+            }
+
+            $resource = new SmartFileInfo($this->fileInfo->getRealPathDirectory() . '/' . $matches['link']);
+            $output[] = rtrim($resource->getContents());
+        }
+
+        return implode("\n", $output);
     }
 }
