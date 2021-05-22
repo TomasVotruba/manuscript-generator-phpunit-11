@@ -27,8 +27,8 @@ final class DevelopmentServiceContainer
             new HeadlineCapitalizer(),
             new DelegatingResourceLoader([new PhpUnitOutputResourceLoader(), new FileResourceLoader()]),
             new DelegatingResourcePreProcessor(
-                    [new CropResourcePreProcessor(), new RemoveSuperfluousIndentationResourcePreProcessor()]
-                )
+                [new CropResourcePreProcessor(), new RemoveSuperfluousIndentationResourcePreProcessor()]
+            )
         );
     }
 }

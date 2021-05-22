@@ -70,7 +70,8 @@ final class CleanerResultPrinter extends DefaultResultPrinter
         }
     }
 
-    protected function printDefectHeader(TestFailure $defect, int $count): void {
+    protected function printDefectHeader(TestFailure $defect, int $count): void
+    {
         $this->write(sprintf("\n%d) %s\n", $count, $this->cleanUpTestName($defect->getTestName())));
     }
 

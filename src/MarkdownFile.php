@@ -51,8 +51,7 @@ final class MarkdownFile
     public function contentsWithResourcesInlined(
         ResourceLoader $resourceLoader,
         ResourcePreProcessor $preProcessor
-    ): string
-    {
+    ): string {
         // A missing feature in Markua: the ability to include other .md files using standard resource notation ![]().
         $output = [];
         $lines = explode("\n", $this->contents());
@@ -76,25 +75,15 @@ final class MarkdownFile
                 // Don't try to inline images
                 continue;
             }
-            $attributes = [];
+            $attributes = new ResourceAttributes();
             if ($matches[self::REGEX_CAPTION] !== '') {
-                $attributes[] = [
-                    'key' => 'caption',
-                    'value' => '"' . addslashes($matches[self::REGEX_CAPTION]) . '"',
-                ];
+                $attributes = $attributes->withAttribute(
+                    Attribute::quoted('caption', $matches[self::REGEX_CAPTION])
+                );
             }
-            $attributes[] = [
-                'key' => 'format',
-                'value' => $resource->getSuffix(),
-            ];
+            $attributes = $attributes->withAttribute(new Attribute('format', $resource->getSuffix()));
 
-            $attributes = array_map(
-                fn (array $attribute) => $attribute['key'] . ': ' . $attribute['value'],
-                $attributes
-            );
-
-            $attributes = '{' . implode(', ', $attributes) . '}';
-            $output[] = $attributes;
+            $output[] = $attributes->asString();
             $output[] = '```';
             $output[] = rtrim($preProcessor->process($resource->getContents(), $resource));
             $output[] = '```';
