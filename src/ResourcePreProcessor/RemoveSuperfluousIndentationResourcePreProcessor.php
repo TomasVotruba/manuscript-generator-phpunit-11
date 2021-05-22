@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\ResourcePreProcessor;
 
+use BookTools\ResourceAttributes;
 use BookTools\Test\RemoveSuperfluousIndentationResourcePreProcessorTest;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
@@ -12,7 +13,11 @@ use Symplify\SmartFileSystem\SmartFileInfo;
  */
 final class RemoveSuperfluousIndentationResourcePreProcessor implements ResourcePreProcessor
 {
-    public function process(string $fileContents, SmartFileInfo $resourceFile): string
+    public function process(
+        string $fileContents,
+        SmartFileInfo $resourceFile,
+        ResourceAttributes $resourceAttributes
+    ): string
     {
         // @TODO determine if text-based and ignore if not
 

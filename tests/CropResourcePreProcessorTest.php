@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\Test;
 
+use BookTools\ResourceAttributes;
 use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
 use PHPUnit\Framework\TestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -21,7 +22,8 @@ final class CropResourcePreProcessorTest extends TestCase
     {
         $result = $this->processor->process(
             "\$code;\n// crop-end\n// this will be removed\n",
-            $this->phpFileResource()
+            $this->phpFileResource(),
+            $this->attributes()
         );
 
         self::assertSame("\$code;\n", $result);
@@ -31,7 +33,8 @@ final class CropResourcePreProcessorTest extends TestCase
     {
         $result = $this->processor->process(
             "// this will be removed\n// crop-start\n\$code;\n",
-            $this->phpFileResource()
+            $this->phpFileResource(),
+            $this->attributes()
         );
 
         self::assertSame("\$code;\n", $result);
@@ -39,7 +42,7 @@ final class CropResourcePreProcessorTest extends TestCase
 
     public function testItLeavesTheCodeAsIsIfThereAreNoMarkers(): void
     {
-        $result = $this->processor->process("\$code\n", $this->phpFileResource());
+        $result = $this->processor->process("\$code\n", $this->phpFileResource(), $this->attributes());
 
         self::assertSame("\$code\n", $result);
     }
@@ -47,5 +50,10 @@ final class CropResourcePreProcessorTest extends TestCase
     private function phpFileResource(): SmartFileInfo
     {
         return new SmartFileInfo(__FILE__);
+    }
+
+    private function attributes(): ResourceAttributes
+    {
+        return new ResourceAttributes([]);
     }
 }

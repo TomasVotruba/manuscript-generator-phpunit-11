@@ -22,8 +22,6 @@ public function bar(): void
 
 {format: txt}
 ```
-PHPUnit 9.5.4 by Sebastian Bergmann and contributors.
-
 .                                                         1 / 1 (100%)
 
 Time: 00:00.782, Memory: 64.50 MB

@@ -55,7 +55,7 @@ final class MarkdownFile
         // A missing feature in Markua: the ability to include other .md files using standard resource notation ![]().
         $output = [];
         $lines = explode("\n", $this->contents());
-        foreach ($lines as $line) {
+        foreach ($lines as $index => $line) {
             if (! str_starts_with($line, '![')) {
                 $output[] = $line;
                 continue;
@@ -64,6 +64,12 @@ final class MarkdownFile
             $result = preg_match(self::INCLUDED_RESOURCE_REGEX, $line, $matches);
             if ($result !== 1) {
                 throw new RuntimeException('Could not extract included resource from line: ' . $line);
+            }
+
+            $attributes = ResourceAttributes::fromString($lines[$index - 1]);
+            if (! $attributes->isEmpty()) {
+                // Remove the previous line since it contained attributes (hacky solution!)
+                unset($output[count($output) - 1]);
             }
 
             $resource = $resourceLoader->load($this->fileInfo, $matches['link']);
@@ -75,17 +81,15 @@ final class MarkdownFile
                 // Don't try to inline images
                 continue;
             }
-            $attributes = new ResourceAttributes();
             if ($matches[self::REGEX_CAPTION] !== '') {
-                $attributes = $attributes->withAttribute(
-                    Attribute::quoted('caption', $matches[self::REGEX_CAPTION])
-                );
+                $attributes->setAttribute(Attribute::quoted('caption', $matches[self::REGEX_CAPTION]));
             }
-            $attributes = $attributes->withAttribute(new Attribute('format', $resource->getSuffix()));
+            $attributes->setAttribute(new Attribute('format', $resource->getSuffix()));
 
+            $preProcessedContents = $preProcessor->process($resource->getContents(), $resource, $attributes);
             $output[] = $attributes->asString();
             $output[] = '```';
-            $output[] = rtrim($preProcessor->process($resource->getContents(), $resource));
+            $output[] = rtrim($preProcessedContents);
             $output[] = '```';
         }
 

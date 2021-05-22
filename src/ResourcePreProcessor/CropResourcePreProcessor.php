@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\ResourcePreProcessor;
 
+use BookTools\ResourceAttributes;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class CropResourcePreProcessor implements ResourcePreProcessor
@@ -19,7 +20,11 @@ final class CropResourcePreProcessor implements ResourcePreProcessor
         $this->textCropper = new TextCropper(self::CROP_START_MARKER, self::CROP_END_MARKER);
     }
 
-    public function process(string $fileContents, SmartFileInfo $resourceFile): string
+    public function process(
+        string $fileContents,
+        SmartFileInfo $resourceFile,
+        ResourceAttributes $resourceAttributes
+    ): string
     {
         // @TODO determine if text-based and ignore if not
 

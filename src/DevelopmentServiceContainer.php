@@ -7,6 +7,7 @@ namespace BookTools;
 use BookTools\ResourceLoader\DelegatingResourceLoader;
 use BookTools\ResourceLoader\FileResourceLoader;
 use BookTools\ResourceLoader\PHPUnit\PhpUnitOutputResourceLoader;
+use BookTools\ResourcePreProcessor\ApplyCropAttributesPreProcessor;
 use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
 use BookTools\ResourcePreProcessor\DelegatingResourcePreProcessor;
 use BookTools\ResourcePreProcessor\RemoveSuperfluousIndentationResourcePreProcessor;
@@ -27,7 +28,11 @@ final class DevelopmentServiceContainer
             new HeadlineCapitalizer(),
             new DelegatingResourceLoader([new PhpUnitOutputResourceLoader(), new FileResourceLoader()]),
             new DelegatingResourcePreProcessor(
-                [new CropResourcePreProcessor(), new RemoveSuperfluousIndentationResourcePreProcessor()]
+                [
+                    new CropResourcePreProcessor(),
+                    new ApplyCropAttributesPreProcessor(),
+                    new RemoveSuperfluousIndentationResourcePreProcessor(),
+                ]
             )
         );
     }

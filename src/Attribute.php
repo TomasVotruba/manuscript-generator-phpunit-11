@@ -21,4 +21,19 @@ final class Attribute
     {
         return $this->key . ': ' . $this->value;
     }
+
+    public function value(): string
+    {
+        return $this->value;
+    }
+
+    public function hasKey(string $key): bool
+    {
+        return $this->key === $key;
+    }
+
+    public function key(): string
+    {
+        return $this->key;
+    }
 }

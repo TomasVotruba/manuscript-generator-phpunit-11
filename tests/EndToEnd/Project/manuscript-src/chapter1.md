@@ -6,4 +6,5 @@
 
 ![Cropped](cropped.php)
 
+{crop-start: 3}
 ![](tests/phpunit-output.txt)

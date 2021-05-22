@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\Test;
 
+use BookTools\ResourceAttributes;
 use BookTools\ResourcePreProcessor\RemoveSuperfluousIndentationResourcePreProcessor;
 use PHPUnit\Framework\TestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -33,7 +34,10 @@ final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCas
         }
         CODE_SAMPLE;
 
-        self::assertSame($expected, $this->processor->process($code, $this->textBasedFileResource()));
+        self::assertSame(
+            $expected,
+            $this->processor->process($code, $this->textBasedFileResource(), $this->attributes())
+        );
     }
 
     public function testItTrimsTheContentsBeforeRemovingSuperfluousIndentation(): void
@@ -54,7 +58,10 @@ final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCas
         }
         CODE_SAMPLE;
 
-        self::assertSame($expected, $this->processor->process($code, $this->textBasedFileResource()));
+        self::assertSame(
+            $expected,
+            $this->processor->process($code, $this->textBasedFileResource(), $this->attributes())
+        );
     }
 
     public function testItIgnoresLinesWithNoIndentation(): void
@@ -77,7 +84,10 @@ final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCas
         }
         CODE_SAMPLE;
 
-        self::assertSame($expected, $this->processor->process($code, $this->textBasedFileResource()));
+        self::assertSame(
+            $expected,
+            $this->processor->process($code, $this->textBasedFileResource(), $this->attributes())
+        );
     }
 
     public function testSkipIfNoSuperfluousIndentation(): void
@@ -89,11 +99,16 @@ final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCas
         }
         CODE_SAMPLE;
 
-        self::assertSame($code, $this->processor->process($code, $this->textBasedFileResource()));
+        self::assertSame($code, $this->processor->process($code, $this->textBasedFileResource(), $this->attributes()));
     }
 
     private function textBasedFileResource(): SmartFileInfo
     {
         return new SmartFileInfo(__FILE__);
+    }
+
+    private function attributes(): ResourceAttributes
+    {
+        return new ResourceAttributes([]);
     }
 }
