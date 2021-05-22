@@ -22,7 +22,7 @@ final class MarkdownFile
     {
         $markdownString = $this->fileInfo->getContents();
 
-        $count = preg_match_all('/\!\[(.*?)\]\((.+)\)/', $markdownString, $matches);
+        $count = preg_match_all('/\!\[(?<text>.*?)\]\((?<link>.+)\)/', $markdownString, $matches);
 
         if ($count === 0) {
             return [];
@@ -32,7 +32,7 @@ final class MarkdownFile
             fn (string $relativePathname) => new SmartFileInfo(
                 $this->fileInfo->getRealPathDirectory() . '/' . $relativePathname
             ),
-            $matches[2]
+            $matches['link']
         );
     }
 }
