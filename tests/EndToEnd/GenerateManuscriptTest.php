@@ -29,7 +29,7 @@ final class GenerateManuscriptTest extends TestCase
         );
     }
 
-    public function testItGeneratesTheManuscriptFolderBasedOnFilesReferencesInBookMdAndSubsetMd(): void
+    public function testItGeneratesTheManuscriptFolderBasedOnFilesReferencedInBookMdAndSubsetMd(): void
     {
         $this->container->application()
             ->generateManuscript();

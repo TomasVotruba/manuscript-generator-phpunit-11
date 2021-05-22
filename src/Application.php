@@ -20,26 +20,22 @@ final class Application implements ApplicationInterface
         foreach ([
             'book.md' => 'Book.txt',
             'subset.md' => 'Subset.txt',
-        ] as $srcFile => $targetFile) {
-            $srcFilePath = new SmartFileInfo($this->configuration->manuscriptSrcDir() . '/' . $srcFile);
+        ] as $srcFileName => $targetFileName) {
+            $srcFilePath = new SmartFileInfo($this->configuration->manuscriptSrcDir() . '/' . $srcFileName);
 
             $markdownFile = new MarkdownFile($srcFilePath);
 
             $includedResources = $markdownFile->includedResources();
+            $combinedMarkdownContents = [];
             foreach ($includedResources as $includedResource) {
-                $targetFilePathname = $this->configuration->manuscriptTargetDir() . '/'
-                    . $includedResource->getRelativeFilePathFromDirectory($this->configuration->manuscriptSrcDir());
-                copy($includedResource->getPathname(), $targetFilePathname);
+                $combinedMarkdownContents[] = $includedResource->getContents();
             }
+            $targetFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $srcFileName;
+            file_put_contents($targetFilePathname, implode("\n", $combinedMarkdownContents));
 
-            $targetTxtFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $targetFile;
-            $txtLines = [];
-            foreach ($includedResources as $includedResource) {
-                $txtLines[] = $includedResource->getRelativeFilePathFromDirectory(
-                    $this->configuration->manuscriptSrcDir()
-                );
-            }
-            file_put_contents($targetTxtFilePathname, implode("\n", $txtLines) . "\n");
+            $targetTxtFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $targetFileName;
+            $txtFileContents = $srcFileName . "\n";
+            file_put_contents($targetTxtFilePathname, $txtFileContents);
         }
     }
 }
