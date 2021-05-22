@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+    php:
+        image: matthiasnoback/book-tools-php
+        build: docker/build/php/
+        volumes:
+            - ./:/app
+        user: ${HOST_UID}:${HOST_GID}
+        working_dir: /app
+        init: true
+        env_file:
+            - .env
+
+    composer:
+        image: composer:latest
+        volumes:
+            - ./:/app
+        user: ${HOST_UID}:${HOST_GID}
+        env_file:
+            - .env
