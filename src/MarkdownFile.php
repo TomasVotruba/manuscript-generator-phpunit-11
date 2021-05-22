@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace BookTools;
 
+use RuntimeException;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class MarkdownFile
 {
+    private const MARKDOWN_INCLUDED_RESOURCE_REGEX = '/\!\[(?<text>.*?)\]\((?<link>.+)\)/';
+
     private SmartFileInfo $fileInfo;
 
     public function __construct(SmartFileInfo $fileInfo)
@@ -22,7 +25,7 @@ final class MarkdownFile
     {
         $markdownString = $this->fileInfo->getContents();
 
-        $count = preg_match_all('/\!\[(?<text>.*?)\]\((?<link>.+)\)/', $markdownString, $matches);
+        $count = preg_match_all(self::MARKDOWN_INCLUDED_RESOURCE_REGEX, $markdownString, $matches);
 
         if ($count === 0) {
             return [];
@@ -34,6 +37,16 @@ final class MarkdownFile
             ),
             $matches['link']
         );
+    }
+
+    public function extractIncludedResource(string $markdownLine): SmartFileInfo
+    {
+        $result = preg_match(self::MARKDOWN_INCLUDED_RESOURCE_REGEX, $markdownLine, $matches);
+        if ($result !== 1) {
+            throw new RuntimeException('Could not extract included resource from line: ' . $markdownLine);
+        }
+
+        return new SmartFileInfo($this->fileInfo->getRealPathDirectory() . '/' . $matches['link']);
     }
 
     public function contents(): string

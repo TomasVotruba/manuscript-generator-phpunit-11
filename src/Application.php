@@ -44,12 +44,30 @@ final class Application implements ApplicationInterface
 
     private function processMarkdownContents(MarkdownFile $markdownFile): string
     {
-        $contents = $markdownFile->contents();
+        $contents = $this->inlineIncludedMarkdownResources($markdownFile);
 
         if ($this->configuration->capitalizeHeadlines()) {
             $contents = $this->headlineCapitalizer->capitalizeHeadlines($contents);
         }
 
         return $contents;
+    }
+
+    private function inlineIncludedMarkdownResources(MarkdownFile $markdownFile): string
+    {
+        // A missing feature in Markua: the ability to include other .md files using standard resource notation ![]().
+
+        $output = [];
+        $lines = explode("\n", $markdownFile->contents());
+        foreach ($lines as $line) {
+            if (! str_starts_with($line, '![')) {
+                $output[] = $line;
+                continue;
+            }
+
+            $output[] = rtrim($markdownFile->extractIncludedResource($line)->getContents());
+        }
+
+        return implode("\n", $output);
     }
 }
