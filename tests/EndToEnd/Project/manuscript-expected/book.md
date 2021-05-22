@@ -4,4 +4,12 @@
 | ------- |
 | Content |
 
+{caption: "Hello, world!", format: php}
+```
+<?php
+declare(strict_types=1);
+
+echo 'Hello, world!';
+```
+
 # This is Chapter 2

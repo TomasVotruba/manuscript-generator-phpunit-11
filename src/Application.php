@@ -44,7 +44,7 @@ final class Application implements ApplicationInterface
 
     private function processMarkdownContents(MarkdownFile $markdownFile): string
     {
-        $contents = $markdownFile->contentsWithIncludedMarkdownResourcesInlined();
+        $contents = $markdownFile->contentsWithResourcesInlined();
 
         if ($this->configuration->capitalizeHeadlines()) {
             $contents = $this->headlineCapitalizer->capitalizeHeadlines($contents);

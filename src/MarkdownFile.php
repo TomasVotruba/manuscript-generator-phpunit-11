@@ -9,7 +9,9 @@ use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class MarkdownFile
 {
-    private const INCLUDED_RESOURCE_REGEX = '/\!\[(?<text>.*?)\]\((?<link>.+)\)/';
+    public const REGEX_CAPTION = 'caption';
+
+    private const INCLUDED_RESOURCE_REGEX = '/\!\[(?<caption>.*?)\]\((?<link>.+)\)/';
 
     private SmartFileInfo $fileInfo;
 
@@ -44,7 +46,7 @@ final class MarkdownFile
         return $this->fileInfo->getContents();
     }
 
-    public function contentsWithIncludedMarkdownResourcesInlined(): string
+    public function contentsWithResourcesInlined(): string
     {
         // A missing feature in Markua: the ability to include other .md files using standard resource notation ![]().
         $output = [];
@@ -60,12 +62,37 @@ final class MarkdownFile
                 throw new RuntimeException('Could not extract included resource from line: ' . $line);
             }
 
-            if (! str_ends_with($matches['link'], '.md')) {
+            $resource = new SmartFileInfo($this->fileInfo->getRealPathDirectory() . '/resources/' . $matches['link']);
+
+            if (in_array($resource->getSuffix(), ['md', 'markdown'], true)) {
+                $output[] = rtrim($resource->getContents());
+                continue;
+            } elseif (in_array($resource->getSuffix(), ['gif', 'jpeg', 'jpg', 'png', 'svg'], true)) {
+                // Don't try to inline images
                 continue;
             }
+            $attributes = [];
+            if ($matches[self::REGEX_CAPTION] !== '') {
+                $attributes[] = [
+                    'key' => 'caption',
+                    'value' => '"' . addslashes($matches[self::REGEX_CAPTION]) . '"',
+                ];
+            }
+            $attributes[] = [
+                'key' => 'format',
+                'value' => $resource->getSuffix(),
+            ];
 
-            $resource = new SmartFileInfo($this->fileInfo->getRealPathDirectory() . '/' . $matches['link']);
+            $attributes = array_map(
+                fn (array $attribute) => $attribute['key'] . ': ' . $attribute['value'],
+                $attributes
+            );
+
+            $attributes = '{' . implode(', ', $attributes) . '}';
+            $output[] = $attributes;
+            $output[] = '```';
             $output[] = rtrim($resource->getContents());
+            $output[] = '```';
         }
 
         return implode("\n", $output);
