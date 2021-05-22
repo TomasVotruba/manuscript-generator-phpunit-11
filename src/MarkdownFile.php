@@ -35,4 +35,9 @@ final class MarkdownFile
             $matches['link']
         );
     }
+
+    public function contents(): string
+    {
+        return $this->fileInfo->getContents();
+    }
 }

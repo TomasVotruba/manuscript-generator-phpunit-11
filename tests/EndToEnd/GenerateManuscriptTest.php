@@ -25,7 +25,7 @@ final class GenerateManuscriptTest extends TestCase
         mkdir($this->manuscriptDir);
 
         $this->container = new DevelopmentServiceContainer(
-            new Configuration($this->manuscriptSrcDir, $this->manuscriptDir)
+            new Configuration($this->manuscriptSrcDir, $this->manuscriptDir, true)
         );
     }
 

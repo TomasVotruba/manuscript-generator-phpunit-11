@@ -10,9 +10,12 @@ final class Application implements ApplicationInterface
 {
     private Configuration $configuration;
 
-    public function __construct(Configuration $configuration)
+    private HeadlineCapitalizer $headlineCapitalizer;
+
+    public function __construct(Configuration $configuration, HeadlineCapitalizer $headlineCapitalizer)
     {
         $this->configuration = $configuration;
+        $this->headlineCapitalizer = $headlineCapitalizer;
     }
 
     public function generateManuscript(): void
@@ -28,7 +31,7 @@ final class Application implements ApplicationInterface
             $includedResources = $markdownFile->includedResources();
             $combinedMarkdownContents = [];
             foreach ($includedResources as $includedResource) {
-                $combinedMarkdownContents[] = $includedResource->getContents();
+                $combinedMarkdownContents[] = $this->processMarkdownContents(new MarkdownFile($includedResource));
             }
             $targetFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $srcFileName;
             file_put_contents($targetFilePathname, implode("\n", $combinedMarkdownContents));
@@ -37,5 +40,16 @@ final class Application implements ApplicationInterface
             $txtFileContents = $srcFileName . "\n";
             file_put_contents($targetTxtFilePathname, $txtFileContents);
         }
+    }
+
+    private function processMarkdownContents(MarkdownFile $markdownFile): string
+    {
+        $contents = $markdownFile->contents();
+
+        if ($this->configuration->capitalizeHeadlines()) {
+            $contents = $this->headlineCapitalizer->capitalizeHeadlines($contents);
+        }
+
+        return $contents;
     }
 }

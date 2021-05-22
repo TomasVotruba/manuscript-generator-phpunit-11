@@ -15,6 +15,6 @@ final class DevelopmentServiceContainer
 
     public function application(): ApplicationInterface
     {
-        return new Application($this->configuration);
+        return new Application($this->configuration, new HeadlineCapitalizer());
     }
 }
