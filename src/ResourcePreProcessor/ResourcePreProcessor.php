@@ -8,5 +8,5 @@ use Symplify\SmartFileSystem\SmartFileInfo;
 
 interface ResourcePreProcessor
 {
-    public function process(string $fileContents, SmartFileInfo $sourceFile): string;
+    public function process(string $fileContents, SmartFileInfo $resourceFile): string;
 }

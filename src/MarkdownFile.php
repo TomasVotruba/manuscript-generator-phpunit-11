@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace BookTools;
 
+use BookTools\ResourceLoader\ResourceLoader;
+use BookTools\ResourcePreProcessor\ResourcePreProcessor;
 use RuntimeException;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
@@ -46,7 +48,10 @@ final class MarkdownFile
         return $this->fileInfo->getContents();
     }
 
-    public function contentsWithResourcesInlined(ResourceProcessor $resourceProcessor): string
+    public function contentsWithResourcesInlined(
+        ResourceLoader $resourceLoader,
+        ResourcePreProcessor $preProcessor
+    ): string
     {
         // A missing feature in Markua: the ability to include other .md files using standard resource notation ![]().
         $output = [];
@@ -62,7 +67,7 @@ final class MarkdownFile
                 throw new RuntimeException('Could not extract included resource from line: ' . $line);
             }
 
-            $resource = new SmartFileInfo($this->fileInfo->getRealPathDirectory() . '/resources/' . $matches['link']);
+            $resource = $resourceLoader->load($this->fileInfo, $matches['link']);
 
             if (in_array($resource->getSuffix(), ['md', 'markdown'], true)) {
                 $output[] = rtrim($resource->getContents());
@@ -91,7 +96,7 @@ final class MarkdownFile
             $attributes = '{' . implode(', ', $attributes) . '}';
             $output[] = $attributes;
             $output[] = '```';
-            $output[] = rtrim($resourceProcessor->loadAndProcess($this->fileInfo, $matches['link']));
+            $output[] = rtrim($preProcessor->process($resource->getContents(), $resource));
             $output[] = '```';
         }
 

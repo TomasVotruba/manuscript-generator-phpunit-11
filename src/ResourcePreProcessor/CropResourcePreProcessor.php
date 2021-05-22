@@ -19,7 +19,8 @@ final class CropResourcePreProcessor implements ResourcePreProcessor
         $this->textCropper = new TextCropper(self::CROP_START_MARKER, self::CROP_END_MARKER);
     }
 
-    public function process(string $fileContents, SmartFileInfo $sourceFile): string {
+    public function process(string $fileContents, SmartFileInfo $resourceFile): string
+    {
         // @TODO determine if text-based and ignore if not
 
         return $this->textCropper->crop($fileContents);

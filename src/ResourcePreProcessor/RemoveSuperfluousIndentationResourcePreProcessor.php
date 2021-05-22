@@ -12,7 +12,8 @@ use Symplify\SmartFileSystem\SmartFileInfo;
  */
 final class RemoveSuperfluousIndentationResourcePreProcessor implements ResourcePreProcessor
 {
-    public function process(string $fileContents, SmartFileInfo $sourceFile): string {
+    public function process(string $fileContents, SmartFileInfo $resourceFile): string
+    {
         // @TODO determine if text-based and ignore if not
 
         $fileContents = $this->trim($fileContents);

@@ -5,3 +5,5 @@
 ![Hello, world!](source.php)
 
 ![Cropped](cropped.php)
+
+![](tests/phpunit-output.txt)

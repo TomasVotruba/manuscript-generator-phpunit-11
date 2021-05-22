@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace BookTools;
 
+use BookTools\ResourceLoader\DelegatingResourceLoader;
+use BookTools\ResourceLoader\FileResourceLoader;
+use BookTools\ResourceLoader\PHPUnit\PhpUnitOutputResourceLoader;
 use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
+use BookTools\ResourcePreProcessor\DelegatingResourcePreProcessor;
 use BookTools\ResourcePreProcessor\RemoveSuperfluousIndentationResourcePreProcessor;
 
 final class DevelopmentServiceContainer
@@ -21,10 +25,10 @@ final class DevelopmentServiceContainer
         return new Application(
             $this->configuration,
             new HeadlineCapitalizer(),
-            new ResourceProcessor(
-                new FileResourceLoader(),
-                [new CropResourcePreProcessor(), new RemoveSuperfluousIndentationResourcePreProcessor()]
-            )
+            new DelegatingResourceLoader([new PhpUnitOutputResourceLoader(), new FileResourceLoader()]),
+            new DelegatingResourcePreProcessor(
+                    [new CropResourcePreProcessor(), new RemoveSuperfluousIndentationResourcePreProcessor()]
+                )
         );
     }
 }

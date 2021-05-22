@@ -29,6 +29,16 @@ final class GenerateManuscriptTest extends TestCase
         );
     }
 
+    protected function tearDown(): void
+    {
+        $generatedFiles = [$this->manuscriptSrcDir . '/resources/tests/phpunit-output.txt'];
+        foreach ($generatedFiles as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+    }
+
     public function testItGeneratesTheManuscriptFolderBasedOnFilesReferencedInBookMdAndSubsetMd(): void
     {
         $this->container->application()

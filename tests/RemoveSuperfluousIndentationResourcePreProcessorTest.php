@@ -17,7 +17,8 @@ final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCas
         $this->processor = new RemoveSuperfluousIndentationResourcePreProcessor();
     }
 
-    public function testItRemovesSuperfluousIndentationOfPhpResources(): void {
+    public function testItRemovesSuperfluousIndentationOfPhpResources(): void
+    {
         $code = <<<'CODE_SAMPLE'
             public function test(): string
             {
@@ -35,7 +36,8 @@ final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCas
         self::assertSame($expected, $this->processor->process($code, $this->textBasedFileResource()));
     }
 
-    public function testItTrimsTheContentsBeforeRemovingSuperfluousIndentation(): void {
+    public function testItTrimsTheContentsBeforeRemovingSuperfluousIndentation(): void
+    {
         $code = <<<'CODE_SAMPLE'
 
             public function test(): string
