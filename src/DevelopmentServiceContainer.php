@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace BookTools;
 
+use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
+use BookTools\ResourcePreProcessor\RemoveSuperfluousIndentationResourcePreProcessor;
+
 final class DevelopmentServiceContainer
 {
     private Configuration $configuration;
@@ -15,6 +18,13 @@ final class DevelopmentServiceContainer
 
     public function application(): ApplicationInterface
     {
-        return new Application($this->configuration, new HeadlineCapitalizer());
+        return new Application(
+            $this->configuration,
+            new HeadlineCapitalizer(),
+            new ResourceProcessor(
+                new FileResourceLoader(),
+                [new CropResourcePreProcessor(), new RemoveSuperfluousIndentationResourcePreProcessor()]
+            )
+        );
     }
 }

@@ -46,7 +46,7 @@ final class MarkdownFile
         return $this->fileInfo->getContents();
     }
 
-    public function contentsWithResourcesInlined(): string
+    public function contentsWithResourcesInlined(ResourceProcessor $resourceProcessor): string
     {
         // A missing feature in Markua: the ability to include other .md files using standard resource notation ![]().
         $output = [];
@@ -91,7 +91,7 @@ final class MarkdownFile
             $attributes = '{' . implode(', ', $attributes) . '}';
             $output[] = $attributes;
             $output[] = '```';
-            $output[] = rtrim($resource->getContents());
+            $output[] = rtrim($resourceProcessor->loadAndProcess($this->fileInfo, $matches['link']));
             $output[] = '```';
         }
 

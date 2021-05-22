@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools;
 
+use BookTools\ResourcePreProcessor\ResourcePreProcessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class Application implements ApplicationInterface
@@ -12,10 +13,21 @@ final class Application implements ApplicationInterface
 
     private HeadlineCapitalizer $headlineCapitalizer;
 
-    public function __construct(Configuration $configuration, HeadlineCapitalizer $headlineCapitalizer)
+    private ResourceProcessor $resourceProcessor;
+
+    /**
+     * @var array<ResourcePreProcessor>
+     */
+    public function __construct(
+        Configuration $configuration,
+        HeadlineCapitalizer $headlineCapitalizer,
+        ResourceProcessor $resourceProcessor
+    )
     {
         $this->configuration = $configuration;
         $this->headlineCapitalizer = $headlineCapitalizer;
+
+        $this->resourceProcessor = $resourceProcessor;
     }
 
     public function generateManuscript(): void
@@ -44,7 +56,7 @@ final class Application implements ApplicationInterface
 
     private function processMarkdownContents(MarkdownFile $markdownFile): string
     {
-        $contents = $markdownFile->contentsWithResourcesInlined();
+        $contents = $markdownFile->contentsWithResourcesInlined($this->resourceProcessor);
 
         if ($this->configuration->capitalizeHeadlines()) {
             $contents = $this->headlineCapitalizer->capitalizeHeadlines($contents);

@@ -3,3 +3,5 @@
 ![](table.md)
 
 ![Hello, world!](source.php)
+
+![Cropped](cropped.php)

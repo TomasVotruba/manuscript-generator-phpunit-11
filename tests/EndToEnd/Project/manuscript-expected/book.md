@@ -12,4 +12,12 @@ declare(strict_types=1);
 echo 'Hello, world!';
 ```
 
+{caption: "Cropped", format: php}
+```
+public function bar(): void
+{
+
+}
+```
+
 # This is Chapter 2
