@@ -21,8 +21,7 @@ final class DelegatingResourcePreProcessor implements ResourcePreProcessor
         string $fileContents,
         SmartFileInfo $resourceFile,
         ResourceAttributes $resourceAttributes
-    ): string
-    {
+    ): string {
         $processedContents = $fileContents;
 
         foreach ($this->preProcessors as $preProcessor) {

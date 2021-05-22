@@ -24,8 +24,7 @@ final class CropResourcePreProcessor implements ResourcePreProcessor
         string $fileContents,
         SmartFileInfo $resourceFile,
         ResourceAttributes $resourceAttributes
-    ): string
-    {
+    ): string {
         // @TODO determine if text-based and ignore if not
 
         return $this->textCropper->crop($fileContents);

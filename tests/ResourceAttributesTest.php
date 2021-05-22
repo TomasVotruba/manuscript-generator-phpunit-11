@@ -12,13 +12,12 @@ final class ResourceAttributesTest extends TestCase
 {
     public function testItDealsWithALineThatContainsNoAttributes(): void
     {
-        self::assertSame(new ResourceAttributes([]), ResourceAttributes::fromString('Contains no attributes'));
+        self::assertEquals(new ResourceAttributes([]), ResourceAttributes::fromString('Contains no attributes'));
     }
-
 
     public function testItExtractsExistingAttributes(): void
     {
-        self::assertSame(
+        self::assertEquals(
             new ResourceAttributes([new Attribute('crop-start', '6'), new Attribute('caption', '"Caption"')]),
             ResourceAttributes::fromString('{crop-start: 6, caption: "Caption"}')
         );

@@ -17,8 +17,7 @@ final class RemoveSuperfluousIndentationResourcePreProcessor implements Resource
         string $fileContents,
         SmartFileInfo $resourceFile,
         ResourceAttributes $resourceAttributes
-    ): string
-    {
+    ): string {
         // @TODO determine if text-based and ignore if not
 
         $fileContents = $this->trim($fileContents);

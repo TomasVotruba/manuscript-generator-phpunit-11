@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use PhpCsFixer\Fixer\PhpUnit\PhpUnitStrictFixer;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
 use Symplify\EasyCodingStandard\ValueObject\Option;
@@ -27,4 +28,12 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 ],
             ]
         );
+
+    $parameters->set(
+        Option::SKIP,
+        [
+            // Because it makes no sense ;) (well, I just need assertEquals())
+            PhpUnitStrictFixer::class,
+        ]
+    );
 };
