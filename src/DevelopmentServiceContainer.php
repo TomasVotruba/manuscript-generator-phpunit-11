@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace BookTools;
 
+use BookTools\FileOperations\FileOperations;
+use BookTools\FileOperations\Filesystem;
 use BookTools\ResourceLoader\DelegatingResourceLoader;
 use BookTools\ResourceLoader\FileResourceLoader;
 use BookTools\ResourceLoader\PHPUnit\PhpUnitOutputResourceLoader;
@@ -28,7 +30,9 @@ final class DevelopmentServiceContainer
             $this->configuration,
             new HeadlineCapitalizer(),
             new DelegatingResourceLoader(
-                [new VendorResourceLoader(), new PhpUnitOutputResourceLoader(), new FileResourceLoader()]
+                [new VendorResourceLoader($this->fileOperations()), new PhpUnitOutputResourceLoader(
+                    $this->fileOperations()
+                ), new FileResourceLoader()]
             ),
             new DelegatingResourcePreProcessor(
                 [
@@ -36,7 +40,14 @@ final class DevelopmentServiceContainer
                     new ApplyCropAttributesPreProcessor(),
                     new RemoveSuperfluousIndentationResourcePreProcessor(),
                 ]
-            )
+            ),
+            $this->fileOperations()
         );
+    }
+
+    private function fileOperations(): FileOperations
+    {
+        // @TODO make configurable based on dry-run command-line option
+        return new FileOperations(new Filesystem(false));
     }
 }

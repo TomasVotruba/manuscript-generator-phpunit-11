@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools;
 
+use BookTools\FileOperations\FileOperations;
 use BookTools\ResourceLoader\ResourceLoader;
 use BookTools\ResourcePreProcessor\ResourcePreProcessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -14,7 +15,8 @@ final class Application implements ApplicationInterface
         private Configuration $configuration,
         private HeadlineCapitalizer $headlineCapitalizer,
         private ResourceLoader $resourceLoader,
-        private ResourcePreProcessor $preProcessor
+        private ResourcePreProcessor $preProcessor,
+        private FileOperations $fileOperations
     ) {
     }
 
@@ -34,11 +36,11 @@ final class Application implements ApplicationInterface
                 $combinedMarkdownContents[] = $this->processMarkdownContents(new MarkdownFile($includedResource));
             }
             $targetFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $srcFileName;
-            file_put_contents($targetFilePathname, implode("\n", $combinedMarkdownContents));
+            $this->fileOperations->putContents($targetFilePathname, implode("\n", $combinedMarkdownContents));
 
             $targetTxtFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $targetFileName;
             $txtFileContents = $srcFileName . "\n";
-            file_put_contents($targetTxtFilePathname, $txtFileContents);
+            $this->fileOperations->putContents($targetTxtFilePathname, $txtFileContents);
         }
     }
 

@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace BookTools\ResourceLoader;
 
+use BookTools\FileOperations\FileOperations;
 use Symplify\SmartFileSystem\Exception\FileNotFoundException;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class VendorResourceLoader implements ResourceLoader
 {
+    public function __construct(
+        private FileOperations $fileOperations
+    ) {
+    }
+
     public function load(SmartFileInfo $includedFromFile, string $link): SmartFileInfo
     {
         if (! str_starts_with($link, 'vendor/')) {
@@ -20,10 +26,7 @@ final class VendorResourceLoader implements ResourceLoader
 
         try {
             $vendorResource = new SmartFileInfo(getcwd() . '/' . $link);
-            // @TODO use filesystem service
-            @mkdir(dirname($targetPathname), 0777, true);
-            // @TODO use filesystem service
-            file_put_contents($targetPathname, $vendorResource->getContents());
+            $this->fileOperations->putContents($targetPathname, $vendorResource->getContents());
 
             return new SmartFileInfo($targetPathname);
         } catch (FileNotFoundException $exception) {
