@@ -7,6 +7,7 @@ namespace BookTools;
 use BookTools\ResourceLoader\DelegatingResourceLoader;
 use BookTools\ResourceLoader\FileResourceLoader;
 use BookTools\ResourceLoader\PHPUnit\PhpUnitOutputResourceLoader;
+use BookTools\ResourceLoader\VendorResourceLoader;
 use BookTools\ResourcePreProcessor\ApplyCropAttributesPreProcessor;
 use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
 use BookTools\ResourcePreProcessor\DelegatingResourcePreProcessor;
@@ -26,7 +27,9 @@ final class DevelopmentServiceContainer
         return new Application(
             $this->configuration,
             new HeadlineCapitalizer(),
-            new DelegatingResourceLoader([new PhpUnitOutputResourceLoader(), new FileResourceLoader()]),
+            new DelegatingResourceLoader(
+                [new VendorResourceLoader(), new PhpUnitOutputResourceLoader(), new FileResourceLoader()]
+            ),
             new DelegatingResourcePreProcessor(
                 [
                     new CropResourcePreProcessor(),

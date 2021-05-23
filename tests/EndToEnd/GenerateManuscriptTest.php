@@ -22,7 +22,7 @@ final class GenerateManuscriptTest extends TestCase
     {
         $this->manuscriptSrcDir = __DIR__ . '/Project/manuscript-src';
         $this->manuscriptDir = sys_get_temp_dir() . '/' . uniqid('manuscript');
-        mkdir($this->manuscriptDir);
+        mkdir($this->manuscriptDir, 0777, true);
 
         $this->container = new DevelopmentServiceContainer(
             new Configuration($this->manuscriptSrcDir, $this->manuscriptDir, true)
@@ -31,7 +31,10 @@ final class GenerateManuscriptTest extends TestCase
 
     protected function tearDown(): void
     {
-        $generatedFiles = [$this->manuscriptSrcDir . '/resources/tests/phpunit-output.txt'];
+        $generatedFiles = [
+            $this->manuscriptSrcDir . '/resources/tests/phpunit-output.txt',
+            $this->manuscriptSrcDir . '/resources/vendor/symfony/event-dispatcher-contracts/EventDispatcherInterface.php',
+        ];
         foreach ($generatedFiles as $file) {
             if (is_file($file)) {
                 unlink($file);
