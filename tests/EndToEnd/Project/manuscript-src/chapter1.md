@@ -4,6 +4,7 @@
 
 ![Hello, world!](source.php)
 
+{line-numbers: true}
 ![Cropped](cropped.php)
 
 {crop-start: 3}

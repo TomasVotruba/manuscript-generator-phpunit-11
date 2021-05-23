@@ -70,6 +70,9 @@ final class MarkdownFile
             if (! $attributes->isEmpty()) {
                 // Remove the previous line since it contained attributes (hacky solution!)
                 unset($output[count($output) - 1]);
+                // More hacks: reset the indices
+                $output = array_values($output);
+                // @TODO we need to look ahead instead of look back
             }
 
             $resource = $resourceLoader->load($this->fileInfo, $matches['link']);
