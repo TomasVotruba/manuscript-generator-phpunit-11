@@ -7,8 +7,13 @@ namespace BookTools\Markua;
 final class Attribute implements Node
 {
     public function __construct(
-        private string $key,
-        private string $value
+        public string $key,
+        public string $value
     ) {
+    }
+
+    public static function quote(string $value): string
+    {
+        return '"' . addslashes($value) . '"';
     }
 }

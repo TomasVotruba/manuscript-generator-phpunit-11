@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace BookTools;
 
+use BookTools\Markua\Attribute;
+use BookTools\Markua\Attributes;
+use BookTools\Markua\SimpleMarkuaParser;
 use BookTools\ResourceLoader\ResourceLoader;
 use BookTools\ResourcePreProcessor\ResourcePreProcessor;
 use RuntimeException;
@@ -66,13 +69,19 @@ final class MarkdownFile
                 throw new RuntimeException('Could not extract included resource from line: ' . $line);
             }
 
-            $attributes = ResourceAttributes::fromString($lines[$index - 1]);
-            if (! $attributes->isEmpty()) {
+            $parser = new SimpleMarkuaParser();
+
+            $attributesLine = $lines[$index - 1];
+            if (str_starts_with($attributesLine, '{')) {
+                $attributes = $parser->parseAttributes($attributesLine);
+
                 // Remove the previous line since it contained attributes (hacky solution!)
                 unset($output[count($output) - 1]);
                 // More hacks: reset the indices
                 $output = array_values($output);
-                // @TODO we need to look ahead instead of look back
+            // @TODO we need to look ahead instead of look back
+            } else {
+                $attributes = new Attributes([]);
             }
 
             $resource = $resourceLoader->load($this->fileInfo, $matches['link']);
@@ -85,12 +94,12 @@ final class MarkdownFile
                 continue;
             }
             if ($matches[self::REGEX_CAPTION] !== '') {
-                $attributes->setAttribute(Attribute::quoted('caption', $matches[self::REGEX_CAPTION]));
+                $attributes->setAttribute('caption', Attribute::quote($matches[self::REGEX_CAPTION]));
             }
-            $attributes->setAttribute(new Attribute('format', $resource->fileExtension()));
+            $attributes->setAttribute('format', $resource->fileExtension());
 
             $processedResource = $preProcessor->process($resource, $attributes);
-            $output[] = $attributes->asString();
+            $output[] = $attributes->asMarkua();
             $output[] = '```';
             $output[] = rtrim($processedResource->contents());
             $output[] = '```';

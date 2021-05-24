@@ -79,6 +79,6 @@ CODE_SAMPLE
         self::assertEquals(new Attributes([]), $this->parser->parseAttributes(<<<CODE_SAMPLE
 {}
 CODE_SAMPLE
-            ));
+        ));
     }
 }
