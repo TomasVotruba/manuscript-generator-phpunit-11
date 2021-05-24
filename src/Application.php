@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace BookTools;
 
 use BookTools\FileOperations\FileOperations;
-use BookTools\ResourceLoader\ResourceLoader;
-use BookTools\ResourcePreProcessor\ResourcePreProcessor;
+use BookTools\Markua\Processor\MarkuaProcessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class Application implements ApplicationInterface
 {
     public function __construct(
         private Configuration $configuration,
-        private HeadlineCapitalizer $headlineCapitalizer,
-        private ResourceLoader $resourceLoader,
-        private ResourcePreProcessor $preProcessor,
-        private FileOperations $fileOperations
+        private FileOperations $fileOperations,
+        private MarkuaProcessor $markuaProcessor
     ) {
     }
 
@@ -33,7 +30,10 @@ final class Application implements ApplicationInterface
             $includedResources = $markdownFile->includedResources();
             $combinedMarkdownContents = [];
             foreach ($includedResources as $includedResource) {
-                $combinedMarkdownContents[] = $this->processMarkdownContents(new MarkdownFile($includedResource));
+                $combinedMarkdownContents[] = $this->markuaProcessor->process(
+                    $includedResource,
+                    $includedResource->getContents()
+                );
             }
             $targetFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $srcFileName;
             $this->fileOperations->putContents($targetFilePathname, implode("\n", $combinedMarkdownContents));
@@ -42,16 +42,5 @@ final class Application implements ApplicationInterface
             $txtFileContents = $srcFileName . "\n";
             $this->fileOperations->putContents($targetTxtFilePathname, $txtFileContents);
         }
-    }
-
-    private function processMarkdownContents(MarkdownFile $markdownFile): string
-    {
-        $contents = $markdownFile->contentsWithResourcesInlined($this->resourceLoader, $this->preProcessor);
-
-        if ($this->configuration->capitalizeHeadlines()) {
-            $contents = $this->headlineCapitalizer->capitalizeHeadlines($contents);
-        }
-
-        return $contents;
     }
 }

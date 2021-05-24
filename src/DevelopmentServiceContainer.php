@@ -7,6 +7,9 @@ namespace BookTools;
 use BookTools\Cli\ResultPrinter;
 use BookTools\FileOperations\FileOperations;
 use BookTools\FileOperations\Filesystem;
+use BookTools\Markua\Processor\CapitalizeHeadlinesProcessor;
+use BookTools\Markua\Processor\DelegatingMarkuaProcessor;
+use BookTools\Markua\Processor\InlineIncludedResourcesMarkuaProcessor;
 use BookTools\ResourceLoader\DelegatingResourceLoader;
 use BookTools\ResourceLoader\FileResourceLoader;
 use BookTools\ResourceLoader\PHPUnit\PhpUnitOutputResourceLoader;
@@ -39,20 +42,29 @@ final class DevelopmentServiceContainer
     {
         return new Application(
             $this->configuration,
-            new HeadlineCapitalizer(),
-            new DelegatingResourceLoader(
-                [new VendorResourceLoader($this->fileOperations()), new PhpUnitOutputResourceLoader(
-                    $this->fileOperations()
-                ), new FileResourceLoader()]
-            ),
-            new DelegatingResourcePreProcessor(
+            $this->fileOperations(),
+            new DelegatingMarkuaProcessor(
                 [
-                    new CropResourcePreProcessor(),
-                    new ApplyCropAttributesPreProcessor(),
-                    new RemoveSuperfluousIndentationResourcePreProcessor(),
+                    new CapitalizeHeadlinesProcessor(
+                        new HeadlineCapitalizer(),
+                        $this->configuration->capitalizeHeadlines()
+                    ),
+                    new InlineIncludedResourcesMarkuaProcessor(
+                        new DelegatingResourceLoader(
+                            [new VendorResourceLoader($this->fileOperations()), new PhpUnitOutputResourceLoader(
+                                $this->fileOperations()
+                            ), new FileResourceLoader()]
+                        ),
+                        new DelegatingResourcePreProcessor(
+                            [
+                                new CropResourcePreProcessor(),
+                                new ApplyCropAttributesPreProcessor(),
+                                new RemoveSuperfluousIndentationResourcePreProcessor(),
+                            ]
+                        ),
+                    ),
                 ]
-            ),
-            $this->fileOperations()
+            )
         );
     }
 
