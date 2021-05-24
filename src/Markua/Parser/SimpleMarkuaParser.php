@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\Markua\Parser;
 
+use function Parsica\Parsica\atLeastOne;
 use function Parsica\Parsica\between;
 use function Parsica\Parsica\char;
 use function Parsica\Parsica\choice;
@@ -13,11 +14,24 @@ use function Parsica\Parsica\map;
 use Parsica\Parsica\Parser;
 use function Parsica\Parsica\satisfy;
 use function Parsica\Parsica\sepBy;
+use function Parsica\Parsica\skipSpace1;
 use function Parsica\Parsica\takeWhile;
 use function Parsica\Parsica\zeroOrMore;
 
 final class SimpleMarkuaParser
 {
+    public function parseHeading(string $markua): Heading
+    {
+        $parser = collect(
+            keepFirst(atLeastOne(char('#')), skipSpace1()),
+            atLeastOne(satisfy(fn (string $char) => ! in_array($char, ["\n"], true)))
+        )->map(fn (array $output) => new Heading(strlen($output[0]), $output[1]));
+
+        $result = $parser->tryString($markua);
+
+        return $result->output();
+    }
+
     public function parseAttributes(string $markua): Attributes
     {
         $parser = between(
