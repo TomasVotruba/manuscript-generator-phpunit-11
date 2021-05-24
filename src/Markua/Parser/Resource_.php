@@ -7,18 +7,9 @@ namespace BookTools\Markua\Parser;
 final class Resource_ implements Node
 {
     public function __construct(
-        private string $link,
-        private ?string $caption
+        public string $link,
+        public ?string $caption,
+        public ?Attributes $attributes = null
     ) {
-    }
-
-    public function link(): string
-    {
-        return $this->link;
-    }
-
-    public function caption(): ?string
-    {
-        return $this->caption;
     }
 }
