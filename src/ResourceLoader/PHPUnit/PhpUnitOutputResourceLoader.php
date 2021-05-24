@@ -6,6 +6,7 @@ namespace BookTools\ResourceLoader\PHPUnit;
 
 use BookTools\FileOperations\FileOperations;
 use BookTools\ResourceLoader\CouldNotLoadFile;
+use BookTools\ResourceLoader\IncludedResource;
 use BookTools\ResourceLoader\ResourceLoader;
 use function str_ends_with;
 use Symfony\Component\Process\Process;
@@ -18,7 +19,7 @@ final class PhpUnitOutputResourceLoader implements ResourceLoader
     ) {
     }
 
-    public function load(SmartFileInfo $includedFromFile, string $link): SmartFileInfo
+    public function load(SmartFileInfo $includedFromFile, string $link): IncludedResource
     {
         if (! str_ends_with($link, 'phpunit-output.txt')) {
             throw CouldNotLoadFile::becauseResourceIsNotSupported();
@@ -26,9 +27,11 @@ final class PhpUnitOutputResourceLoader implements ResourceLoader
 
         $expectedPath = $includedFromFile->getPath() . '/resources/' . $link;
 
-        $this->fileOperations->putContents($expectedPath, $this->getOutputOfPhpUnitRun(dirname($expectedPath)));
+        $outputOfPhpUnitRun = $this->getOutputOfPhpUnitRun(dirname($expectedPath));
 
-        return new SmartFileInfo($expectedPath);
+        $this->fileOperations->putContents($expectedPath, $outputOfPhpUnitRun);
+
+        return new IncludedResource('txt', $outputOfPhpUnitRun);
     }
 
     private function getOutputOfPhpUnitRun(string $workingDir): string

@@ -57,17 +57,16 @@ final class GenerateManuscriptTest extends TestCase
 
     public function testItFailsWhenUsingDryRunAndFilesWereModified(): void
     {
-        $this->markTestIncomplete('First make sure we do not use SmartFileInfo for generated resources');
-//        $tester = new CommandTester(new GenerateManuscriptCommand());
-//        $tester->execute(
-//            [
-//                '--manuscript-dir' => $this->manuscriptDir,
-//                '--manuscript-src-dir' => $this->manuscriptSrcDir,
-//                '--dry-run' => true
-//            ]
-//        );
-//
-//        self::assertSame(1, $tester->getStatusCode());
+        $tester = new CommandTester(new GenerateManuscriptCommand());
+        $tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+                '--dry-run' => true,
+            ]
+        );
+
+        self::assertSame(1, $tester->getStatusCode());
     }
 
     private static function assertDirectoryContentsEquals(string $expectedDir, string $actualDir): void

@@ -77,19 +77,19 @@ final class MarkdownFile
 
             $resource = $resourceLoader->load($this->fileInfo, $matches['link']);
 
-            if (in_array($resource->getSuffix(), ['md', 'markdown'], true)) {
-                $output[] = rtrim($resource->getContents());
+            if (in_array($resource->fileExtension(), ['md', 'markdown'], true)) {
+                $output[] = rtrim($resource->contents());
                 continue;
-            } elseif (in_array($resource->getSuffix(), ['gif', 'jpeg', 'jpg', 'png', 'svg'], true)) {
+            } elseif (in_array($resource->fileExtension(), ['gif', 'jpeg', 'jpg', 'png', 'svg'], true)) {
                 // Don't try to inline images
                 continue;
             }
             if ($matches[self::REGEX_CAPTION] !== '') {
                 $attributes->setAttribute(Attribute::quoted('caption', $matches[self::REGEX_CAPTION]));
             }
-            $attributes->setAttribute(new Attribute('format', $resource->getSuffix()));
+            $attributes->setAttribute(new Attribute('format', $resource->fileExtension()));
 
-            $preProcessedContents = $preProcessor->process($resource->getContents(), $resource, $attributes);
+            $preProcessedContents = $preProcessor->process($resource->contents(), $resource, $attributes);
             $output[] = $attributes->asString();
             $output[] = '```';
             $output[] = rtrim($preProcessedContents);

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace BookTools\ResourcePreProcessor;
 
 use BookTools\ResourceAttributes;
-use Symplify\SmartFileSystem\SmartFileInfo;
+use BookTools\ResourceLoader\IncludedResource;
 
 final class DelegatingResourcePreProcessor implements ResourcePreProcessor
 {
@@ -19,13 +19,13 @@ final class DelegatingResourcePreProcessor implements ResourcePreProcessor
 
     public function process(
         string $fileContents,
-        SmartFileInfo $resourceFile,
+        IncludedResource $includedResource,
         ResourceAttributes $resourceAttributes
     ): string {
         $processedContents = $fileContents;
 
         foreach ($this->preProcessors as $preProcessor) {
-            $processedContents = $preProcessor->process($processedContents, $resourceFile, $resourceAttributes);
+            $processedContents = $preProcessor->process($processedContents, $includedResource, $resourceAttributes);
         }
 
         return $processedContents;

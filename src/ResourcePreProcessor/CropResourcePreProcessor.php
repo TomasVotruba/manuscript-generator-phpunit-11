@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace BookTools\ResourcePreProcessor;
 
 use BookTools\ResourceAttributes;
-use Symplify\SmartFileSystem\SmartFileInfo;
+use BookTools\ResourceLoader\IncludedResource;
 
 final class CropResourcePreProcessor implements ResourcePreProcessor
 {
@@ -22,7 +22,7 @@ final class CropResourcePreProcessor implements ResourcePreProcessor
 
     public function process(
         string $fileContents,
-        SmartFileInfo $resourceFile,
+        IncludedResource $includedResource,
         ResourceAttributes $resourceAttributes
     ): string {
         // @TODO determine if text-based and ignore if not

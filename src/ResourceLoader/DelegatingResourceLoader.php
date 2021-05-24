@@ -16,7 +16,7 @@ final class DelegatingResourceLoader implements ResourceLoader
     ) {
     }
 
-    public function load(SmartFileInfo $includedFromFile, string $link): SmartFileInfo
+    public function load(SmartFileInfo $includedFromFile, string $link): IncludedResource
     {
         $lastException = null;
 

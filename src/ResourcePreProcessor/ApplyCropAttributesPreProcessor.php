@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace BookTools\ResourcePreProcessor;
 
 use BookTools\ResourceAttributes;
+use BookTools\ResourceLoader\IncludedResource;
 use BookTools\Test\ApplyCropAttributesPreProcessorTest;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
  * @see ApplyCropAttributesPreProcessorTest
@@ -15,7 +15,7 @@ final class ApplyCropAttributesPreProcessor implements ResourcePreProcessor
 {
     public function process(
         string $fileContents,
-        SmartFileInfo $resourceFile,
+        IncludedResource $includedResource,
         ResourceAttributes $resourceAttributes
     ): string {
         $cropStart = $resourceAttributes->attribute('crop-start');

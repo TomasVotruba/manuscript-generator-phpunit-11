@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace BookTools\Test;
 
 use BookTools\ResourceAttributes;
+use BookTools\ResourceLoader\IncludedResource;
 use BookTools\ResourcePreProcessor\RemoveSuperfluousIndentationResourcePreProcessor;
 use PHPUnit\Framework\TestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCase
 {
@@ -36,7 +36,7 @@ final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCas
 
         self::assertSame(
             $expected,
-            $this->processor->process($code, $this->textBasedFileResource(), $this->attributes())
+            $this->processor->process($code, $this->textBasedResource(), $this->attributes())
         );
     }
 
@@ -60,7 +60,7 @@ final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCas
 
         self::assertSame(
             $expected,
-            $this->processor->process($code, $this->textBasedFileResource(), $this->attributes())
+            $this->processor->process($code, $this->textBasedResource(), $this->attributes())
         );
     }
 
@@ -86,7 +86,7 @@ final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCas
 
         self::assertSame(
             $expected,
-            $this->processor->process($code, $this->textBasedFileResource(), $this->attributes())
+            $this->processor->process($code, $this->textBasedResource(), $this->attributes())
         );
     }
 
@@ -99,12 +99,12 @@ final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCas
         }
         CODE_SAMPLE;
 
-        self::assertSame($code, $this->processor->process($code, $this->textBasedFileResource(), $this->attributes()));
+        self::assertSame($code, $this->processor->process($code, $this->textBasedResource(), $this->attributes()));
     }
 
-    private function textBasedFileResource(): SmartFileInfo
+    private function textBasedResource(): IncludedResource
     {
-        return new SmartFileInfo(__FILE__);
+        return new IncludedResource('php', '');
     }
 
     private function attributes(): ResourceAttributes
