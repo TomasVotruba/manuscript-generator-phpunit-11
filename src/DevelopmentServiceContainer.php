@@ -38,9 +38,9 @@ final class DevelopmentServiceContainer
         $this->configuration = $configuration;
     }
 
-    public function application(): ApplicationInterface
+    public function manuscriptGenerator(): ManuscriptGenerator
     {
-        return new Application(
+        return new ManuscriptGenerator(
             $this->configuration,
             $this->fileOperations(),
             new DelegatingMarkuaProcessor(

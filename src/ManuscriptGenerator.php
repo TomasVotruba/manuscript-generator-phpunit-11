@@ -8,7 +8,7 @@ use BookTools\FileOperations\FileOperations;
 use BookTools\Markua\Processor\MarkuaProcessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class Application implements ApplicationInterface
+final class ManuscriptGenerator
 {
     public function __construct(
         private Configuration $configuration,

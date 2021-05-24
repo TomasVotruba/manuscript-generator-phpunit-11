@@ -67,7 +67,7 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
         $container->setOutput($output);
         $container->addEventSubscriber($this);
 
-        $container->application()
+        $container->manuscriptGenerator()
             ->generateManuscript();
 
         if ($dryRun && $this->filesystemWasTouched) {
