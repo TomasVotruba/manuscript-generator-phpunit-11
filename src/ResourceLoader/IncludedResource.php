@@ -21,4 +21,9 @@ final class IncludedResource
     {
         return $this->contents;
     }
+
+    public function withContents(string $newContents): self
+    {
+        return new self($this->fileExtension, $newContents);
+    }
 }

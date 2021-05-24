@@ -89,10 +89,10 @@ final class MarkdownFile
             }
             $attributes->setAttribute(new Attribute('format', $resource->fileExtension()));
 
-            $preProcessedContents = $preProcessor->process($resource->contents(), $resource, $attributes);
+            $processedResource = $preProcessor->process($resource, $attributes);
             $output[] = $attributes->asString();
             $output[] = '```';
-            $output[] = rtrim($preProcessedContents);
+            $output[] = rtrim($processedResource->contents());
             $output[] = '```';
         }
 

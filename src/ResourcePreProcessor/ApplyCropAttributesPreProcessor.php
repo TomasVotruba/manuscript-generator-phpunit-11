@@ -14,19 +14,18 @@ use BookTools\Test\ApplyCropAttributesPreProcessorTest;
 final class ApplyCropAttributesPreProcessor implements ResourcePreProcessor
 {
     public function process(
-        string $fileContents,
         IncludedResource $includedResource,
         ResourceAttributes $resourceAttributes
-    ): string {
+    ): IncludedResource {
         $cropStart = $resourceAttributes->attribute('crop-start');
         $cropEnd = $resourceAttributes->attribute('crop-end');
 
         if ($cropStart === null && $cropEnd === null) {
-            return $fileContents;
+            return $includedResource;
         }
 
         $croppedContent = $this->selectLines(
-            $fileContents,
+            $includedResource->contents(),
             $cropStart === null ? null : (int) $cropStart,
             $cropEnd === null ? null : (int) $cropEnd,
         );
@@ -34,7 +33,7 @@ final class ApplyCropAttributesPreProcessor implements ResourcePreProcessor
         $resourceAttributes->removeAttribute('crop-start');
         $resourceAttributes->removeAttribute('crop-end');
 
-        return $croppedContent;
+        return $includedResource->withContents($croppedContent);
     }
 
     public static function selectLines(string $contents, ?int $firstLineIncluded, ?int $lastLineIncluded): string

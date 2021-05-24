@@ -21,35 +21,33 @@ final class CropResourcePreProcessorTest extends TestCase
     public function testItRemovesThePartStartingWithCropEnd(): void
     {
         $result = $this->processor->process(
-            "\$code;\n// crop-end\n// this will be removed\n",
-            $this->phpResource(),
+            $this->resourceWithContents("\$code;\n// crop-end\n// this will be removed\n"),
             $this->attributes()
         );
 
-        self::assertSame("\$code;\n", $result);
+        self::assertSame("\$code;\n", $result->contents());
     }
 
     public function testItRemovesThePartEndingWithCropStart(): void
     {
         $result = $this->processor->process(
-            "// this will be removed\n// crop-start\n\$code;\n",
-            $this->phpResource(),
+            $this->resourceWithContents("// this will be removed\n// crop-start\n\$code;\n"),
             $this->attributes()
         );
 
-        self::assertSame("\$code;\n", $result);
+        self::assertSame("\$code;\n", $result->contents());
     }
 
     public function testItLeavesTheCodeAsIsIfThereAreNoMarkers(): void
     {
-        $result = $this->processor->process("\$code\n", $this->phpResource(), $this->attributes());
+        $result = $this->processor->process($this->resourceWithContents("\$code\n"), $this->attributes());
 
-        self::assertSame("\$code\n", $result);
+        self::assertSame("\$code\n", $result->contents());
     }
 
-    private function phpResource(): IncludedResource
+    private function resourceWithContents(string $contents): IncludedResource
     {
-        return new IncludedResource('php', '');
+        return new IncludedResource('php', $contents);
     }
 
     private function attributes(): ResourceAttributes

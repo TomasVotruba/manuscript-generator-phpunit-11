@@ -21,12 +21,11 @@ final class CropResourcePreProcessor implements ResourcePreProcessor
     }
 
     public function process(
-        string $fileContents,
         IncludedResource $includedResource,
         ResourceAttributes $resourceAttributes
-    ): string {
+    ): IncludedResource {
         // @TODO determine if text-based and ignore if not
 
-        return $this->textCropper->crop($fileContents);
+        return $includedResource->withContents($this->textCropper->crop($includedResource->contents()));
     }
 }

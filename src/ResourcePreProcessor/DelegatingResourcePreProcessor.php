@@ -18,16 +18,15 @@ final class DelegatingResourcePreProcessor implements ResourcePreProcessor
     }
 
     public function process(
-        string $fileContents,
         IncludedResource $includedResource,
         ResourceAttributes $resourceAttributes
-    ): string {
-        $processedContents = $fileContents;
+    ): IncludedResource {
+        $processedResource = $includedResource;
 
         foreach ($this->preProcessors as $preProcessor) {
-            $processedContents = $preProcessor->process($processedContents, $includedResource, $resourceAttributes);
+            $processedResource = $preProcessor->process($processedResource, $resourceAttributes);
         }
 
-        return $processedContents;
+        return $processedResource;
     }
 }
