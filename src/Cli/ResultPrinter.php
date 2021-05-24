@@ -8,14 +8,19 @@ use BookTools\FileOperations\FileWasCreated;
 use BookTools\FileOperations\FileWasModified;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symplify\ConsoleColorDiff\Console\Output\ConsoleDiffer;
 
-final class PrintResults implements EventSubscriberInterface
+final class ResultPrinter implements EventSubscriberInterface
 {
-    private bool $filesWereModified = false;
-
     public function __construct(
-        private OutputInterface $output
+        private OutputInterface $output,
+        private ConsoleDiffer $consoleDiffer
     ) {
+    }
+
+    public function setOutput(OutputInterface $output): void
+    {
+        $this->output = $output;
     }
 
     /**
@@ -32,22 +37,13 @@ final class PrintResults implements EventSubscriberInterface
     public function whenFileWasCreated(FileWasCreated $event): void
     {
         $this->output->writeln(sprintf('<comment>created</comment> %s', $this->relativePathname($event->filepath())));
-        // @TODO show diff
-        $this->output->writeln($event->contents());
-        $this->filesWereModified = true;
+        $this->printDiff('', $event->contents());
     }
 
     public function whenFileWasModified(FileWasModified $event): void
     {
         $this->output->writeln(sprintf('<comment>updated</comment> %s', $this->relativePathname($event->filepath())));
-        // @TODO show diff
-        $this->output->writeln($event->newContents());
-        $this->filesWereModified = true;
-    }
-
-    public function filesWereModified(): bool
-    {
-        return $this->filesWereModified;
+        $this->printDiff($event->oldContents(), $event->newContents());
     }
 
     private function relativePathname(string $filepath): string
@@ -60,5 +56,10 @@ final class PrintResults implements EventSubscriberInterface
         }
 
         return $filepath;
+    }
+
+    private function printDiff(string $old, string $new): void
+    {
+        $this->output->writeln($this->consoleDiffer->diff($old, $new));
     }
 }

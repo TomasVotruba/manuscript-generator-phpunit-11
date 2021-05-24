@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools;
 
+use BookTools\Cli\ResultPrinter;
 use BookTools\FileOperations\FileOperations;
 use BookTools\FileOperations\Filesystem;
 use BookTools\ResourceLoader\DelegatingResourceLoader;
@@ -14,12 +15,20 @@ use BookTools\ResourcePreProcessor\ApplyCropAttributesPreProcessor;
 use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
 use BookTools\ResourcePreProcessor\DelegatingResourcePreProcessor;
 use BookTools\ResourcePreProcessor\RemoveSuperfluousIndentationResourcePreProcessor;
+use SebastianBergmann\Diff\Differ;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symplify\ConsoleColorDiff\Console\Formatter\ColorConsoleDiffFormatter;
+use Symplify\ConsoleColorDiff\Console\Output\ConsoleDiffer;
 
 final class DevelopmentServiceContainer
 {
     private Configuration $configuration;
+
+    private ?EventDispatcher $eventDispatcher = null;
 
     public function __construct(Configuration $configuration)
     {
@@ -47,9 +56,26 @@ final class DevelopmentServiceContainer
         );
     }
 
-    public function eventDispatcher(): EventDispatcherInterface
+    public function setOutput(OutputInterface $output): void
     {
-        return $this->eventDispatcher ??= new EventDispatcher();
+        $this->printResultsSubscriber()
+            ->setOutput($output);
+    }
+
+    public function addEventSubscriber(EventSubscriberInterface $eventSubscriber): void
+    {
+        $this->eventDispatcher()
+            ->addSubscriber($eventSubscriber);
+    }
+
+    private function eventDispatcher(): EventDispatcherInterface
+    {
+        if ($this->eventDispatcher === null) {
+            $this->eventDispatcher = new EventDispatcher();
+            $this->eventDispatcher->addSubscriber($this->printResultsSubscriber());
+        }
+
+        return $this->eventDispatcher;
     }
 
     private function fileOperations(): FileOperations
@@ -57,6 +83,14 @@ final class DevelopmentServiceContainer
         return new FileOperations(
             new Filesystem($this->configuration->readOnlyFilesystem()),
             $this->eventDispatcher()
+        );
+    }
+
+    private function printResultsSubscriber(): ResultPrinter
+    {
+        return $this->printResults ??= new ResultPrinter(
+            new NullOutput(),
+            new ConsoleDiffer(new Differ(), new ColorConsoleDiffFormatter())
         );
     }
 }

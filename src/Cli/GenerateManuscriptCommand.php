@@ -6,13 +6,34 @@ namespace BookTools\Cli;
 
 use BookTools\Configuration;
 use BookTools\DevelopmentServiceContainer;
+use BookTools\FileOperations\FileWasCreated;
+use BookTools\FileOperations\FileWasModified;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final class GenerateManuscriptCommand extends Command
+final class GenerateManuscriptCommand extends Command implements EventSubscriberInterface
 {
+    private bool $filesystemWasTouched = false;
+
+    /**
+     * @return array<class-string, string>
+     */
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            FileWasCreated::class => 'filesystemWasTouched',
+            FileWasModified::class => 'filesystemWasTouched',
+        ];
+    }
+
+    public function filesystemWasTouched(): void
+    {
+        $this->filesystemWasTouched = true;
+    }
+
     protected function configure(): void
     {
         $this->setName('generate-manuscript')
@@ -41,15 +62,16 @@ final class GenerateManuscriptCommand extends Command
                 $dryRun
             )
         );
-        $subscriber = new PrintResults($output);
-        $container->eventDispatcher()
-            ->addSubscriber($subscriber);
+
+        // For showing results while generating the manuscript:
+        $container->setOutput($output);
+        $container->addEventSubscriber($this);
 
         $container->application()
             ->generateManuscript();
 
-        if ($dryRun && $subscriber->filesWereModified()) {
-            // --dry-run will fail CI if something would have changed
+        if ($dryRun && $this->filesystemWasTouched) {
+            // --dry-run will fail CI if the filesystem was touched
             return 1;
         }
 

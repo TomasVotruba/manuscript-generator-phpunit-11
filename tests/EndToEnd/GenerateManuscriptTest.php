@@ -53,8 +53,6 @@ final class GenerateManuscriptTest extends TestCase
         self::assertDirectoryContentsEquals(__DIR__ . '/Project/manuscript-expected', $this->manuscriptDir);
 
         self::assertSame(0, $tester->getStatusCode());
-
-        echo $tester->getDisplay();
     }
 
     public function testItFailsWhenUsingDryRunAndFilesWereModified(): void
