@@ -101,22 +101,14 @@ final class SimpleMarkuaParser
     }
 
     /**
-     * @param Parser<string> $parser
-     * @return Parser<string>
-     */
-    private static function lineBlock(Parser $parser): Parser
-    {
-        return keepFirst($parser, self::newLineOrEof());
-    }
-
-    /**
      * @return Parser<Heading>
      */
     private static function heading(): Parser
     {
         return collect(
             keepFirst(atLeastOne(char('#')), skipSpace1()),
-            self::lineBlock(atLeastOne(satisfy(fn (string $char) => ! in_array($char, ["\n"], true))))
+            atLeastOne(satisfy(fn (string $char) => ! in_array($char, ["\n"], true))),
+            self::newLineOrEof()
         )->map(fn (array $output) => new Heading(strlen($output[0]), $output[1]));
     }
 
