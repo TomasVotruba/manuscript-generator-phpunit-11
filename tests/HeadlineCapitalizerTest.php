@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\Test;
 
-use BookTools\HeadlineCapitalizer;
+use BookTools\Markua\Processor\Headlines\HeadlineCapitalizer;
 use Iterator;
 use PHPUnit\Framework\TestCase;
 

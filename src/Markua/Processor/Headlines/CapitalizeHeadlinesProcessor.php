@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Processor;
+namespace BookTools\Markua\Processor\Headlines;
 
-use BookTools\HeadlineCapitalizer;
+use BookTools\Markua\Processor\MarkuaProcessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class CapitalizeHeadlinesProcessor implements MarkuaProcessor
