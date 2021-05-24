@@ -45,15 +45,13 @@ final class DevelopmentServiceContainer
             $this->fileOperations(),
             new DelegatingMarkuaProcessor(
                 [
-                    new CapitalizeHeadlinesProcessor(
-                        new HeadlineCapitalizer(),
-                        $this->configuration->capitalizeHeadlines()
-                    ),
                     new InlineIncludedResourcesMarkuaProcessor(
                         new DelegatingResourceLoader(
-                            [new VendorResourceLoader($this->fileOperations()), new PhpUnitOutputResourceLoader(
-                                $this->fileOperations()
-                            ), new FileResourceLoader()]
+                            [
+                                new VendorResourceLoader($this->fileOperations()),
+                                new PhpUnitOutputResourceLoader($this->fileOperations()),
+                                new FileResourceLoader(),
+                            ]
                         ),
                         new DelegatingResourcePreProcessor(
                             [
@@ -62,6 +60,10 @@ final class DevelopmentServiceContainer
                                 new RemoveSuperfluousIndentationResourcePreProcessor(),
                             ]
                         ),
+                    ),
+                    new CapitalizeHeadlinesProcessor(
+                        new HeadlineCapitalizer(),
+                        $this->configuration->capitalizeHeadlines()
                     ),
                 ]
             )

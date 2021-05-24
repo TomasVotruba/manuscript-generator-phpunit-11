@@ -16,12 +16,12 @@ final class DelegatingMarkuaProcessor implements MarkuaProcessor
     ) {
     }
 
-    public function process(SmartFileInfo $markuaFileInfo, string $markua): string
+    public function process(MarkuaProcessor $markuaProcessor, SmartFileInfo $markuaFileInfo, string $markua): string
     {
         $processed = $markua;
 
         foreach ($this->markuaProcessors as $markuaProcessor) {
-            $processed = $markuaProcessor->process($markuaFileInfo, $processed);
+            $processed = $markuaProcessor->process($markuaProcessor, $markuaFileInfo, $processed);
         }
 
         return $processed;

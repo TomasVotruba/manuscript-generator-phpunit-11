@@ -15,7 +15,7 @@ final class CapitalizeHeadlinesProcessor implements MarkuaProcessor
     ) {
     }
 
-    public function process(SmartFileInfo $markuaFileInfo, string $markua): string
+    public function process(MarkuaProcessor $markuaProcessor, SmartFileInfo $markuaFileInfo, string $markua): string
     {
         if (! $this->capitalizeHeadlines) {
             return $markua;

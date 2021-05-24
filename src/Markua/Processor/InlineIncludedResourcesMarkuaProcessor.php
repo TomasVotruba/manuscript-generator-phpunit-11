@@ -24,7 +24,7 @@ final class InlineIncludedResourcesMarkuaProcessor implements MarkuaProcessor
     ) {
     }
 
-    public function process(SmartFileInfo $markuaFileInfo, string $markua): string
+    public function process(MarkuaProcessor $markuaProcessor, SmartFileInfo $markuaFileInfo, string $markua): string
     {
         // A missing feature in Markua: the ability to include other .md files using standard resource notation ![]().
         $output = [];
@@ -42,7 +42,7 @@ final class InlineIncludedResourcesMarkuaProcessor implements MarkuaProcessor
 
             $parser = new SimpleMarkuaParser();
 
-            $attributesLine = $lines[$index - 1];
+            $attributesLine = $lines[$index - 1] ?? '';
             if (str_starts_with($attributesLine, '{')) {
                 $attributes = $parser->parseAttributes($attributesLine);
 
@@ -58,7 +58,8 @@ final class InlineIncludedResourcesMarkuaProcessor implements MarkuaProcessor
             $resource = $this->resourceLoader->load($markuaFileInfo, $matches['link']);
 
             if (in_array($resource->fileExtension(), ['md', 'markdown'], true)) {
-                $output[] = rtrim($resource->contents());
+                // Recursively inline resources:
+                $output[] = rtrim($markuaProcessor->process($markuaProcessor, $markuaFileInfo, $resource->contents()));
                 continue;
             } elseif (in_array($resource->fileExtension(), ['gif', 'jpeg', 'jpg', 'png', 'svg'], true)) {
                 // Don't try to inline images

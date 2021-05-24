@@ -25,18 +25,14 @@ final class Application implements ApplicationInterface
         ] as $srcFileName => $targetFileName) {
             $srcFilePath = new SmartFileInfo($this->configuration->manuscriptSrcDir() . '/' . $srcFileName);
 
-            $markdownFile = new MarkdownFile($srcFilePath);
+            $processedContents = $this->markuaProcessor->process(
+                $this->markuaProcessor,
+                $srcFilePath,
+                $srcFilePath->getContents()
+            );
 
-            $includedResources = $markdownFile->includedResources();
-            $combinedMarkdownContents = [];
-            foreach ($includedResources as $includedResource) {
-                $combinedMarkdownContents[] = $this->markuaProcessor->process(
-                    $includedResource,
-                    $includedResource->getContents()
-                );
-            }
             $targetFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $srcFileName;
-            $this->fileOperations->putContents($targetFilePathname, implode("\n", $combinedMarkdownContents));
+            $this->fileOperations->putContents($targetFilePathname, $processedContents);
 
             $targetTxtFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $targetFileName;
             $txtFileContents = $srcFileName . "\n";

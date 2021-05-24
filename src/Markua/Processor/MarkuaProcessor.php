@@ -8,5 +8,5 @@ use Symplify\SmartFileSystem\SmartFileInfo;
 
 interface MarkuaProcessor
 {
-    public function process(SmartFileInfo $markuaFileInfo, string $markua): string;
+    public function process(self $markuaProcessor, SmartFileInfo $markuaFileInfo, string $markua): string;
 }
