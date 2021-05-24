@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua;
+namespace BookTools\Markua\Parser;
 
 interface Node
 {

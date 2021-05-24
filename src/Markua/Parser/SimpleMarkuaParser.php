@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua;
+namespace BookTools\Markua\Parser;
 
 use function Parsica\Parsica\between;
 use function Parsica\Parsica\char;

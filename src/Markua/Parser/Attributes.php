@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua;
+namespace BookTools\Markua\Parser;
 
 final class Attributes implements Node
 {

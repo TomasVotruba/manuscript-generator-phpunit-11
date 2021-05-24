@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\Test;
 
-use BookTools\Markua\Attributes;
+use BookTools\Markua\Parser\Attributes;
 use BookTools\ResourceLoader\IncludedResource;
 use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
 use PHPUnit\Framework\TestCase;

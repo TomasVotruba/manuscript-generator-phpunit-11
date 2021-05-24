@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\ResourcePreProcessor;
 
-use BookTools\Markua\Attributes;
+use BookTools\Markua\Parser\Attributes;
 use BookTools\ResourceLoader\IncludedResource;
 
 final class DelegatingResourcePreProcessor implements ResourcePreProcessor
@@ -17,7 +17,8 @@ final class DelegatingResourcePreProcessor implements ResourcePreProcessor
     ) {
     }
 
-    public function process(IncludedResource $includedResource, Attributes $resourceAttributes): IncludedResource {
+    public function process(IncludedResource $includedResource, Attributes $resourceAttributes): IncludedResource
+    {
         $processedResource = $includedResource;
 
         foreach ($this->preProcessors as $preProcessor) {

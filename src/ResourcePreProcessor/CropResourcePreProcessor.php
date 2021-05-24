@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\ResourcePreProcessor;
 
-use BookTools\Markua\Attributes;
+use BookTools\Markua\Parser\Attributes;
 use BookTools\ResourceLoader\IncludedResource;
 
 final class CropResourcePreProcessor implements ResourcePreProcessor
@@ -20,7 +20,8 @@ final class CropResourcePreProcessor implements ResourcePreProcessor
         $this->textCropper = new TextCropper(self::CROP_START_MARKER, self::CROP_END_MARKER);
     }
 
-    public function process(IncludedResource $includedResource, Attributes $resourceAttributes): IncludedResource {
+    public function process(IncludedResource $includedResource, Attributes $resourceAttributes): IncludedResource
+    {
         // @TODO determine if text-based and ignore if not
 
         return $includedResource->withContents($this->textCropper->crop($includedResource->contents()));

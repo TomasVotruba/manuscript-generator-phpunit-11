@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace BookTools;
 
-use BookTools\Markua\Attribute;
-use BookTools\Markua\Attributes;
-use BookTools\Markua\SimpleMarkuaParser;
+use BookTools\Markua\Parser\Attribute;
+use BookTools\Markua\Parser\Attributes;
+use BookTools\Markua\Parser\SimpleMarkuaParser;
 use BookTools\ResourceLoader\ResourceLoader;
 use BookTools\ResourcePreProcessor\ResourcePreProcessor;
 use RuntimeException;

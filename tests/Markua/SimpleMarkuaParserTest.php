@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace BookTools\Test\Markua;
 
-use BookTools\Markua\Attribute;
-use BookTools\Markua\Attributes;
-use BookTools\Markua\Resource_;
-use BookTools\Markua\SimpleMarkuaParser;
+use BookTools\Markua\Parser\Attribute;
+use BookTools\Markua\Parser\Attributes;
+use BookTools\Markua\Parser\Resource_;
+use BookTools\Markua\Parser\SimpleMarkuaParser;
 use PHPUnit\Framework\TestCase;
 
 final class SimpleMarkuaParserTest extends TestCase

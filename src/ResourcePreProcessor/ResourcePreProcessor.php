@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\ResourcePreProcessor;
 
-use BookTools\Markua\Attributes;
+use BookTools\Markua\Parser\Attributes;
 use BookTools\ResourceLoader\IncludedResource;
 
 interface ResourcePreProcessor
