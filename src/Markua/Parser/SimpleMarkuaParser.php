@@ -15,6 +15,7 @@ use function Parsica\Parsica\eof;
 use function Parsica\Parsica\keepFirst;
 use function Parsica\Parsica\map;
 use function Parsica\Parsica\newline;
+use function Parsica\Parsica\noneOf;
 use function Parsica\Parsica\optional;
 use Parsica\Parsica\Parser;
 use function Parsica\Parsica\satisfy;
@@ -27,7 +28,7 @@ final class SimpleMarkuaParser
 {
     public function parseDocument(string $markua): Document
     {
-        $parser = zeroOrMore(collect(any(self::heading(), self::includedResource(),)))
+        $parser = zeroOrMore(collect(any(self::heading(), self::includedResource(), self::paragraph())))
             ->thenEof()
             ->map(fn (array $nodes) => new Document($nodes));
 
@@ -42,6 +43,17 @@ final class SimpleMarkuaParser
         $result = $parser->tryString($markua);
 
         return $result->output();
+    }
+
+    /**
+     * @return Parser<Paragraph>
+     */
+    private static function paragraph(): Parser
+    {
+        return keepFirst(
+            atLeastOne(choice(noneOf(["\n"]), newline() ->notFollowedBy(newline()))),
+            self::newLineOrEof()
+        )->map(fn (string $text) => new Paragraph($text));
     }
 
     /**

@@ -8,6 +8,7 @@ use BookTools\Markua\Parser\Attribute;
 use BookTools\Markua\Parser\Attributes;
 use BookTools\Markua\Parser\Document;
 use BookTools\Markua\Parser\Heading;
+use BookTools\Markua\Parser\Paragraph;
 use BookTools\Markua\Parser\Resource_;
 use BookTools\Markua\Parser\SimpleMarkuaParser;
 use PHPUnit\Framework\TestCase;
@@ -81,7 +82,7 @@ CODE_SAMPLE
         self::assertEquals(new Attributes([]), $this->parser->parseAttributes(<<<CODE_SAMPLE
 {}
 CODE_SAMPLE
-            ));
+        ));
     }
 
     public function testIncludedResourceWithAttributes(): void
@@ -151,6 +152,49 @@ CODE_SAMPLE
 # Title
 
 ![Caption](source.php)
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testParagraph(): void
+    {
+        self::assertEquals(
+            new Document([new Heading(1, 'Title'), new Paragraph('Paragraph 1')]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+# Title
+
+Paragraph 1
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testMultipleParagraphs(): void
+    {
+        self::assertEquals(
+            new Document([new Heading(1, 'Title'), new Paragraph('Paragraph 1'), new Paragraph('Paragraph 2')]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+# Title
+
+Paragraph 1
+
+Paragraph 2
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testMultilineParagraphs(): void
+    {
+        self::assertEquals(
+            new Document([new Heading(1, 'Title'), new Paragraph("Paragraph 1\nLine 2 of the same paragraph")]),
+            $this->parser->parseDocument(
+                <<<CODE_SAMPLE
+# Title
+
+Paragraph 1
+Line 2 of the same paragraph
 CODE_SAMPLE
             )
         );
