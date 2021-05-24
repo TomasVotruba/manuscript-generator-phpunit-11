@@ -12,4 +12,19 @@ final class FileWasModified
         private string $newContents
     ) {
     }
+
+    public function filepath(): string
+    {
+        return $this->filepath;
+    }
+
+    public function oldContents(): string
+    {
+        return $this->oldContents;
+    }
+
+    public function newContents(): string
+    {
+        return $this->newContents;
+    }
 }

@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace BookTools\Test\EndToEnd;
 
-use BookTools\Configuration;
-use BookTools\DevelopmentServiceContainer;
+use BookTools\Cli\GenerateManuscriptCommand;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 final class GenerateManuscriptTest extends TestCase
 {
-    private DevelopmentServiceContainer $container;
-
     private string $manuscriptDir;
 
     private string $manuscriptSrcDir;
@@ -22,15 +20,13 @@ final class GenerateManuscriptTest extends TestCase
     {
         $this->manuscriptSrcDir = __DIR__ . '/Project/manuscript-src';
         $this->manuscriptDir = sys_get_temp_dir() . '/' . uniqid('manuscript');
+        // @TODO see if mkdir is needed, remove if not
         mkdir($this->manuscriptDir, 0777, true);
-
-        $this->container = new DevelopmentServiceContainer(
-            new Configuration($this->manuscriptSrcDir, $this->manuscriptDir, true)
-        );
     }
 
     protected function tearDown(): void
     {
+        // @TODO read the paths from the tester's output
         $generatedFiles = [
             $this->manuscriptSrcDir . '/resources/tests/phpunit-output.txt',
             $this->manuscriptSrcDir . '/resources/vendor/symfony/event-dispatcher-contracts/EventDispatcherInterface.php',
@@ -40,14 +36,40 @@ final class GenerateManuscriptTest extends TestCase
                 unlink($file);
             }
         }
+
+        // @TODO remove manuscriptDir
     }
 
     public function testItGeneratesTheManuscriptFolderBasedOnFilesReferencedInBookMdAndSubsetMd(): void
     {
-        $this->container->application()
-            ->generateManuscript();
+        $tester = new CommandTester(new GenerateManuscriptCommand());
+        $tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+            ]
+        );
 
         self::assertDirectoryContentsEquals(__DIR__ . '/Project/manuscript-expected', $this->manuscriptDir);
+
+        self::assertSame(0, $tester->getStatusCode());
+
+        echo $tester->getDisplay();
+    }
+
+    public function testItFailsWhenUsingDryRunAndFilesWereModified(): void
+    {
+        $this->markTestIncomplete('First make sure we do not use SmartFileInfo for generated resources');
+//        $tester = new CommandTester(new GenerateManuscriptCommand());
+//        $tester->execute(
+//            [
+//                '--manuscript-dir' => $this->manuscriptDir,
+//                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+//                '--dry-run' => true
+//            ]
+//        );
+//
+//        self::assertSame(1, $tester->getStatusCode());
     }
 
     private static function assertDirectoryContentsEquals(string $expectedDir, string $actualDir): void

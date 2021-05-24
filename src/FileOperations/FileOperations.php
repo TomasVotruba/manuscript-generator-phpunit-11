@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace BookTools\FileOperations;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
 final class FileOperations
 {
-    private ChangeLog $changeLog;
-
     public function __construct(
-        private Filesystem $filesystem
+        private Filesystem $filesystem,
+        private EventDispatcherInterface $eventDispatcher
     ) {
-        $this->changeLog = new ChangeLog();
     }
 
     public function putContents(string $pathname, string $contents): void
@@ -20,11 +20,11 @@ final class FileOperations
             $oldContents = $this->filesystem->getContents($pathname);
             $this->filesystem->putContents($pathname, $contents);
 
-            $this->changeLog->fileWasModified($pathname, $oldContents, $contents);
+            $this->eventDispatcher->dispatch(new FileWasModified($pathname, $oldContents, $contents));
         } else {
             $this->filesystem->putContents($pathname, $contents);
 
-            $this->changeLog->fileWasCreated($pathname, $contents);
+            $this->eventDispatcher->dispatch(new FileWasCreated($pathname, $contents));
         }
     }
 }

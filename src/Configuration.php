@@ -12,14 +12,18 @@ final class Configuration
 
     private bool $capitalizeHeadlines;
 
+    private bool $readOnlyFilesystem;
+
     public function __construct(
         string $manuscriptSrcDir,
         string $manuscriptTargetDir,
-        bool $capitalizeHeadlines = false
+        bool $capitalizeHeadlines = false,
+        bool $readOnlyFilesystem = false
     ) {
         $this->manuscriptSrcDir = $manuscriptSrcDir;
         $this->manuscriptTargetDir = $manuscriptTargetDir;
         $this->capitalizeHeadlines = $capitalizeHeadlines;
+        $this->readOnlyFilesystem = $readOnlyFilesystem;
     }
 
     public function manuscriptSrcDir(): string
@@ -35,5 +39,10 @@ final class Configuration
     public function capitalizeHeadlines(): bool
     {
         return $this->capitalizeHeadlines;
+    }
+
+    public function readOnlyFilesystem(): bool
+    {
+        return $this->readOnlyFilesystem;
     }
 }

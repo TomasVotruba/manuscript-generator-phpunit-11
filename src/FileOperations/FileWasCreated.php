@@ -11,4 +11,14 @@ final class FileWasCreated
         private string $contents
     ) {
     }
+
+    public function contents(): string
+    {
+        return $this->contents;
+    }
+
+    public function filepath(): string
+    {
+        return $this->filepath;
+    }
 }

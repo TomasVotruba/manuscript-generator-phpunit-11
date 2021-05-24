@@ -14,6 +14,8 @@ use BookTools\ResourcePreProcessor\ApplyCropAttributesPreProcessor;
 use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
 use BookTools\ResourcePreProcessor\DelegatingResourcePreProcessor;
 use BookTools\ResourcePreProcessor\RemoveSuperfluousIndentationResourcePreProcessor;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 final class DevelopmentServiceContainer
 {
@@ -45,9 +47,16 @@ final class DevelopmentServiceContainer
         );
     }
 
+    public function eventDispatcher(): EventDispatcherInterface
+    {
+        return $this->eventDispatcher ??= new EventDispatcher();
+    }
+
     private function fileOperations(): FileOperations
     {
-        // @TODO make configurable based on dry-run command-line option
-        return new FileOperations(new Filesystem(false));
+        return new FileOperations(
+            new Filesystem($this->configuration->readOnlyFilesystem()),
+            $this->eventDispatcher()
+        );
     }
 }
