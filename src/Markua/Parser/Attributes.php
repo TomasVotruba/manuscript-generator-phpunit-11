@@ -10,7 +10,7 @@ final class Attributes implements Node
      * @param array<Attribute> $attributes
      */
     public function __construct(
-        private array $attributes = []
+        public array $attributes = []
     ) {
     }
 
