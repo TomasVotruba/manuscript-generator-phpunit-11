@@ -19,6 +19,6 @@ final class FileResourceLoader implements ResourceLoader
         $contents = file_get_contents($expectedFilePathname);
         assert(is_string($contents));
 
-        return new IncludedResource(pathinfo($link, PATHINFO_EXTENSION), $contents);
+        return IncludedResource::createFromPathAndContents($link, $contents);
     }
 }

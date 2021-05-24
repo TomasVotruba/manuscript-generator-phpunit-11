@@ -27,11 +27,10 @@ final class VendorResourceLoader implements ResourceLoader
         try {
             $expectedPathname = getcwd() . '/' . $link;
             $vendorResource = new SmartFileInfo($expectedPathname);
-            $extension = pathinfo($expectedPathname, PATHINFO_EXTENSION);
             $contents = $vendorResource->getContents();
             $this->fileOperations->putContents($targetPathname, $contents);
 
-            return new IncludedResource($extension, $contents);
+            return IncludedResource::createFromPathAndContents($expectedPathname, $contents);
         } catch (FileNotFoundException $exception) {
             throw CouldNotLoadFile::createFromPrevious($exception);
         }

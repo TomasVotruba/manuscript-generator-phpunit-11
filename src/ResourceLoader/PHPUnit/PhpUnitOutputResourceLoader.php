@@ -31,7 +31,7 @@ final class PhpUnitOutputResourceLoader implements ResourceLoader
 
         $this->fileOperations->putContents($expectedPath, $outputOfPhpUnitRun);
 
-        return new IncludedResource('txt', $outputOfPhpUnitRun);
+        return IncludedResource::createFromPathAndContents($link, $outputOfPhpUnitRun);
     }
 
     private function getOutputOfPhpUnitRun(string $workingDir): string

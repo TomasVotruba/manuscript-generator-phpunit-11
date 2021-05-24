@@ -26,4 +26,9 @@ final class IncludedResource
     {
         return new self($this->fileExtension, $newContents);
     }
+
+    public static function createFromPathAndContents(string $pathname, string $contents): self
+    {
+        return new self(pathinfo($pathname, PATHINFO_EXTENSION), $contents);
+    }
 }

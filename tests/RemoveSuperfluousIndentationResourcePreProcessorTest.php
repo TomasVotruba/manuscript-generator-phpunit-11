@@ -104,7 +104,8 @@ final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCas
 
         self::assertSame(
             $code,
-            $this->processor->process($this->resourceWithContents($code), $this->attributes())->contents()
+            $this->processor->process($this->resourceWithContents($code), $this->attributes())
+                ->contents()
         );
     }
 
