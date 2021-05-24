@@ -15,6 +15,7 @@ use function Parsica\Parsica\eof;
 use function Parsica\Parsica\keepFirst;
 use function Parsica\Parsica\map;
 use function Parsica\Parsica\newline;
+use function Parsica\Parsica\optional;
 use Parsica\Parsica\Parser;
 use function Parsica\Parsica\satisfy;
 use function Parsica\Parsica\sepBy;
@@ -26,7 +27,7 @@ final class SimpleMarkuaParser
 {
     public function parseDocument(string $markua): Document
     {
-        $parser = zeroOrMore(collect(any(self::heading(), self::includedResource())))
+        $parser = zeroOrMore(collect(any(self::heading(), self::includedResource(),)))
             ->thenEof()
             ->map(fn (array $nodes) => new Document($nodes));
 
@@ -34,22 +35,9 @@ final class SimpleMarkuaParser
             ->output();
     }
 
-    public function parseHeading(string $markua): Heading
-    {
-        $parser = self::heading();
-
-        $result = $parser->tryString($markua);
-
-        return $result->output();
-    }
-
     public function parseAttributes(string $markua): Attributes
     {
-        $parser = between(
-            self::token(char('{')),
-            self::token(char('}')),
-            sepBy(self::token(char(',')), self::attribute())->map(fn (array $members) => new Attributes($members))
-        );
+        $parser = $this->attributes();
 
         $result = $parser->tryString($markua);
 
@@ -59,7 +47,7 @@ final class SimpleMarkuaParser
     /**
      * @return Parser<Attribute>
      */
-    public static function attribute(): Parser
+    private static function attribute(): Parser
     {
         return map(
             collect(
@@ -74,7 +62,7 @@ final class SimpleMarkuaParser
     /**
      * @return Parser<string>
      */
-    public static function stringLiteral(): Parser
+    private static function stringLiteral(): Parser
     {
         return self::token(
             between(
@@ -91,25 +79,17 @@ final class SimpleMarkuaParser
         )->label('string literal');
     }
 
-    public function parseIncludedResource(string $markua): Node
-    {
-        $parser = self::includedResource();
-
-        $result = $parser->tryString($markua);
-
-        return $result->output();
-    }
-
     /**
      * @return Parser<Heading>
      */
     private static function heading(): Parser
     {
         return collect(
+            optional(self::attributes()),
             keepFirst(atLeastOne(char('#')), skipSpace1()),
             atLeastOne(satisfy(fn (string $char) => ! in_array($char, ["\n"], true))),
             self::newLineOrEof()
-        )->map(fn (array $output) => new Heading(strlen($output[0]), $output[1]));
+        )->map(fn (array $output) => new Heading(strlen($output[1]), $output[2], $output[0]));
     }
 
     /**
@@ -155,6 +135,7 @@ final class SimpleMarkuaParser
     private static function includedResource(): Parser
     {
         return collect(
+            optional(self::attributes()),
             char('!')
                 ->then(
                     between(
@@ -175,6 +156,22 @@ final class SimpleMarkuaParser
                 zeroOrMore(satisfy(fn (string $char) => ! in_array($char, [')'], true)))
             )->label('link'),
             self::newLineOrEof()
-        )->map(fn (array $collected) => new Resource_($collected[1], $collected[0]));
+        )->map(fn (array $collected) => new Resource_($collected[2], $collected[1], $collected[0]));
+    }
+
+    /**
+     * @return Parser<Attributes>
+     */
+    private static function attributes(): Parser
+    {
+        return keepFirst(
+            between(
+                self::token(char('{')),
+                self::token(char('}')),
+                sepBy(self::token(char(',')), self::attribute())
+                    ->map(fn (array $members) => new Attributes($members))
+            ),
+            self::newLineOrEof()
+        );
     }
 }

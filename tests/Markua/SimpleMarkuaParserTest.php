@@ -24,8 +24,8 @@ final class SimpleMarkuaParserTest extends TestCase
     public function testIncludedResource(): void
     {
         self::assertEquals(
-            new Resource_('source.php', 'Label'),
-            $this->parser->parseIncludedResource(<<<CODE_SAMPLE
+            new Document([new Resource_('source.php', 'Label')]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
 ![Label](source.php)
 CODE_SAMPLE
             )
@@ -35,8 +35,8 @@ CODE_SAMPLE
     public function testIncludedResourceWithoutLabel(): void
     {
         self::assertEquals(
-            new Resource_('source.php', ''),
-            $this->parser->parseIncludedResource(<<<CODE_SAMPLE
+            new Document([new Resource_('source.php', '')]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
 ![](source.php)
 CODE_SAMPLE
             )
@@ -81,14 +81,28 @@ CODE_SAMPLE
         self::assertEquals(new Attributes([]), $this->parser->parseAttributes(<<<CODE_SAMPLE
 {}
 CODE_SAMPLE
-        ));
+            ));
+    }
+
+    public function testIncludedResourceWithAttributes(): void
+    {
+        self::assertEquals(
+            new Document(
+                [new Resource_('source.php', 'Caption', new Attributes([new Attribute('crop-start', '6')]))]
+            ),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+{crop-start: 6}
+![Caption](source.php)
+CODE_SAMPLE
+            )
+        );
     }
 
     public function testHeading1(): void
     {
         self::assertEquals(
-            new Heading(1, 'Title'),
-            $this->parser->parseHeading(<<<CODE_SAMPLE
+            new Document([new Heading(1, 'Title')]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
 # Title
 CODE_SAMPLE
             )
@@ -98,8 +112,8 @@ CODE_SAMPLE
     public function testHeadingWithSpace(): void
     {
         self::assertEquals(
-            new Heading(1, 'The title'),
-            $this->parser->parseHeading(<<<CODE_SAMPLE
+            new Document([new Heading(1, 'The title')]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
 # The title
 CODE_SAMPLE
             )
@@ -109,8 +123,20 @@ CODE_SAMPLE
     public function testHeading2(): void
     {
         self::assertEquals(
-            new Heading(2, 'Title'),
-            $this->parser->parseHeading(<<<CODE_SAMPLE
+            new Document([new Heading(2, 'Title')]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+## Title
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testHeadingWithAttributes(): void
+    {
+        self::assertEquals(
+            new Document([new Heading(2, 'Title', new Attributes([new Attribute('id', 'title')]))]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+{id:title}
 ## Title
 CODE_SAMPLE
             )

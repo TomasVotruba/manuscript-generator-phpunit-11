@@ -6,9 +6,17 @@ namespace BookTools\Markua\Parser;
 
 final class Heading implements Node
 {
+    public ?Attributes $attributes;
+
     public function __construct(
-        private int $level,
-        private string $title
+        public int $level,
+        public string $title,
+        ?Attributes $attributes = null
     ) {
+        if ($attributes === null) {
+            $attributes = new Attributes([]);
+        }
+
+        $this->attributes = $attributes;
     }
 }
