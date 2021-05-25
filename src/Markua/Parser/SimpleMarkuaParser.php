@@ -181,9 +181,8 @@ final class SimpleMarkuaParser
                 self::token(char('{')),
                 self::token(char('}')),
                 sepBy(self::token(char(',')), self::attribute())
-                    ->map(fn (array $members) => new Attributes($members))
             ),
             self::newLineOrEof()
-        );
+        )->map(fn (array $members) => new Attributes($members));
     }
 }
