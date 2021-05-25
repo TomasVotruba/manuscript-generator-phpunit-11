@@ -14,7 +14,8 @@ final class LoadedResource
     ) {
     }
 
-    public static function createFromInlineResource(InlineResource $node): self {
+    public static function createFromInlineResource(InlineResource $node): self
+    {
         return new self($node->attributes->get('format') ?? 'guess', $node->contents);
     }
 

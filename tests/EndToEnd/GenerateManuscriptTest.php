@@ -47,6 +47,7 @@ final class GenerateManuscriptTest extends TestCase
             [
                 '--manuscript-dir' => $this->manuscriptDir,
                 '--manuscript-src-dir' => $this->manuscriptSrcDir,
+                '--capitalize-headlines' => true,
             ]
         );
 

@@ -39,7 +39,8 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
         $this->setName('generate-manuscript')
             ->addOption('dry-run', null, InputOption::VALUE_NONE)
             ->addOption('manuscript-dir', null, InputOption::VALUE_REQUIRED, '', 'manuscript')
-            ->addOption('manuscript-src-dir', null, InputOption::VALUE_REQUIRED, 'manuscript-src');
+            ->addOption('manuscript-src-dir', null, InputOption::VALUE_REQUIRED, 'manuscript-src')
+            ->addOption('capitalize-headlines', null, InputOption::VALUE_NONE);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -54,13 +55,11 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
         $manuscriptTargetDir = $input->getOption('manuscript-dir');
         assert(is_string($manuscriptTargetDir));
 
+        $capitalizeHeadlines = $input->getOption('capitalize-headlines');
+        assert(is_bool($capitalizeHeadlines));
+
         $container = new DevelopmentServiceContainer(
-            new Configuration(
-                $manuscriptSrcDir,
-                $manuscriptTargetDir,
-                true, // @TODO make this configurable,
-                $dryRun
-            )
+            new Configuration($manuscriptSrcDir, $manuscriptTargetDir, $capitalizeHeadlines, $dryRun)
         );
 
         // For showing results while generating the manuscript:
