@@ -105,10 +105,10 @@ CODE_SAMPLE
     {
         self::assertEquals(
             new Document([new IncludedResource(
-                    'source.php',
-                    '',
-                    new AttributeList([new Attribute('crop-start', '6'), new Attribute('crop-end', '7')])
-                )]),
+                'source.php',
+                '',
+                new AttributeList([new Attribute('crop-start', '6'), new Attribute('crop-end', '7')])
+            )]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 {crop-start: 6,crop-end: 7}
 ![](source.php)
@@ -121,10 +121,10 @@ CODE_SAMPLE
     {
         self::assertEquals(
             new Document([new IncludedResource(
-                    'source.php',
-                    '',
-                    new AttributeList([new Attribute('caption', 'Caption'), new Attribute('crop-start', '6')])
-                )]),
+                'source.php',
+                '',
+                new AttributeList([new Attribute('caption', 'Caption'), new Attribute('crop-start', '6')])
+            )]),
             $this->parser->parseDocument(
                 <<<CODE_SAMPLE
 {caption: "Caption", crop-start: 6}
@@ -188,6 +188,18 @@ CODE_SAMPLE
             $this->parser->parseDocument(<<<CODE_SAMPLE
 {id:title}
 ## Title
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testIdAttributeShortcut(): void
+    {
+        self::assertEquals(
+            new Document([new Heading(1, 'Chapter 1', new AttributeList([new Attribute('id', 'chapter-1')]))]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+{#chapter-1}
+# Chapter 1
 CODE_SAMPLE
             )
         );

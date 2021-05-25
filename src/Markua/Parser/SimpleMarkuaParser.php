@@ -13,6 +13,7 @@ use BookTools\Markua\Parser\Node\IncludedResource;
 use BookTools\Markua\Parser\Node\InlineResource;
 use BookTools\Markua\Parser\Node\Paragraph;
 use function Parsica\Parsica\alphaChar;
+use function Parsica\Parsica\alphaNumChar;
 use function Parsica\Parsica\any;
 use function Parsica\Parsica\atLeastOne;
 use function Parsica\Parsica\between;
@@ -123,7 +124,7 @@ final class SimpleMarkuaParser
     private static function heading(): Parser
     {
         return collect(
-            optional(self::attributeList()),
+            optional(either(self::attributeList(), self::idAttributeList())),
             keepFirst(atLeastOne(char('#')), skipSpace1()),
             atLeastOne(satisfy(fn (string $char) => ! in_array($char, ["\n"], true))),
             self::newLineOrEof()
@@ -232,5 +233,21 @@ final class SimpleMarkuaParser
             )->label('attributes'),
             self::newLineOrEof()
         )->map(fn (array $members) => new AttributeList($members));
+    }
+
+    /**
+     * @return Parser<AttributeList>
+     */
+    private static function idAttributeList(): Parser
+    {
+        return keepFirst(
+            between(
+                self::token(char('{')),
+                self::token(char('}')),
+                char('#')
+                    ->then(atLeastOne(choice(alphaNumChar(), char('_'), char('-'))))
+            )->label('idAttribute'),
+            self::newLineOrEof()
+        )->map(fn (string $id) => new AttributeList([new Attribute('id', $id)]));
     }
 }
