@@ -3,5 +3,6 @@ parameters:
     paths:
         - src
         - tests
+    tmpDir: %currentWorkingDirectory%/cache/phpstan
 includes:
     - phpstan-baseline.neon
