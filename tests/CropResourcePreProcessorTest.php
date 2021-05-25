@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\Test;
 
-use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\ResourceLoader\LoadedResource;
 use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
 use PHPUnit\Framework\TestCase;
@@ -50,8 +50,8 @@ final class CropResourcePreProcessorTest extends TestCase
         return new LoadedResource('php', $contents);
     }
 
-    private function attributes(): Attributes
+    private function attributes(): AttributeList
     {
-        return new Attributes([]);
+        return new AttributeList([]);
     }
 }

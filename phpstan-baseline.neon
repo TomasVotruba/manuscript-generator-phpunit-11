@@ -6,7 +6,7 @@ parameters:
 			path: src/Markua/Parser/SimpleMarkuaParser.php
 
 		-
-			message: "#^Parameter \\#1 \\$transform of method Parsica\\\\Parsica\\\\Parser\\<string\\>\\:\\:map\\(\\) expects callable\\(string\\)\\: BookTools\\\\Markua\\\\Parser\\\\Node\\\\Attributes, Closure\\(array\\)\\: BookTools\\\\Markua\\\\Parser\\\\Node\\\\Attributes given\\.$#"
+			message: "#^Parameter \\#1 \\$transform of method Parsica\\\\Parsica\\\\Parser\\<string\\>\\:\\:map\\(\\) expects callable\\(string\\)\\: BookTools\\\\Markua\\\\Parser\\\\Node\\\\AttributeList, Closure\\(array\\)\\: BookTools\\\\Markua\\\\Parser\\\\Node\\\\AttributeList given\\.$#"
 			count: 1
 			path: src/Markua/Parser/SimpleMarkuaParser.php
 

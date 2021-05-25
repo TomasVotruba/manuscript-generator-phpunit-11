@@ -6,7 +6,7 @@ namespace BookTools\Test\Markua;
 
 use BookTools\Markua\Parser\Node;
 use BookTools\Markua\Parser\Node\Attribute;
-use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\Markua\Parser\Node\Document;
 use BookTools\Markua\Parser\Node\Heading;
 use BookTools\Markua\Parser\Node\Paragraph;
@@ -20,7 +20,7 @@ final class NodeTraverserTest extends TestCase
     {
         $document = new Document(
             [
-                new Heading(1, 'Chapter 1', new Attributes([new Attribute('id', 'chapter-1')])),
+                new Heading(1, 'Chapter 1', new AttributeList([new Attribute('id', 'chapter-1')])),
                 new Paragraph('Paragraph'),
             ]
         );
@@ -31,7 +31,7 @@ final class NodeTraverserTest extends TestCase
         $traverser->traverseDocument($document);
 
         self::assertEquals(
-            ['enterNode: Heading', 'enterNode: Attributes', 'enterNode: Attribute', 'enterNode: Paragraph'],
+            ['enterNode: Heading', 'enterNode: AttributeList', 'enterNode: Attribute', 'enterNode: Paragraph'],
             $spy->calledMethods()
         );
     }
@@ -92,11 +92,11 @@ final class NodeTraverserTest extends TestCase
         );
 
         $result = $traverser->traverseDocument(
-            new Document([new Heading(1, 'Chapter 1', new Attributes([new Attribute('id', 'foo')]))])
+            new Document([new Heading(1, 'Chapter 1', new AttributeList([new Attribute('id', 'foo')]))])
         );
 
         self::assertEquals(
-            new Document([new Heading(1, 'Chapter 1', new Attributes([new Attribute('id', 'bar')]))]),
+            new Document([new Heading(1, 'Chapter 1', new AttributeList([new Attribute('id', 'bar')]))]),
             $result
         );
     }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace BookTools\Test\Markua;
 
 use BookTools\Markua\Parser\Node\Attribute;
-use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\Markua\Parser\Node\Directive;
 use BookTools\Markua\Parser\Node\Document;
 use BookTools\Markua\Parser\Node\Heading;
@@ -64,7 +64,7 @@ CODE_SAMPLE
     public function testInlineResourceWithAttributes(): void
     {
         self::assertEquals(
-            new Document([new InlineResource("\$code\n", 'php', new Attributes(
+            new Document([new InlineResource("\$code\n", 'php', new AttributeList(
                 [new Attribute('caption', 'Caption')]
             ))]),
             $this->parser->parseDocument(<<<'CODE_SAMPLE'
@@ -91,7 +91,7 @@ CODE_SAMPLE
     public function testAttributes(): void
     {
         self::assertEquals(
-            new Attributes([new Attribute('crop-start', '6')]),
+            new AttributeList([new Attribute('crop-start', '6')]),
             $this->parser->parseAttributes(<<<CODE_SAMPLE
 {crop-start: 6}
 CODE_SAMPLE
@@ -102,7 +102,7 @@ CODE_SAMPLE
     public function testAttributesOptionalWhitespace(): void
     {
         self::assertEquals(
-            new Attributes([new Attribute('crop-start', '6'), new Attribute('crop-end', '7')]),
+            new AttributeList([new Attribute('crop-start', '6'), new Attribute('crop-end', '7')]),
             $this->parser->parseAttributes(<<<CODE_SAMPLE
 {crop-start: 6,crop-end: 7}
 CODE_SAMPLE
@@ -113,7 +113,7 @@ CODE_SAMPLE
     public function testAttributesWithAndWithoutQuotes(): void
     {
         self::assertEquals(
-            new Attributes([new Attribute('caption', 'Caption'), new Attribute('crop-start', '6')]),
+            new AttributeList([new Attribute('caption', 'Caption'), new Attribute('crop-start', '6')]),
             $this->parser->parseAttributes(<<<CODE_SAMPLE
 {caption: "Caption", crop-start: 6}
 CODE_SAMPLE
@@ -123,7 +123,7 @@ CODE_SAMPLE
 
     public function testEmptyAttributes(): void
     {
-        self::assertEquals(new Attributes([]), $this->parser->parseAttributes(<<<CODE_SAMPLE
+        self::assertEquals(new AttributeList([]), $this->parser->parseAttributes(<<<CODE_SAMPLE
 {}
 CODE_SAMPLE
         ));
@@ -133,7 +133,7 @@ CODE_SAMPLE
     {
         self::assertEquals(
             new Document(
-                [new IncludedResource('source.php', 'Caption', new Attributes([new Attribute('crop-start', '6')]))]
+                [new IncludedResource('source.php', 'Caption', new AttributeList([new Attribute('crop-start', '6')]))]
             ),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 {crop-start: 6}
@@ -179,7 +179,7 @@ CODE_SAMPLE
     public function testHeadingWithAttributes(): void
     {
         self::assertEquals(
-            new Document([new Heading(2, 'Title', new Attributes([new Attribute('id', 'title')]))]),
+            new Document([new Heading(2, 'Title', new AttributeList([new Attribute('id', 'title')]))]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 {id:title}
 ## Title

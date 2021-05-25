@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\ResourcePreProcessor;
 
-use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\ResourceLoader\LoadedResource;
 use BookTools\Test\ApplyCropAttributesPreProcessorTest;
 
@@ -13,7 +13,7 @@ use BookTools\Test\ApplyCropAttributesPreProcessorTest;
  */
 final class ApplyCropAttributesPreProcessor implements ResourcePreProcessor
 {
-    public function process(LoadedResource $includedResource, Attributes $resourceAttributes): LoadedResource
+    public function process(LoadedResource $includedResource, AttributeList $resourceAttributes): LoadedResource
     {
         $cropStart = $resourceAttributes->get('crop-start');
         $cropEnd = $resourceAttributes->get('crop-end');

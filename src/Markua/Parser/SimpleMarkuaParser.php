@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace BookTools\Markua\Parser;
 
 use BookTools\Markua\Parser\Node\Attribute;
-use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\Markua\Parser\Node\Directive;
 use BookTools\Markua\Parser\Node\Document;
 use BookTools\Markua\Parser\Node\Heading;
@@ -57,9 +57,9 @@ final class SimpleMarkuaParser
             ->output();
     }
 
-    public function parseAttributes(string $markua): Attributes
+    public function parseAttributes(string $markua): AttributeList
     {
-        $parser = $this->attributes();
+        $parser = $this->attributeList();
 
         $result = $parser->tryString($markua);
 
@@ -132,7 +132,7 @@ final class SimpleMarkuaParser
     private static function heading(): Parser
     {
         return collect(
-            optional(self::attributes()),
+            optional(self::attributeList()),
             keepFirst(atLeastOne(char('#')), skipSpace1()),
             atLeastOne(satisfy(fn (string $char) => ! in_array($char, ["\n"], true))),
             self::newLineOrEof()
@@ -182,7 +182,7 @@ final class SimpleMarkuaParser
     private static function includedResource(): Parser
     {
         return collect(
-            optional(self::attributes()),
+            optional(self::attributeList()),
             char('!')
                 ->then(
                     between(
@@ -212,7 +212,7 @@ final class SimpleMarkuaParser
     private static function inlineResource(): Parser
     {
         return collect(
-            optional(self::attributes()), // 0
+            optional(self::attributeList()), // 0
             repeat(3, char('`')), // 1
             keepFirst(optional(atLeastOne(alphaChar())), newline())
                 ->label('format'), // 2
@@ -229,9 +229,9 @@ final class SimpleMarkuaParser
     }
 
     /**
-     * @return Parser<Attributes>
+     * @return Parser<AttributeList>
      */
-    private static function attributes(): Parser
+    private static function attributeList(): Parser
     {
         return keepFirst(
             between(
@@ -240,6 +240,6 @@ final class SimpleMarkuaParser
                 sepBy(self::token(char(',')), self::attribute())
             )->label('attributes'),
             self::newLineOrEof()
-        )->map(fn (array $members) => new Attributes($members));
+        )->map(fn (array $members) => new AttributeList($members));
     }
 }

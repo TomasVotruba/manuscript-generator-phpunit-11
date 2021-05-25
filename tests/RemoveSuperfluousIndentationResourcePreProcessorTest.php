@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\Test;
 
-use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\ResourceLoader\LoadedResource;
 use BookTools\ResourcePreProcessor\RemoveSuperfluousIndentationResourcePreProcessor;
 use PHPUnit\Framework\TestCase;
@@ -114,8 +114,8 @@ final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCas
         return new LoadedResource('php', $contents);
     }
 
-    private function attributes(): Attributes
+    private function attributes(): AttributeList
     {
-        return new Attributes([]);
+        return new AttributeList([]);
     }
 }

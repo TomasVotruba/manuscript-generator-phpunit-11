@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\Markua\Parser\Node;
 
-final class Attributes extends AbstractNode
+final class AttributeList extends AbstractNode
 {
     /**
      * @param array<Attribute> $attributes

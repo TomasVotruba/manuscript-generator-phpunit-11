@@ -6,14 +6,14 @@ namespace BookTools\Markua\Parser\Node;
 
 final class IncludedResource extends AbstractNode
 {
-    public Attributes $attributes;
+    public AttributeList $attributes;
 
     public function __construct(
         public string $link,
         public ?string $caption,
-        ?Attributes $attributes = null
+        ?AttributeList $attributes = null
     ) {
-        $this->attributes = $attributes === null ? new Attributes() : $attributes;
+        $this->attributes = $attributes === null ? new AttributeList() : $attributes;
     }
 
     public function subnodeNames(): array

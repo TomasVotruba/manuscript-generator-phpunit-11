@@ -6,14 +6,14 @@ namespace BookTools\Markua\Parser\Node;
 
 final class Heading extends AbstractNode
 {
-    public Attributes $attributes;
+    public AttributeList $attributes;
 
     public function __construct(
         public int $level,
         public string $title,
-        ?Attributes $attributes = null
+        ?AttributeList $attributes = null
     ) {
-        $this->attributes = $attributes === null ? new Attributes() : $attributes;
+        $this->attributes = $attributes === null ? new AttributeList() : $attributes;
     }
 
     public function subnodeNames(): array

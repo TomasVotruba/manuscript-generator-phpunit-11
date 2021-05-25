@@ -6,7 +6,7 @@ namespace BookTools\Markua\Printer;
 
 use BookTools\Markua\Parser\Node;
 use BookTools\Markua\Parser\Node\Attribute;
-use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\Markua\Parser\Node\Directive;
 use BookTools\Markua\Parser\Node\Document;
 use BookTools\Markua\Parser\Node\Heading;
@@ -32,7 +32,7 @@ final class MarkuaPrinter
             foreach ($node->nodes as $subnode) {
                 $this->printNode($subnode, $result);
             }
-        } elseif ($node instanceof Attributes) {
+        } elseif ($node instanceof AttributeList) {
             if (count($node->attributes) === 0) {
                 return;
             }
