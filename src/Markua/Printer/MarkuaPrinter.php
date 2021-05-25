@@ -7,6 +7,7 @@ namespace BookTools\Markua\Printer;
 use BookTools\Markua\Parser\Node;
 use BookTools\Markua\Parser\Node\Attribute;
 use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\Directive;
 use BookTools\Markua\Parser\Node\Document;
 use BookTools\Markua\Parser\Node\Heading;
 use BookTools\Markua\Parser\Node\IncludedResource;
@@ -52,6 +53,8 @@ final class MarkuaPrinter
             $result->startBlock();
             $this->printNode($node->attributes, $result);
             $result->appendToBlock(str_repeat('#', $node->level) . ' ' . $node->title);
+        } elseif ($node instanceof Directive) {
+            $result->addBlock('{' . $node->name . '}');
         } elseif ($node instanceof Paragraph) {
             $result->addBlock($node->text);
         } elseif ($node instanceof IncludedResource) {

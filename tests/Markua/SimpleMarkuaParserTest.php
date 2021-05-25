@@ -6,6 +6,7 @@ namespace BookTools\Test\Markua;
 
 use BookTools\Markua\Parser\Node\Attribute;
 use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\Directive;
 use BookTools\Markua\Parser\Node\Document;
 use BookTools\Markua\Parser\Node\Heading;
 use BookTools\Markua\Parser\Node\IncludedResource;
@@ -238,6 +239,19 @@ CODE_SAMPLE
 
 Paragraph 1
 Line 2 of the same paragraph
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testDirective(): void
+    {
+        self::assertEquals(
+            new Document([new Directive('frontmatter'), new Directive('mainmatter'), new Directive('backmatter')]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+{frontmatter}
+{mainmatter}
+{backmatter}
 CODE_SAMPLE
             )
         );

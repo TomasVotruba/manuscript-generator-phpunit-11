@@ -31,9 +31,13 @@ final class MarkuaPrinterTest extends TestCase
     public function markuaProvider(): Generator
     {
         yield [<<<CODE_SAMPLE
+{frontmatter}
+
 # Heading 1
 
 Paragraph 1
+
+{mainmatter}
 
 # Heading 2
 

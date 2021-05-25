@@ -6,6 +6,7 @@ namespace BookTools\Markua\Parser;
 
 use BookTools\Markua\Parser\Node\Attribute;
 use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\Directive;
 use BookTools\Markua\Parser\Node\Document;
 use BookTools\Markua\Parser\Node\Heading;
 use BookTools\Markua\Parser\Node\IncludedResource;
@@ -30,6 +31,7 @@ use function Parsica\Parsica\repeat;
 use function Parsica\Parsica\satisfy;
 use function Parsica\Parsica\sepBy;
 use function Parsica\Parsica\skipSpace1;
+use function Parsica\Parsica\string;
 use function Parsica\Parsica\takeWhile;
 use function Parsica\Parsica\zeroOrMore;
 
@@ -38,7 +40,9 @@ final class SimpleMarkuaParser
     public function parseDocument(string $markua): Document
     {
         $parser = zeroOrMore(
-            collect(any(self::heading(), self::includedResource(), self::inlineResource(), self::paragraph()))
+            collect(
+                any(self::directive(), self::heading(), self::includedResource(), self::inlineResource(), self::paragraph())
+            )
         )
             ->thenEof()
             ->map(fn (array $nodes) => new Document($nodes));
@@ -54,6 +58,21 @@ final class SimpleMarkuaParser
         $result = $parser->tryString($markua);
 
         return $result->output();
+    }
+
+    /**
+     * @return Parser<Directive>
+     */
+    private static function directive(): Parser
+    {
+        return keepFirst(
+            between(char('{'), char('}'), choice(
+                string('frontmatter'),
+                string('mainmatter'),
+                string('backmatter'),
+            ))->label('directive'),
+            self::newLineOrEof()
+        )->map(fn (string $name) => new Directive($name));
     }
 
     /**
