@@ -8,7 +8,7 @@ use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class FileResourceLoader implements ResourceLoader
 {
-    public function load(SmartFileInfo $includedFromFile, string $link): IncludedResource
+    public function load(SmartFileInfo $includedFromFile, string $link): LoadedResource
     {
         $expectedFilePathname = $includedFromFile->getPath() . '/resources/' . $link;
 
@@ -19,6 +19,6 @@ final class FileResourceLoader implements ResourceLoader
         $contents = file_get_contents($expectedFilePathname);
         assert(is_string($contents));
 
-        return IncludedResource::createFromPathAndContents($link, $contents);
+        return LoadedResource::createFromPathAndContents($link, $contents);
     }
 }

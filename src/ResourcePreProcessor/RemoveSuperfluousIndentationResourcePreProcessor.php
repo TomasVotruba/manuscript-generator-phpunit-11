@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace BookTools\ResourcePreProcessor;
 
 use BookTools\Markua\Parser\Attributes;
-use BookTools\ResourceLoader\IncludedResource;
+use BookTools\ResourceLoader\LoadedResource;
 use BookTools\Test\RemoveSuperfluousIndentationResourcePreProcessorTest;
 
 /**
@@ -13,7 +13,7 @@ use BookTools\Test\RemoveSuperfluousIndentationResourcePreProcessorTest;
  */
 final class RemoveSuperfluousIndentationResourcePreProcessor implements ResourcePreProcessor
 {
-    public function process(IncludedResource $includedResource, Attributes $resourceAttributes): IncludedResource
+    public function process(LoadedResource $includedResource, Attributes $resourceAttributes): LoadedResource
     {
         // @TODO determine if text-based and ignore if not
 

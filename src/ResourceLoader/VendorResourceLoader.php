@@ -15,7 +15,7 @@ final class VendorResourceLoader implements ResourceLoader
     ) {
     }
 
-    public function load(SmartFileInfo $includedFromFile, string $link): IncludedResource
+    public function load(SmartFileInfo $includedFromFile, string $link): LoadedResource
     {
         if (! str_starts_with($link, 'vendor/')) {
             throw CouldNotLoadFile::becauseResourceIsNotSupported();
@@ -30,7 +30,7 @@ final class VendorResourceLoader implements ResourceLoader
             $contents = $vendorResource->getContents();
             $this->fileOperations->putContents($targetPathname, $contents);
 
-            return IncludedResource::createFromPathAndContents($expectedPathname, $contents);
+            return LoadedResource::createFromPathAndContents($expectedPathname, $contents);
         } catch (FileNotFoundException $exception) {
             throw CouldNotLoadFile::createFromPrevious($exception);
         }

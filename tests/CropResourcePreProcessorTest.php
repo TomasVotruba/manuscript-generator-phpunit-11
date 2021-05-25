@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace BookTools\Test;
 
 use BookTools\Markua\Parser\Attributes;
-use BookTools\ResourceLoader\IncludedResource;
+use BookTools\ResourceLoader\LoadedResource;
 use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
 use PHPUnit\Framework\TestCase;
 
@@ -45,9 +45,9 @@ final class CropResourcePreProcessorTest extends TestCase
         self::assertSame("\$code\n", $result->contents());
     }
 
-    private function resourceWithContents(string $contents): IncludedResource
+    private function resourceWithContents(string $contents): LoadedResource
     {
-        return new IncludedResource('php', $contents);
+        return new LoadedResource('php', $contents);
     }
 
     private function attributes(): Attributes

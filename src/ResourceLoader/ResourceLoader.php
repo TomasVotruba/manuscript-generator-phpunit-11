@@ -8,5 +8,5 @@ use Symplify\SmartFileSystem\SmartFileInfo;
 
 interface ResourceLoader
 {
-    public function load(SmartFileInfo $includedFromFile, string $link): IncludedResource;
+    public function load(SmartFileInfo $includedFromFile, string $link): LoadedResource;
 }

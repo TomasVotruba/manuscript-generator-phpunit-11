@@ -8,9 +8,9 @@ use BookTools\Markua\Parser\Attribute;
 use BookTools\Markua\Parser\Attributes;
 use BookTools\Markua\Parser\Document;
 use BookTools\Markua\Parser\Heading;
+use BookTools\Markua\Parser\IncludedResource;
 use BookTools\Markua\Parser\Node;
 use BookTools\Markua\Parser\Paragraph;
-use BookTools\Markua\Parser\Resource_;
 use LogicException;
 
 final class MarkuaPrinter
@@ -51,7 +51,7 @@ final class MarkuaPrinter
             $result->appendToBlock(str_repeat('#', $node->level) . ' ' . $node->title);
         } elseif ($node instanceof Paragraph) {
             $result->addBlock($node->text);
-        } elseif ($node instanceof Resource_) {
+        } elseif ($node instanceof IncludedResource) {
             $result->startBlock();
             $this->printNode($node->attributes, $result);
             $result->appendToBlock('![' . $node->caption . '](' . $node->link . ')');

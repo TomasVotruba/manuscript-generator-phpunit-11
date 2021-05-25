@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\ResourceLoader;
 
-final class IncludedResource
+final class LoadedResource
 {
     public function __construct(
         private string $fileExtension,

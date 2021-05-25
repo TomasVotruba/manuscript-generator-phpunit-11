@@ -8,8 +8,8 @@ use BookTools\Markua\Parser\Attribute;
 use BookTools\Markua\Parser\Attributes;
 use BookTools\Markua\Parser\Document;
 use BookTools\Markua\Parser\Heading;
+use BookTools\Markua\Parser\IncludedResource;
 use BookTools\Markua\Parser\Paragraph;
-use BookTools\Markua\Parser\Resource_;
 use BookTools\Markua\Parser\SimpleMarkuaParser;
 use PHPUnit\Framework\TestCase;
 
@@ -25,7 +25,7 @@ final class SimpleMarkuaParserTest extends TestCase
     public function testIncludedResource(): void
     {
         self::assertEquals(
-            new Document([new Resource_('source.php', 'Label')]),
+            new Document([new IncludedResource('source.php', 'Label')]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 ![Label](source.php)
 CODE_SAMPLE
@@ -36,7 +36,7 @@ CODE_SAMPLE
     public function testIncludedResourceWithoutLabel(): void
     {
         self::assertEquals(
-            new Document([new Resource_('source.php', '')]),
+            new Document([new IncludedResource('source.php', '')]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 ![](source.php)
 CODE_SAMPLE
@@ -89,7 +89,7 @@ CODE_SAMPLE
     {
         self::assertEquals(
             new Document(
-                [new Resource_('source.php', 'Caption', new Attributes([new Attribute('crop-start', '6')]))]
+                [new IncludedResource('source.php', 'Caption', new Attributes([new Attribute('crop-start', '6')]))]
             ),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 {crop-start: 6}
@@ -147,7 +147,7 @@ CODE_SAMPLE
     public function testDocument(): void
     {
         self::assertEquals(
-            new Document([new Heading(1, 'Title'), new Resource_('source.php', 'Caption')]),
+            new Document([new Heading(1, 'Title'), new IncludedResource('source.php', 'Caption')]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 # Title
 

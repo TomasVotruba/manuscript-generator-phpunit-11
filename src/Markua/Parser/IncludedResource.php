@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\Markua\Parser;
 
-final class Resource_ implements Node
+final class IncludedResource implements Node
 {
     public Attributes $attributes;
 

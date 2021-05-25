@@ -142,7 +142,7 @@ final class SimpleMarkuaParser
     }
 
     /**
-     * @return Parser<Resource_>
+     * @return Parser<IncludedResource>
      */
     private static function includedResource(): Parser
     {
@@ -168,7 +168,7 @@ final class SimpleMarkuaParser
                 zeroOrMore(satisfy(fn (string $char) => ! in_array($char, [')'], true)))
             )->label('link'),
             self::newLineOrEof()
-        )->map(fn (array $collected) => new Resource_($collected[2], $collected[1], $collected[0]));
+        )->map(fn (array $collected) => new IncludedResource($collected[2], $collected[1], $collected[0]));
     }
 
     /**

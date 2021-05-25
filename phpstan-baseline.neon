@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#1 \\$transform of method Parsica\\\\Parsica\\\\Parser\\<string\\>\\:\\:map\\(\\) expects callable\\(string\\)\\: BookTools\\\\Markua\\\\Parser\\\\Attributes, Closure\\(array\\)\\: BookTools\\\\Markua\\\\Parser\\\\Attributes given\\.$#"
+			count: 1
+			path: src/Markua/Parser/SimpleMarkuaParser.php
+
