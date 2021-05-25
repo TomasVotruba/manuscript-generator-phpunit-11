@@ -91,9 +91,11 @@ CODE_SAMPLE
     public function testAttributes(): void
     {
         self::assertEquals(
-            new AttributeList([new Attribute('crop-start', '6')]),
-            $this->parser->parseAttributes(<<<CODE_SAMPLE
+            new Document([
+                new IncludedResource('source.php', '', new AttributeList([new Attribute('crop-start', '6')])), ]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
 {crop-start: 6}
+![](source.php)
 CODE_SAMPLE
             )
         );
@@ -102,9 +104,14 @@ CODE_SAMPLE
     public function testAttributesOptionalWhitespace(): void
     {
         self::assertEquals(
-            new AttributeList([new Attribute('crop-start', '6'), new Attribute('crop-end', '7')]),
-            $this->parser->parseAttributes(<<<CODE_SAMPLE
+            new Document([new IncludedResource(
+                    'source.php',
+                    '',
+                    new AttributeList([new Attribute('crop-start', '6'), new Attribute('crop-end', '7')])
+                )]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
 {crop-start: 6,crop-end: 7}
+![](source.php)
 CODE_SAMPLE
             )
         );
@@ -113,20 +120,18 @@ CODE_SAMPLE
     public function testAttributesWithAndWithoutQuotes(): void
     {
         self::assertEquals(
-            new AttributeList([new Attribute('caption', 'Caption'), new Attribute('crop-start', '6')]),
-            $this->parser->parseAttributes(<<<CODE_SAMPLE
+            new Document([new IncludedResource(
+                    'source.php',
+                    '',
+                    new AttributeList([new Attribute('caption', 'Caption'), new Attribute('crop-start', '6')])
+                )]),
+            $this->parser->parseDocument(
+                <<<CODE_SAMPLE
 {caption: "Caption", crop-start: 6}
+![](source.php)
 CODE_SAMPLE
             )
         );
-    }
-
-    public function testEmptyAttributes(): void
-    {
-        self::assertEquals(new AttributeList([]), $this->parser->parseAttributes(<<<CODE_SAMPLE
-{}
-CODE_SAMPLE
-        ));
     }
 
     public function testIncludedResourceWithAttributes(): void

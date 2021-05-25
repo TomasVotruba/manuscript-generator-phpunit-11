@@ -57,15 +57,6 @@ final class SimpleMarkuaParser
             ->output();
     }
 
-    public function parseAttributes(string $markua): AttributeList
-    {
-        $parser = $this->attributeList();
-
-        $result = $parser->tryString($markua);
-
-        return $result->output();
-    }
-
     /**
      * @return Parser<Directive>
      */
