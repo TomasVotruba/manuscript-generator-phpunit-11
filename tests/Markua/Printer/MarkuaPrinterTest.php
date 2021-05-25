@@ -44,6 +44,6 @@ Second line of paragraph 2
 ![Caption](source.php)
 
 CODE_SAMPLE
-];
+        ];
     }
 }

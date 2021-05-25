@@ -10,4 +10,9 @@ final class Paragraph implements Node
         public string $text
     ) {
     }
+
+    public function subnodes(): array
+    {
+        return [];
+    }
 }

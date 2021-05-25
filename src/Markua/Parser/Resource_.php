@@ -19,4 +19,9 @@ final class Resource_ implements Node
 
         $this->attributes = $attributes;
     }
+
+    public function subnodes(): array
+    {
+        return [$this->attributes];
+    }
 }

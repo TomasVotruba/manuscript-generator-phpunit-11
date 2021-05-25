@@ -13,4 +13,9 @@ final class Document implements Node
         public array $nodes
     ) {
     }
+
+    public function subnodes(): array
+    {
+        return $this->nodes;
+    }
 }
