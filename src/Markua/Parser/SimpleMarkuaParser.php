@@ -61,10 +61,9 @@ final class SimpleMarkuaParser
      */
     private static function paragraph(): Parser
     {
-        return keepFirst(
-            atLeastOne(choice(noneOf(["\n"]), newline() ->notFollowedBy(newline()))),
-            self::newLineOrEof()
-        )->map(fn (string $text) => new Paragraph($text));
+        return noneOf(['`', '!'])->and(
+            keepFirst(atLeastOne(choice(noneOf(["\n"]), newline()->notFollowedBy(newline()))), self::newLineOrEof())
+        )->map(fn (?string $text) => new Paragraph((string) $text));
     }
 
     /**

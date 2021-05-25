@@ -12,6 +12,7 @@ use BookTools\Markua\Parser\Node\IncludedResource;
 use BookTools\Markua\Parser\Node\InlineResource;
 use BookTools\Markua\Parser\Node\Paragraph;
 use BookTools\Markua\Parser\SimpleMarkuaParser;
+use Parsica\Parsica\ParserHasFailed;
 use PHPUnit\Framework\TestCase;
 
 final class SimpleMarkuaParserTest extends TestCase
@@ -34,16 +35,15 @@ CODE_SAMPLE
         );
     }
 
-    public function testInlineResource(): void
+    public function testInlineResourceWithExtraBacktickFails(): void
     {
-        self::assertEquals(
-            new Document([new InlineResource("\$code\n", 'php')]),
-            $this->parser->parseDocument(<<<'CODE_SAMPLE'
-```php
+        $this->expectException(ParserHasFailed::class);
+
+        $this->parser->parseDocument(<<<'CODE_SAMPLE'
+````php
 $code
 ```
 CODE_SAMPLE
-            )
         );
     }
 
