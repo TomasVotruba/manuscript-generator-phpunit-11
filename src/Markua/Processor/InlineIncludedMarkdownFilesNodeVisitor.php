@@ -19,19 +19,19 @@ final class InlineIncludedMarkdownFilesNodeVisitor implements NodeVisitor
     ) {
     }
 
-    public function enterNode(Node $node): Node
+    public function enterNode(Node $node): ?Node
     {
         if (! $node instanceof IncludedResource) {
-            return $node;
+            return null;
         }
 
         if (count($node->attributes->attributes) !== 0) {
             // we'll take the existence of attributes as a hint that the writer want to show the contents of the file as it is
-            return $node;
+            return null;
         }
 
         if (! str_ends_with($node->link, 'md') && ! str_ends_with($node->link, 'markdown')) {
-            return $node;
+            return null;
         }
 
         $includedFromFile = $node->getAttribute('file');

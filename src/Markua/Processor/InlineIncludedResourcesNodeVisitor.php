@@ -18,10 +18,10 @@ final class InlineIncludedResourcesNodeVisitor implements NodeVisitor
     ) {
     }
 
-    public function enterNode(Node $node): Node
+    public function enterNode(Node $node): ?Node
     {
         if (! $node instanceof IncludedResource) {
-            return $node;
+            return null;
         }
 
         $includedFromFile = $node->getAttribute('file');
@@ -31,7 +31,7 @@ final class InlineIncludedResourcesNodeVisitor implements NodeVisitor
 
         if (in_array($resource->format(), ['gif', 'jpeg', 'jpg', 'png', 'svg'], true)) {
             // Don't try to inline images
-            return $node;
+            return null;
         }
 
         if ($node->caption !== null) {

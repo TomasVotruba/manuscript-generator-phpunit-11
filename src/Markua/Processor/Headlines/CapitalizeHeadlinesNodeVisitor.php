@@ -16,14 +16,14 @@ final class CapitalizeHeadlinesNodeVisitor implements NodeVisitor
     ) {
     }
 
-    public function enterNode(Node $node): Node
+    public function enterNode(Node $node): ?Node
     {
         if (! $node instanceof Heading) {
-            return $node;
+            return null;
         }
 
         if (! $this->capitalizeHeadlines) {
-            return $node;
+            return null;
         }
 
         $node->title = $this->headlineCapitalizer->capitalizeHeadline($node->title);

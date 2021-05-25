@@ -62,7 +62,10 @@ final class NodeTraverser
     private function enterNode(Node $node): Node
     {
         foreach ($this->nodeVisitors as $nodeVisitor) {
-            $node = $nodeVisitor->enterNode($node);
+            $return = $nodeVisitor->enterNode($node);
+            if ($return instanceof Node) {
+                $node = $return;
+            }
         }
 
         return $node;

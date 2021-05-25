@@ -20,10 +20,10 @@ final class ProcessInlineResourcesNodeVisitor implements NodeVisitor
     ) {
     }
 
-    public function enterNode(Node $node): Node
+    public function enterNode(Node $node): ?Node
     {
         if (! $node instanceof InlineResource) {
-            return $node;
+            return null;
         }
 
         $processedResource = LoadedResource::createFromInlineResource($node);

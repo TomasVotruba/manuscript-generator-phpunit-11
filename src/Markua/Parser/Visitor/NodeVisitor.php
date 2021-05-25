@@ -13,5 +13,5 @@ interface NodeVisitor
      * it can just return the node as it is. A visitor can also choose to return a new node which will replace the
      * provided node in the tree.
      */
-    public function enterNode(Node $node): Node;
+    public function enterNode(Node $node): ?Node;
 }

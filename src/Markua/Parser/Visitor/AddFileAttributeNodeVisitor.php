@@ -14,7 +14,7 @@ final class AddFileAttributeNodeVisitor implements NodeVisitor
     ) {
     }
 
-    public function enterNode(Node $node): Node
+    public function enterNode(Node $node): ?Node
     {
         $node->setAttribute('file', $this->file);
 
