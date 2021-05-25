@@ -15,8 +15,6 @@ final class RemoveSuperfluousIndentationResourcePreProcessor implements Resource
 {
     public function process(LoadedResource $includedResource, Attributes $resourceAttributes): LoadedResource
     {
-        // @TODO determine if text-based and ignore if not
-
         $fileContents = $this->trim($includedResource->contents());
 
         $result = preg_match_all('/(^|\n)([ ]*).+/', $fileContents, $matches);

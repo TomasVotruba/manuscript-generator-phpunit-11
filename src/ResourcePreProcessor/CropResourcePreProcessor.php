@@ -22,8 +22,6 @@ final class CropResourcePreProcessor implements ResourcePreProcessor
 
     public function process(LoadedResource $includedResource, Attributes $resourceAttributes): LoadedResource
     {
-        // @TODO determine if text-based and ignore if not
-
         return $includedResource->withContents($this->textCropper->crop($includedResource->contents()));
     }
 }
