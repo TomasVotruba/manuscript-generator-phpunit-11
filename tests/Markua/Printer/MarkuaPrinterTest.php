@@ -40,8 +40,19 @@ Paragraph 1
 Paragraph 2
 Second line of paragraph 2
 
-{crop-start: 6}
-![Caption](source.php)
+{crop-start: 6, caption: "Caption with spaces"}
+![Included source with attributes](source1.php)
+
+![Included source without attributes](source2.php)
+
+{caption: Caption, format: php}
+```
+// inline source
+```
+
+```php
+// inline source without attributes
+```
 
 CODE_SAMPLE
         ];

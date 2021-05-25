@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace BookTools\Test\Markua;
 
-use BookTools\Markua\Parser\Attribute;
-use BookTools\Markua\Parser\Attributes;
-use BookTools\Markua\Parser\Document;
-use BookTools\Markua\Parser\Heading;
 use BookTools\Markua\Parser\Node;
-use BookTools\Markua\Parser\Paragraph;
+use BookTools\Markua\Parser\Node\Attribute;
+use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\Document;
+use BookTools\Markua\Parser\Node\Heading;
+use BookTools\Markua\Parser\Node\Paragraph;
 use BookTools\Markua\Parser\Visitor\NodeTraverser;
 use BookTools\Markua\Parser\Visitor\NodeVisitor;
 use PHPUnit\Framework\TestCase;

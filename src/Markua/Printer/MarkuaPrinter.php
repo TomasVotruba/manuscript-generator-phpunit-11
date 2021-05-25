@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace BookTools\Markua\Printer;
 
-use BookTools\Markua\Parser\Attribute;
-use BookTools\Markua\Parser\Attributes;
-use BookTools\Markua\Parser\Document;
-use BookTools\Markua\Parser\Heading;
-use BookTools\Markua\Parser\IncludedResource;
 use BookTools\Markua\Parser\Node;
-use BookTools\Markua\Parser\Paragraph;
+use BookTools\Markua\Parser\Node\Attribute;
+use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\Document;
+use BookTools\Markua\Parser\Node\Heading;
+use BookTools\Markua\Parser\Node\IncludedResource;
+use BookTools\Markua\Parser\Node\InlineResource;
+use BookTools\Markua\Parser\Node\Paragraph;
 use LogicException;
 
 final class MarkuaPrinter
@@ -39,7 +40,9 @@ final class MarkuaPrinter
                 implode(
                     ', ',
                     array_map(
-                        fn (Attribute $attribute) => $attribute->key . ': ' . $attribute->value,
+                        fn (Attribute $attribute) => $attribute->key . ': ' . $this->printAttributeValue(
+                            $attribute->value
+                        ),
                         $node->attributes
                     )
                 )
@@ -55,8 +58,22 @@ final class MarkuaPrinter
             $result->startBlock();
             $this->printNode($node->attributes, $result);
             $result->appendToBlock('![' . $node->caption . '](' . $node->link . ')');
+        } elseif ($node instanceof InlineResource) {
+            $result->startBlock();
+            $this->printNode($node->attributes, $result);
+            $result->appendToBlock('```' . $node->format . "\n" . $node->contents . '```');
         } else {
             throw new LogicException('Unknown node type: ' . get_class($node));
         }
+    }
+
+    private function printAttributeValue(string $value): string
+    {
+        if (preg_match('/^[\w\-]+$/', $value) === 1) {
+            // no need to quote the value if it contains no spaces or special characters
+            return $value;
+        }
+
+        return '"' . addslashes($value) . '"';
     }
 }

@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace BookTools\Test\Markua;
 
-use BookTools\Markua\Parser\Attribute;
-use BookTools\Markua\Parser\Attributes;
-use BookTools\Markua\Parser\Document;
-use BookTools\Markua\Parser\Heading;
-use BookTools\Markua\Parser\IncludedResource;
-use BookTools\Markua\Parser\Paragraph;
+use BookTools\Markua\Parser\Node\Attribute;
+use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\Document;
+use BookTools\Markua\Parser\Node\Heading;
+use BookTools\Markua\Parser\Node\IncludedResource;
+use BookTools\Markua\Parser\Node\InlineResource;
+use BookTools\Markua\Parser\Node\Paragraph;
 use BookTools\Markua\Parser\SimpleMarkuaParser;
 use PHPUnit\Framework\TestCase;
 
@@ -28,6 +29,48 @@ final class SimpleMarkuaParserTest extends TestCase
             new Document([new IncludedResource('source.php', 'Label')]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 ![Label](source.php)
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testInlineResource(): void
+    {
+        self::assertEquals(
+            new Document([new InlineResource("\$code\n", 'php')]),
+            $this->parser->parseDocument(<<<'CODE_SAMPLE'
+```php
+$code
+```
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testInlineResourceWithNoFormat(): void
+    {
+        self::assertEquals(
+            new Document([new InlineResource("\$code\n", null)]),
+            $this->parser->parseDocument(<<<'CODE_SAMPLE'
+```
+$code
+```
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testInlineResourceWithAttributes(): void
+    {
+        self::assertEquals(
+            new Document([new InlineResource("\$code\n", 'php', new Attributes(
+                [new Attribute('caption', 'Caption')]
+            ))]),
+            $this->parser->parseDocument(<<<'CODE_SAMPLE'
+{caption: "Caption"}
+```php
+$code
+```
 CODE_SAMPLE
             )
         );

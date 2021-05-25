@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BookTools\Markua\Processor;
 
-use BookTools\Markua\Parser\Attribute;
-use BookTools\Markua\Parser\Attributes;
+use BookTools\Markua\Parser\Node\Attribute;
+use BookTools\Markua\Parser\Node\Attributes;
 use BookTools\Markua\Parser\SimpleMarkuaParser;
 use BookTools\ResourceLoader\ResourceLoader;
 use BookTools\ResourcePreProcessor\ResourcePreProcessor;

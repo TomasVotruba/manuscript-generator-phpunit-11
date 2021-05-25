@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Parser;
+namespace BookTools\Markua\Parser\Node;
+
+use BookTools\Markua\Parser\Node;
 
 final class Heading implements Node
 {
@@ -13,11 +15,7 @@ final class Heading implements Node
         public string $title,
         ?Attributes $attributes = null
     ) {
-        if ($attributes === null) {
-            $attributes = new Attributes([]);
-        }
-
-        $this->attributes = $attributes;
+        $this->attributes = $attributes === null ? new Attributes() : $attributes;
     }
 
     public function subnodeNames(): array

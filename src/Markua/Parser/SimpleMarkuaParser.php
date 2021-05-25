@@ -4,6 +4,14 @@ declare(strict_types=1);
 
 namespace BookTools\Markua\Parser;
 
+use BookTools\Markua\Parser\Node\Attribute;
+use BookTools\Markua\Parser\Node\Attributes;
+use BookTools\Markua\Parser\Node\Document;
+use BookTools\Markua\Parser\Node\Heading;
+use BookTools\Markua\Parser\Node\IncludedResource;
+use BookTools\Markua\Parser\Node\InlineResource;
+use BookTools\Markua\Parser\Node\Paragraph;
+use function Parsica\Parsica\alphaChar;
 use function Parsica\Parsica\any;
 use function Parsica\Parsica\atLeastOne;
 use function Parsica\Parsica\between;
@@ -18,6 +26,7 @@ use function Parsica\Parsica\newline;
 use function Parsica\Parsica\noneOf;
 use function Parsica\Parsica\optional;
 use Parsica\Parsica\Parser;
+use function Parsica\Parsica\repeat;
 use function Parsica\Parsica\satisfy;
 use function Parsica\Parsica\sepBy;
 use function Parsica\Parsica\skipSpace1;
@@ -28,7 +37,9 @@ final class SimpleMarkuaParser
 {
     public function parseDocument(string $markua): Document
     {
-        $parser = zeroOrMore(collect(any(self::heading(), self::includedResource(), self::paragraph())))
+        $parser = zeroOrMore(
+            collect(any(self::heading(), self::includedResource(), self::inlineResource(), self::paragraph()))
+        )
             ->thenEof()
             ->map(fn (array $nodes) => new Document($nodes));
 
@@ -66,7 +77,7 @@ final class SimpleMarkuaParser
                 self::token(zeroOrMore(satisfy(fn (string $char): bool => ! in_array($char, [':'], true)),)),
                 self::token(char(':')),
                 choice(self::token(self::stringLiteral()), self::token(self::constant()))
-            ),
+            )->label('attribute'),
             fn (array $o) => new Attribute($o[0], $o[2])
         );
     }
@@ -172,6 +183,28 @@ final class SimpleMarkuaParser
     }
 
     /**
+     * @return Parser<InlineResource>
+     */
+    private static function inlineResource(): Parser
+    {
+        return collect(
+            optional(self::attributes()), // 0
+            repeat(3, char('`')), // 1
+            keepFirst(optional(atLeastOne(alphaChar())), newline())
+                ->label('format'), // 2
+            zeroOrMore(
+                choice(
+                    satisfy(fn (string $char) => ! in_array($char, ['`'], true)),
+                    newline()
+                        ->notFollowedBy(char('`'))
+                )
+            )->label('source'), // 3
+            repeat(3, char('`')), // 4
+            self::newLineOrEof() // 5
+        )->map(fn (array $collected) => new InlineResource($collected[3], $collected[2], $collected[0]));
+    }
+
+    /**
      * @return Parser<Attributes>
      */
     private static function attributes(): Parser
@@ -181,7 +214,7 @@ final class SimpleMarkuaParser
                 self::token(char('{')),
                 self::token(char('}')),
                 sepBy(self::token(char(',')), self::attribute())
-            ),
+            )->label('attributes'),
             self::newLineOrEof()
         )->map(fn (array $members) => new Attributes($members));
     }

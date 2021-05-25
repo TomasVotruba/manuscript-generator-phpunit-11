@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Parser;
+namespace BookTools\Markua\Parser\Node;
+
+use BookTools\Markua\Parser\Node;
 
 final class Attributes implements Node
 {
@@ -37,6 +39,9 @@ final class Attributes implements Node
         return null;
     }
 
+    /**
+     * @deprecated Rewrite using Markua printer
+     */
     public function asMarkua(): string
     {
         return '{'
