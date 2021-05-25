@@ -7,6 +7,9 @@ namespace BookTools;
 use BookTools\Cli\ResultPrinter;
 use BookTools\FileOperations\FileOperations;
 use BookTools\FileOperations\Filesystem;
+use BookTools\Markua\Parser\SimpleMarkuaParser;
+use BookTools\Markua\Printer\MarkuaPrinter;
+use BookTools\Markua\Processor\AstBasedMarkuaProcessor;
 use BookTools\Markua\Processor\DelegatingMarkuaProcessor;
 use BookTools\Markua\Processor\Headlines\CapitalizeHeadlinesProcessor;
 use BookTools\Markua\Processor\Headlines\HeadlineCapitalizer;
@@ -62,9 +65,15 @@ final class DevelopmentServiceContainer
                             ]
                         ),
                     ),
-                    new CapitalizeHeadlinesProcessor(
-                        new HeadlineCapitalizer(),
-                        $this->configuration->capitalizeHeadlines()
+                    new AstBasedMarkuaProcessor(
+                        [
+                            new CapitalizeHeadlinesProcessor(
+                                new HeadlineCapitalizer(),
+                                $this->configuration->capitalizeHeadlines()
+                            ),
+                        ],
+                        new SimpleMarkuaParser(),
+                        new MarkuaPrinter()
                     ),
                 ]
             )

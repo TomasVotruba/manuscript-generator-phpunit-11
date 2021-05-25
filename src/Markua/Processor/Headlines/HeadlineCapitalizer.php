@@ -40,24 +40,29 @@ final class HeadlineCapitalizer
                 }
             }
 
-            $headlineParts = Strings::split($headline, '#\s+#');
-
-            foreach ($headlineParts as $key => $headlinePart) {
-                if (in_array($headlinePart, self::LOWERCASE_EXCEPTIONS, true)) {
-                    continue;
-                }
-
-                // code, skip it
-                if (Strings::endsWith($headlinePart, '()')) {
-                    continue;
-                }
-
-                $headlineParts[$key] = ucfirst($headlinePart);
-            }
-
-            $newHeadline = implode(' ', $headlineParts);
+            $newHeadline = $this->capitalizeHeadline($headline);
 
             return $match['prefix'] . $newHeadline;
         });
+    }
+
+    public function capitalizeHeadline(string $headline): string
+    {
+        $headlineParts = Strings::split($headline, '#\s+#');
+
+        foreach ($headlineParts as $key => $headlinePart) {
+            if (in_array($headlinePart, self::LOWERCASE_EXCEPTIONS, true)) {
+                continue;
+            }
+
+            // code, skip it
+            if (Strings::endsWith($headlinePart, '()')) {
+                continue;
+            }
+
+            $headlineParts[$key] = ucfirst($headlinePart);
+        }
+
+        return implode(' ', $headlineParts);
     }
 }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 echo 'Hello, world!';
 ```
 
-{line-numbers: true, caption: "Cropped", format: php}
+{line-numbers: true, caption: "Cropped source", format: php}
 ```
 public function bar(): void
 {

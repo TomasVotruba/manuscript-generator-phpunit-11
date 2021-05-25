@@ -41,7 +41,13 @@ final class SimpleMarkuaParser
     {
         $parser = zeroOrMore(
             collect(
-                any(self::directive(), self::heading(), self::includedResource(), self::inlineResource(), self::paragraph())
+                any(
+                    self::directive(),
+                    self::heading(),
+                    self::includedResource(),
+                    self::inlineResource(),
+                    self::paragraph()
+                )
             )
         )
             ->thenEof()
