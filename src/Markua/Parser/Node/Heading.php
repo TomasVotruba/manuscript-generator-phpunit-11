@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\Markua\Parser\Node;
 
-use BookTools\Markua\Parser\Node;
-
-final class Heading implements Node
+final class Heading extends AbstractNode
 {
     public Attributes $attributes;
 

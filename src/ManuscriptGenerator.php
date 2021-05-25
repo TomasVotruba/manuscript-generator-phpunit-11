@@ -25,11 +25,7 @@ final class ManuscriptGenerator
         ] as $srcFileName => $targetFileName) {
             $srcFilePath = new SmartFileInfo($this->configuration->manuscriptSrcDir() . '/' . $srcFileName);
 
-            $processedContents = $this->markuaProcessor->process(
-                $this->markuaProcessor,
-                $srcFilePath,
-                $srcFilePath->getContents()
-            );
+            $processedContents = $this->markuaProcessor->process($srcFilePath, $srcFilePath->getContents());
 
             $targetFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $srcFileName;
             $this->fileOperations->putContents($targetFilePathname, $processedContents);

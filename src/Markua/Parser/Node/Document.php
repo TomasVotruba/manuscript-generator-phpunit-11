@@ -6,7 +6,7 @@ namespace BookTools\Markua\Parser\Node;
 
 use BookTools\Markua\Parser\Node;
 
-final class Document implements Node
+final class Document extends AbstractNode
 {
     /**
      * @param array<Node> $nodes

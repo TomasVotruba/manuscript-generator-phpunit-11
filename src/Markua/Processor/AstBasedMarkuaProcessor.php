@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BookTools\Markua\Processor;
 
 use BookTools\Markua\Parser\SimpleMarkuaParser;
+use BookTools\Markua\Parser\Visitor\AddFileAttributeNodeVisitor;
 use BookTools\Markua\Parser\Visitor\NodeTraverser;
 use BookTools\Markua\Parser\Visitor\NodeVisitor;
 use BookTools\Markua\Printer\MarkuaPrinter;
@@ -22,11 +23,13 @@ final class AstBasedMarkuaProcessor implements MarkuaProcessor
     ) {
     }
 
-    public function process(MarkuaProcessor $markuaProcessor, SmartFileInfo $markuaFileInfo, string $markua): string
+    public function process(SmartFileInfo $markuaFileInfo, string $markua): string
     {
         $document = $this->parser->parseDocument($markua);
 
-        $nodeTraverser = new NodeTraverser($this->nodeVisitors);
+        $nodeTraverser = new NodeTraverser(
+            array_merge([new AddFileAttributeNodeVisitor($markuaFileInfo)], $this->nodeVisitors)
+        );
 
         $result = $nodeTraverser->traverseDocument($document);
 

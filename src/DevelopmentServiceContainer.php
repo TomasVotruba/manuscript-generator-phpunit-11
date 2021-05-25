@@ -10,17 +10,17 @@ use BookTools\FileOperations\Filesystem;
 use BookTools\Markua\Parser\SimpleMarkuaParser;
 use BookTools\Markua\Printer\MarkuaPrinter;
 use BookTools\Markua\Processor\AstBasedMarkuaProcessor;
-use BookTools\Markua\Processor\DelegatingMarkuaProcessor;
-use BookTools\Markua\Processor\Headlines\CapitalizeHeadlinesProcessor;
+use BookTools\Markua\Processor\Headlines\CapitalizeHeadlinesNodeVisitor;
 use BookTools\Markua\Processor\Headlines\HeadlineCapitalizer;
-use BookTools\Markua\Processor\InlineIncludedResourcesMarkuaProcessor;
+use BookTools\Markua\Processor\InlineIncludedMarkdownFilesNodeVisitor;
+use BookTools\Markua\Processor\InlineIncludedResourcesNodeVisitor;
+use BookTools\Markua\Processor\ProcessInlineResourcesNodeVisitor;
 use BookTools\ResourceLoader\DelegatingResourceLoader;
 use BookTools\ResourceLoader\FileResourceLoader;
 use BookTools\ResourceLoader\PHPUnit\PhpUnitOutputResourceLoader;
 use BookTools\ResourceLoader\VendorResourceLoader;
 use BookTools\ResourcePreProcessor\ApplyCropAttributesPreProcessor;
 use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
-use BookTools\ResourcePreProcessor\DelegatingResourcePreProcessor;
 use BookTools\ResourcePreProcessor\RemoveSuperfluousIndentationResourcePreProcessor;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Output\NullOutput;
@@ -47,35 +47,24 @@ final class DevelopmentServiceContainer
         return new ManuscriptGenerator(
             $this->configuration,
             $this->fileOperations(),
-            new DelegatingMarkuaProcessor(
+            new AstBasedMarkuaProcessor(
                 [
-                    new InlineIncludedResourcesMarkuaProcessor(
-                        new DelegatingResourceLoader(
-                            [
-                                new VendorResourceLoader($this->fileOperations()),
-                                new PhpUnitOutputResourceLoader($this->fileOperations()),
-                                new FileResourceLoader(),
-                            ]
-                        ),
-                        new DelegatingResourcePreProcessor(
-                            [
-                                new CropResourcePreProcessor(),
-                                new ApplyCropAttributesPreProcessor(),
-                                new RemoveSuperfluousIndentationResourcePreProcessor(),
-                            ]
-                        ),
-                    ),
-                    new AstBasedMarkuaProcessor(
+                    new InlineIncludedMarkdownFilesNodeVisitor($this->resourceLoader(), $this->markuaParser()),
+                    new InlineIncludedResourcesNodeVisitor($this->resourceLoader(),),
+                    new ProcessInlineResourcesNodeVisitor(
                         [
-                            new CapitalizeHeadlinesProcessor(
-                                new HeadlineCapitalizer(),
-                                $this->configuration->capitalizeHeadlines()
-                            ),
-                        ],
-                        new SimpleMarkuaParser(),
-                        new MarkuaPrinter()
+                            new CropResourcePreProcessor(),
+                            new ApplyCropAttributesPreProcessor(),
+                            new RemoveSuperfluousIndentationResourcePreProcessor(),
+                        ]
                     ),
-                ]
+                    new CapitalizeHeadlinesNodeVisitor(
+                        new HeadlineCapitalizer(),
+                        $this->configuration->capitalizeHeadlines()
+                    ),
+                ],
+                $this->markuaParser(),
+                new MarkuaPrinter()
             )
         );
     }
@@ -116,5 +105,21 @@ final class DevelopmentServiceContainer
             new NullOutput(),
             new ConsoleDiffer(new Differ(), new ColorConsoleDiffFormatter())
         );
+    }
+
+    private function resourceLoader(): DelegatingResourceLoader
+    {
+        return new DelegatingResourceLoader(
+            [
+                new VendorResourceLoader($this->fileOperations()),
+                new PhpUnitOutputResourceLoader($this->fileOperations()),
+                new FileResourceLoader(),
+            ]
+        );
+    }
+
+    private function markuaParser(): SimpleMarkuaParser
+    {
+        return new SimpleMarkuaParser();
     }
 }

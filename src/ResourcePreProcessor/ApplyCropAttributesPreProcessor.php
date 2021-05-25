@@ -15,8 +15,8 @@ final class ApplyCropAttributesPreProcessor implements ResourcePreProcessor
 {
     public function process(LoadedResource $includedResource, Attributes $resourceAttributes): LoadedResource
     {
-        $cropStart = $resourceAttributes->valueOf('crop-start');
-        $cropEnd = $resourceAttributes->valueOf('crop-end');
+        $cropStart = $resourceAttributes->get('crop-start');
+        $cropEnd = $resourceAttributes->get('crop-end');
 
         if ($cropStart === null && $cropEnd === null) {
             return $includedResource;
@@ -28,8 +28,8 @@ final class ApplyCropAttributesPreProcessor implements ResourcePreProcessor
             $cropEnd === null ? null : (int) $cropEnd,
         );
 
-        $resourceAttributes->removeAttribute('crop-start');
-        $resourceAttributes->removeAttribute('crop-end');
+        $resourceAttributes->remove('crop-start');
+        $resourceAttributes->remove('crop-end');
 
         return $includedResource->withContents($croppedContent);
     }

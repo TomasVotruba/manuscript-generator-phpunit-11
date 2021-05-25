@@ -64,7 +64,11 @@ final class MarkuaPrinter
         } elseif ($node instanceof InlineResource) {
             $result->startBlock();
             $this->printNode($node->attributes, $result);
-            $result->appendToBlock('```' . $node->format . "\n" . $node->contents . '```');
+            $contents = $node->contents;
+            if (! str_ends_with($contents, "\n")) {
+                $contents .= "\n";
+            }
+            $result->appendToBlock('```' . $node->format . "\n" . $contents . '```');
         } else {
             throw new LogicException('Unknown node type: ' . get_class($node));
         }

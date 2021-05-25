@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\Markua\Parser\Node;
 
-use BookTools\Markua\Parser\Node;
-
-final class InlineResource implements Node
+final class InlineResource extends AbstractNode
 {
     public Attributes $attributes;
 
@@ -20,6 +18,6 @@ final class InlineResource implements Node
 
     public function subnodeNames(): array
     {
-        return [];
+        return ['attributes'];
     }
 }

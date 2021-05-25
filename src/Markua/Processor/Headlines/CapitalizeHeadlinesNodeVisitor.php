@@ -8,7 +8,7 @@ use BookTools\Markua\Parser\Node;
 use BookTools\Markua\Parser\Node\Heading;
 use BookTools\Markua\Parser\Visitor\NodeVisitor;
 
-final class CapitalizeHeadlinesProcessor implements NodeVisitor
+final class CapitalizeHeadlinesNodeVisitor implements NodeVisitor
 {
     public function __construct(
         private HeadlineCapitalizer $headlineCapitalizer,

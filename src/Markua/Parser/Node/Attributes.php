@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\Markua\Parser\Node;
 
-use BookTools\Markua\Parser\Node;
-
-final class Attributes implements Node
+final class Attributes extends AbstractNode
 {
     /**
      * @param array<Attribute> $attributes
@@ -16,7 +14,7 @@ final class Attributes implements Node
     ) {
     }
 
-    public function setAttribute(string $key, string $value): void
+    public function set(string $key, string $value): void
     {
         foreach ($this->attributes as $index => $existingAttribute) {
             if ($existingAttribute->key === $key) {
@@ -28,7 +26,7 @@ final class Attributes implements Node
         $this->attributes[] = new Attribute($key, $value);
     }
 
-    public function valueOf(string $key): ?string
+    public function get(string $key): ?string
     {
         foreach ($this->attributes as $attribute) {
             if ($attribute->key === $key) {
@@ -39,23 +37,7 @@ final class Attributes implements Node
         return null;
     }
 
-    /**
-     * @deprecated Rewrite using Markua printer
-     */
-    public function asMarkua(): string
-    {
-        return '{'
-            . implode(
-                ', ',
-                array_map(
-                    fn (Attribute $attribute) => $attribute->key . ': ' . $attribute->value,
-                    $this->attributes
-                )
-            )
-            . '}';
-    }
-
-    public function removeAttribute(string $key): void
+    public function remove(string $key): void
     {
         foreach ($this->attributes as $index => $attribute) {
             if ($attribute->key === $key) {
@@ -67,5 +49,16 @@ final class Attributes implements Node
     public function subnodeNames(): array
     {
         return ['attributes'];
+    }
+
+    public function has(string $key): bool
+    {
+        foreach ($this->attributes as $attribute) {
+            if ($attribute->key === $key) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
