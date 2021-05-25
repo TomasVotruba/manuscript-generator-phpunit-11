@@ -8,5 +8,10 @@ use BookTools\Markua\Parser\Node;
 
 interface NodeVisitor
 {
-    public function enterNode(Node $node): void;
+    /**
+     * A node visitor can modify properties of the provided node directly. If the visitor doesn't want to do anything,
+     * it can just return the node as it is. A visitor can also choose to return a new node which will replace the
+     * provided node in the tree.
+     */
+    public function enterNode(Node $node): Node;
 }

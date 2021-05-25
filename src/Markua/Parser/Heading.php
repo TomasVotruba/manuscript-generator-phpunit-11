@@ -20,8 +20,8 @@ final class Heading implements Node
         $this->attributes = $attributes;
     }
 
-    public function subnodes(): array
+    public function subnodeNames(): array
     {
-        return [$this->attributes];
+        return ['attributes'];
     }
 }

@@ -8,8 +8,10 @@ use BookTools\Markua\Parser\Attribute;
 use BookTools\Markua\Parser\Attributes;
 use BookTools\Markua\Parser\Document;
 use BookTools\Markua\Parser\Heading;
+use BookTools\Markua\Parser\Node;
 use BookTools\Markua\Parser\Paragraph;
 use BookTools\Markua\Parser\Visitor\NodeTraverser;
+use BookTools\Markua\Parser\Visitor\NodeVisitor;
 use PHPUnit\Framework\TestCase;
 
 final class NodeTraverserTest extends TestCase
@@ -26,17 +28,76 @@ final class NodeTraverserTest extends TestCase
         $spy = new NodeVisitorSpy();
         $traverser = new NodeTraverser([$spy]);
 
-        $traverser->traverse($document);
+        $traverser->traverseDocument($document);
 
         self::assertEquals(
-            [
-                'enterNode: Document',
-                'enterNode: Heading',
-                'enterNode: Attributes',
-                'enterNode: Attribute',
-                'enterNode: Paragraph',
-            ],
+            ['enterNode: Heading', 'enterNode: Attributes', 'enterNode: Attribute', 'enterNode: Paragraph'],
             $spy->calledMethods()
+        );
+    }
+
+    public function testModifyExistingNodes(): void
+    {
+        $traverser = new NodeTraverser(
+            [new class() implements NodeVisitor {
+                public function enterNode(Node $node): Node
+                {
+                    if ($node instanceof Heading) {
+                        $node->title = strtoupper($node->title);
+                    }
+
+                    return $node;
+                }
+            }]
+        );
+
+        $result = $traverser->traverseDocument(new Document([new Heading(1, 'Chapter 1')]));
+
+        self::assertEquals(new Document([new Heading(1, 'CHAPTER 1')]), $result);
+    }
+
+    public function testReplaceExistingNodes(): void
+    {
+        $traverser = new NodeTraverser(
+            [new class() implements NodeVisitor {
+                public function enterNode(Node $node): Node
+                {
+                    if ($node instanceof Heading) {
+                        return new Paragraph($node->title);
+                    }
+
+                    return $node;
+                }
+            }]
+        );
+
+        $result = $traverser->traverseDocument(new Document([new Heading(1, 'Chapter 1')]));
+
+        self::assertEquals(new Document([new Paragraph('Chapter 1')]), $result);
+    }
+
+    public function testReplaceExistingSubnodes(): void
+    {
+        $traverser = new NodeTraverser(
+            [new class() implements NodeVisitor {
+                public function enterNode(Node $node): Node
+                {
+                    if ($node instanceof Attribute && $node->value === 'foo') {
+                        return new Attribute('id', 'bar');
+                    }
+
+                    return $node;
+                }
+            }]
+        );
+
+        $result = $traverser->traverseDocument(
+            new Document([new Heading(1, 'Chapter 1', new Attributes([new Attribute('id', 'foo')]))])
+        );
+
+        self::assertEquals(
+            new Document([new Heading(1, 'Chapter 1', new Attributes([new Attribute('id', 'bar')]))]),
+            $result
         );
     }
 }

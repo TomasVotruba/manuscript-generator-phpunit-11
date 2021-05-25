@@ -14,9 +14,10 @@ final class NodeVisitorSpy implements NodeVisitor
      */
     private array $calledMethods = [];
 
-    public function enterNode(Node $node): void
+    public function enterNode(Node $node): Node
     {
         $this->calledMethods[] = 'enterNode: ' . basename(str_replace('\\', '/', get_class($node)));
+        return $node;
     }
 
     /**

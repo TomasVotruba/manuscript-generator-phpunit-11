@@ -59,8 +59,8 @@ final class Attributes implements Node
         }
     }
 
-    public function subnodes(): array
+    public function subnodeNames(): array
     {
-        return $this->attributes;
+        return ['attributes'];
     }
 }

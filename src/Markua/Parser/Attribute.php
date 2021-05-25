@@ -17,7 +17,7 @@ final class Attribute implements Node
         return '"' . addslashes($value) . '"';
     }
 
-    public function subnodes(): array
+    public function subnodeNames(): array
     {
         return [];
     }

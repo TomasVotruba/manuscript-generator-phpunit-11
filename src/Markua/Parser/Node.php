@@ -7,7 +7,7 @@ namespace BookTools\Markua\Parser;
 interface Node
 {
     /**
-     * @return array<Node>
+     * @return array<string> The names of the public properties of this node that contain a subnode or an array of subnodes
      */
-    public function subnodes(): array;
+    public function subnodeNames(): array;
 }

@@ -11,7 +11,7 @@ final class Paragraph implements Node
     ) {
     }
 
-    public function subnodes(): array
+    public function subnodeNames(): array
     {
         return [];
     }
