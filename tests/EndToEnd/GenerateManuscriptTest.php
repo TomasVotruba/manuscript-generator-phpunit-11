@@ -20,8 +20,6 @@ final class GenerateManuscriptTest extends TestCase
     {
         $this->manuscriptSrcDir = __DIR__ . '/Project/manuscript-src';
         $this->manuscriptDir = sys_get_temp_dir() . '/' . uniqid('manuscript');
-        // @TODO see if mkdir is needed, remove if not
-        mkdir($this->manuscriptDir, 0777, true);
     }
 
     protected function tearDown(): void
