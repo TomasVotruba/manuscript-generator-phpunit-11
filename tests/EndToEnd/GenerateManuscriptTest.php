@@ -7,6 +7,7 @@ namespace BookTools\Test\EndToEnd;
 use BookTools\Cli\GenerateManuscriptCommand;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -16,6 +17,8 @@ final class GenerateManuscriptTest extends TestCase
 
     private string $manuscriptSrcDir;
 
+    private ?string $commandOutput = null;
+
     protected function setUp(): void
     {
         $this->manuscriptSrcDir = __DIR__ . '/Project/manuscript-src';
@@ -24,19 +27,16 @@ final class GenerateManuscriptTest extends TestCase
 
     protected function tearDown(): void
     {
-        // @TODO read the paths from the tester's output
-        $generatedFiles = [
-            $this->manuscriptSrcDir . '/resources/tests/phpunit-output.txt',
-            $this->manuscriptSrcDir . '/resources/vendor/symfony/event-dispatcher-contracts/EventDispatcherInterface.php',
-            $this->manuscriptSrcDir . '/resources/rector/rector-output.diff',
-        ];
-        foreach ($generatedFiles as $file) {
-            if (is_file($file)) {
-                unlink($file);
-            }
+        if ($this->commandOutput === null) {
+            return;
         }
 
-        // @TODO remove manuscriptDir
+        $filesystem = new Filesystem();
+
+        $result = preg_match_all("/created (.+)\n/", $this->commandOutput, $matches);
+        assert($result !== false);
+        $filesystem->remove(array_map(fn (string $file) => getcwd() . $file, $matches[1]));
+        $filesystem->remove($this->manuscriptDir);
     }
 
     public function testItGeneratesTheManuscriptFolderBasedOnFilesReferencedInBookMdAndSubsetMd(): void
@@ -53,6 +53,8 @@ final class GenerateManuscriptTest extends TestCase
         self::assertDirectoryContentsEquals(__DIR__ . '/Project/manuscript-expected', $this->manuscriptDir);
 
         self::assertSame(0, $tester->getStatusCode());
+
+        $this->commandOutput = $tester->getDisplay();
     }
 
     public function testItFailsWhenUsingDryRunAndFilesWereModified(): void
