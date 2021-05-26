@@ -17,15 +17,29 @@ final class CachedResourceLoader implements ResourceLoader
     public function load(SmartFileInfo $includedFromFile, string $link): LoadedResource
     {
         $expectedFilePathname = $includedFromFile->getPath() . '/resources/' . $link;
-        if (is_file($expectedFilePathname)) {
-            // @TODO check freshness
-            // - vendor dir
-            // - dirname of expectedFilePathName
-            // -
+        if (is_file($expectedFilePathname) && $this->stillFresh($expectedFilePathname)) {
             return $this->fileLoader->load($includedFromFile, $link);
         }
 
         return $this->realLoader->load($includedFromFile, $link);
-        // Touch file was last modified date
+    }
+
+    private function stillFresh(string $filePath): bool
+    {
+        $generatedFileLastModified = (int) filemtime($filePath);
+
+        foreach (
+            [
+                dirname($filePath), // the directory that contains the file
+                // @TODO add vendor/ directory
+            ]
+            as $filePathToCheck
+        ) {
+            if ((int) filemtime($filePathToCheck) > $generatedFileLastModified) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

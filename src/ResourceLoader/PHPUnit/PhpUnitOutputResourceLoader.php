@@ -6,16 +6,19 @@ namespace BookTools\ResourceLoader\PHPUnit;
 
 use BookTools\FileOperations\FileOperations;
 use BookTools\ResourceLoader\CouldNotLoadFile;
+use BookTools\ResourceLoader\GeneratedResources\ResourceWasGenerated;
 use BookTools\ResourceLoader\LoadedResource;
 use BookTools\ResourceLoader\ResourceLoader;
 use function str_ends_with;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\Process;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class PhpUnitOutputResourceLoader implements ResourceLoader
 {
     public function __construct(
-        private FileOperations $fileOperations
+        private FileOperations $fileOperations,
+        private EventDispatcherInterface $eventDispatcher
     ) {
     }
 
@@ -28,6 +31,8 @@ final class PhpUnitOutputResourceLoader implements ResourceLoader
         $expectedPath = $includedFromFile->getPath() . '/resources/' . $link;
 
         $outputOfPhpUnitRun = $this->getOutputOfPhpUnitRun(dirname($expectedPath));
+
+        $this->eventDispatcher->dispatch(new ResourceWasGenerated($link));
 
         $this->fileOperations->putContents($expectedPath, $outputOfPhpUnitRun);
 

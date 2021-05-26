@@ -25,14 +25,19 @@ final class GenerateManuscriptTest extends TestCase
 
     protected function tearDown(): void
     {
-        $commandOutput = $this->tester->getDisplay();
-
         $filesystem = new Filesystem();
 
-        // @TODO fragile solution, maybe register an optional listener or something
-        $result = preg_match_all("/created (.+)\n/", $commandOutput, $matches);
-        assert($result !== false);
-        $filesystem->remove(array_map(fn (string $file) => getcwd() . $file, $matches[1]));
+        $generatedFiles = [
+            __DIR__ . '/Project/manuscript-src/resources/rector/rector-output.diff',
+            __DIR__ . '/Project/manuscript-src/resources/tests/phpunit-output.txt',
+            __DIR__ . '/Project/manuscript-src/resources/vendor',
+        ];
+
+        $filesystem->remove($generatedFiles);
+
+        // Reset files for generated resources test
+        $filesystem->remove(__DIR__ . '/GeneratedResources/manuscript-src/resources/tests/phpunit-output.txt');
+        // Remove the entire generated manuscript dir
         $filesystem->remove($this->generatedManuscriptDir);
     }
 
@@ -49,6 +54,40 @@ final class GenerateManuscriptTest extends TestCase
         self::assertDirectoryContentsEquals(__DIR__ . '/Project/manuscript-expected', $this->generatedManuscriptDir);
 
         self::assertSame(0, $this->tester->getStatusCode());
+    }
+
+    public function testItGeneratesResourcesOnlyIfTheyNeedToBeRefreshed(): void
+    {
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->generatedManuscriptDir,
+                '--manuscript-src-dir' => __DIR__ . '/GeneratedResources/manuscript-src',
+            ]
+        );
+
+        // First time: phpunit-output.txt will be generated
+        self::assertStringContainsString('generated tests/phpunit-output.txt', $this->tester->getDisplay());
+
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->generatedManuscriptDir,
+                '--manuscript-src-dir' => __DIR__ . '/GeneratedResources/manuscript-src',
+            ]
+        );
+
+        // Second time it won't
+        self::assertStringNotContainsString('generated tests/phpunit-output.txt', $this->tester->getDisplay());
+
+        // Third time: the generated output is older than the folder it's in, so the test output will be generated again
+        touch(__DIR__ . '/GeneratedResources/manuscript-src/resources/tests/phpunit-output.txt', time() - 1000);
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->generatedManuscriptDir,
+                '--manuscript-src-dir' => __DIR__ . '/GeneratedResources/manuscript-src',
+            ]
+        );
+
+        self::assertStringContainsString('generated tests/phpunit-output.txt', $this->tester->getDisplay());
     }
 
     public function testItFailsWhenUsingDryRunAndFilesWereModified(): void

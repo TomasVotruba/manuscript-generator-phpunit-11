@@ -6,6 +6,7 @@ namespace BookTools\Cli;
 
 use BookTools\FileOperations\FileWasCreated;
 use BookTools\FileOperations\FileWasModified;
+use BookTools\ResourceLoader\GeneratedResources\ResourceWasGenerated;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symplify\ConsoleColorDiff\Console\Output\ConsoleDiffer;
@@ -31,7 +32,13 @@ final class ResultPrinter implements EventSubscriberInterface
         return [
             FileWasCreated::class => ['whenFileWasCreated'],
             FileWasModified::class => ['whenFileWasModified'],
+            ResourceWasGenerated::class => ['whenResourceWasGenerated'],
         ];
+    }
+
+    public function whenResourceWasGenerated(ResourceWasGenerated $event): void
+    {
+        $this->output->writeln(sprintf('<comment>generated</comment> %s', $event->link()));
     }
 
     public function whenFileWasCreated(FileWasCreated $event): void

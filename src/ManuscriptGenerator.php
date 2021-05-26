@@ -23,7 +23,12 @@ final class ManuscriptGenerator
             'book.md' => 'Book.txt',
             'subset.md' => 'Subset.txt',
         ] as $srcFileName => $targetFileName) {
-            $srcFilePath = new SmartFileInfo($this->configuration->manuscriptSrcDir() . '/' . $srcFileName);
+            $srcFilePath = $this->configuration->manuscriptSrcDir() . '/' . $srcFileName;
+            if (! is_file($srcFilePath)) {
+                continue;
+            }
+
+            $srcFilePath = new SmartFileInfo($srcFilePath);
 
             $processedContents = $this->markuaProcessor->process($srcFilePath, $srcFilePath->getContents());
 

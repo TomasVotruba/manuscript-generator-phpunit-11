@@ -15,6 +15,7 @@ use BookTools\Markua\Processor\Headlines\HeadlineCapitalizer;
 use BookTools\Markua\Processor\InlineIncludedMarkdownFilesNodeVisitor;
 use BookTools\Markua\Processor\InlineIncludedResourcesNodeVisitor;
 use BookTools\Markua\Processor\ProcessInlineResourcesNodeVisitor;
+use BookTools\ResourceLoader\CachedResourceLoader;
 use BookTools\ResourceLoader\DelegatingResourceLoader;
 use BookTools\ResourceLoader\FileResourceLoader;
 use BookTools\ResourceLoader\PHPUnit\PhpUnitOutputResourceLoader;
@@ -113,7 +114,10 @@ final class DevelopmentServiceContainer
         return new DelegatingResourceLoader(
             [
                 new VendorResourceLoader($this->fileOperations()),
-                new PhpUnitOutputResourceLoader($this->fileOperations()),
+                new CachedResourceLoader(
+                    new PhpUnitOutputResourceLoader($this->fileOperations(), $this->eventDispatcher()),
+                    new FileResourceLoader()
+                ),
                 new RectorOutputResourceLoader($this->fileOperations()),
                 new FileResourceLoader(),
             ]
