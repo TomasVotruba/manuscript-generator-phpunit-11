@@ -80,13 +80,15 @@ final class NodeTraverserTest extends TestCase
     {
         $traverser = new NodeTraverser(
             [new class() implements NodeVisitor {
-                public function enterNode(Node $node): Node
+                public function enterNode(Node $node): ?Node
                 {
-                    if ($node instanceof Attribute && $node->value === 'foo') {
-                        return new Attribute('id', 'bar');
+                    if (! $node instanceof Attribute) {
+                        return null;
                     }
-
-                    return $node;
+                    if ($node->value !== 'foo') {
+                        return null;
+                    }
+                    return new Attribute('id', 'bar');
                 }
             }]
         );

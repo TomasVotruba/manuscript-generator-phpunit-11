@@ -7,6 +7,7 @@ namespace BookTools\Test\Markua\Printer;
 use BookTools\Markua\Parser\SimpleMarkuaParser;
 use BookTools\Markua\Printer\MarkuaPrinter;
 use Generator;
+use Iterator;
 use PHPUnit\Framework\TestCase;
 
 final class MarkuaPrinterTest extends TestCase
@@ -28,7 +29,7 @@ final class MarkuaPrinterTest extends TestCase
     /**
      * @return Generator<array<string>>
      */
-    public function markuaProvider(): Generator
+    public function markuaProvider(): Iterator
     {
         yield [<<<CODE_SAMPLE
 {frontmatter}

@@ -68,12 +68,15 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
 
         $container->manuscriptGenerator()
             ->generateManuscript();
-
-        if ($dryRun && $this->filesystemWasTouched) {
+        if (! $dryRun) {
             // --dry-run will fail CI if the filesystem was touched
-            return 1;
+            return 0;
         }
-
-        return 0;
+        if (! $this->filesystemWasTouched) {
+            // --dry-run will fail CI if the filesystem was touched
+            return 0;
+        }
+        // --dry-run will fail CI if the filesystem was touched
+        return 1;
     }
 }

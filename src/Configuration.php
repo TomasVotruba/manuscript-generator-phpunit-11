@@ -6,24 +6,12 @@ namespace BookTools;
 
 final class Configuration
 {
-    private string $manuscriptSrcDir;
-
-    private string $manuscriptTargetDir;
-
-    private bool $capitalizeHeadlines;
-
-    private bool $readOnlyFilesystem;
-
     public function __construct(
-        string $manuscriptSrcDir,
-        string $manuscriptTargetDir,
-        bool $capitalizeHeadlines = false,
-        bool $readOnlyFilesystem = false
+        private string $manuscriptSrcDir,
+        private string $manuscriptTargetDir,
+        private bool $capitalizeHeadlines = false,
+        private bool $readOnlyFilesystem = false
     ) {
-        $this->manuscriptSrcDir = $manuscriptSrcDir;
-        $this->manuscriptTargetDir = $manuscriptTargetDir;
-        $this->capitalizeHeadlines = $capitalizeHeadlines;
-        $this->readOnlyFilesystem = $readOnlyFilesystem;
     }
 
     public function manuscriptSrcDir(): string

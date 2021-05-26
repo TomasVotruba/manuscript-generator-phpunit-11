@@ -26,20 +26,17 @@ use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symplify\ConsoleColorDiff\Console\Formatter\ColorConsoleDiffFormatter;
 use Symplify\ConsoleColorDiff\Console\Output\ConsoleDiffer;
 
 final class DevelopmentServiceContainer
 {
-    private Configuration $configuration;
-
     private ?EventDispatcher $eventDispatcher = null;
 
-    public function __construct(Configuration $configuration)
-    {
-        $this->configuration = $configuration;
+    public function __construct(
+        private Configuration $configuration
+    ) {
     }
 
     public function manuscriptGenerator(): ManuscriptGenerator
@@ -81,7 +78,7 @@ final class DevelopmentServiceContainer
             ->addSubscriber($eventSubscriber);
     }
 
-    private function eventDispatcher(): EventDispatcherInterface
+    private function eventDispatcher(): EventDispatcher
     {
         if ($this->eventDispatcher === null) {
             $this->eventDispatcher = new EventDispatcher();

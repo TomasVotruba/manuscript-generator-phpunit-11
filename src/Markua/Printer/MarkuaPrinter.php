@@ -70,7 +70,7 @@ final class MarkuaPrinter
             }
             $result->appendToBlock('```' . $node->format . "\n" . $contents . '```');
         } else {
-            throw new LogicException('Unknown node type: ' . get_class($node));
+            throw new LogicException('Unknown node type: ' . $node::class);
         }
     }
 

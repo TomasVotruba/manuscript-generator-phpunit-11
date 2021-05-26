@@ -4,4 +4,5 @@ set -eu
 
 docker-compose run --rm php php vendor/bin/phpstan analyze --ansi
 docker-compose run --rm php php vendor/bin/phpunit --color
+docker-compose run --rm php php vendor/bin/rector --ansi
 docker-compose run --rm php php vendor/bin/ecs check --fix --ansi

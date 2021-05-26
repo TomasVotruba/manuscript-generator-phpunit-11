@@ -21,6 +21,10 @@ jobs:
                         run: vendor/bin/phpunit
 
                     -
+                        name: "Rector"
+                        run: vendor/bin/rector --ansi
+
+                    -
                         name: "Coding Standards"
                         run: vendor/bin/ecs check --ansi
 
