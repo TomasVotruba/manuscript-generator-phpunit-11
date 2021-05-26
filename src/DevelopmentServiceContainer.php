@@ -67,7 +67,8 @@ final class DevelopmentServiceContainer
                 ],
                 $this->markuaParser(),
                 new MarkuaPrinter()
-            )
+            ),
+            $this->eventDispatcher()
         );
     }
 

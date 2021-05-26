@@ -6,6 +6,7 @@ namespace BookTools;
 
 use BookTools\FileOperations\FileOperations;
 use BookTools\Markua\Processor\MarkuaProcessor;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class ManuscriptGenerator
@@ -13,7 +14,8 @@ final class ManuscriptGenerator
     public function __construct(
         private Configuration $configuration,
         private FileOperations $fileOperations,
-        private MarkuaProcessor $markuaProcessor
+        private MarkuaProcessor $markuaProcessor,
+        private EventDispatcherInterface $eventDispatcher
     ) {
     }
 
@@ -39,5 +41,7 @@ final class ManuscriptGenerator
             $txtFileContents = $srcFileName . "\n";
             $this->fileOperations->putContents($targetTxtFilePathname, $txtFileContents);
         }
+
+        $this->eventDispatcher->dispatch(new ManuscriptWasGenerated($this->configuration->manuscriptTargetDir()));
     }
 }

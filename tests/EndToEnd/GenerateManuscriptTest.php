@@ -79,7 +79,9 @@ final class GenerateManuscriptTest extends TestCase
         self::assertStringNotContainsString('generated tests/phpunit-output.txt', $this->tester->getDisplay());
 
         // Third time: the generated output is older than the folder it's in, so the test output will be generated again
-        touch(__DIR__ . '/GeneratedResources/manuscript-src/resources/tests/phpunit-output.txt', time() - 1000);
+        $generatedPathFile = __DIR__ . '/GeneratedResources/manuscript-src/resources/tests/phpunit-output.txt';
+        touch($generatedPathFile, (int) filemtime($generatedPathFile) - 1000);
+
         $this->tester->execute(
             [
                 '--manuscript-dir' => $this->generatedManuscriptDir,
