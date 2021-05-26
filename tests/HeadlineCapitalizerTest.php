@@ -22,8 +22,10 @@ final class HeadlineCapitalizerTest extends TestCase
      */
     public function test(string $inputContent, string $expectedCapitalizedContent): void
     {
-        $capitilizedContent = $this->headlineCapitalizer->capitalizeHeadlines($inputContent);
-        $this->assertSame($expectedCapitalizedContent, $capitilizedContent);
+        $this->assertSame(
+            $expectedCapitalizedContent,
+            $this->headlineCapitalizer->capitalizeHeadline($inputContent)
+        );
     }
 
     /**
@@ -31,24 +33,9 @@ final class HeadlineCapitalizerTest extends TestCase
      */
     public function provideData(): Iterator
     {
-        yield ['# hi', '# Hi'];
-        yield ['# put bug in the me', '# Put Bug in the Me'];
-        yield [
-            <<<'CODE_SAMPLE'
-# hello
-
-```
-## skip me, I am code
-```
-CODE_SAMPLE
-            ,
-            <<<'CODE_SAMPLE'
-# Hello
-
-```
-## skip me, I am code
-```
-CODE_SAMPLE
-        ];
+        yield ['hi', 'Hi'];
+        yield ['put bug in the me', 'Put Bug in the Me'];
+        yield ['hello', 'Hello'];
+        yield ['About some method()', 'About Some method()'];
     }
 }

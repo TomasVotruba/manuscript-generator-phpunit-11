@@ -6,45 +6,14 @@ namespace BookTools\Markua\Processor\Headlines;
 
 use Nette\Utils\Strings;
 
-/**
- * @see \BookTools\Test\HeadlineCapitalizerTest
- */
 final class HeadlineCapitalizer
 {
-    /**
-     * @see https://regex101.com/r/0I1FPP/1
-     * @var string
-     */
-    private const MARKDOWN_HEADLINE_REGEX = '#^(?<prefix>\#{1,}\s+)(?<headline>.*?)$#ms';
-
     /**
      * @var string[]
      */
     private const LOWERCASE_EXCEPTIONS = [
         'and', 'or', 'of', 'from', 'to', 'in', 'is', 'a', 'an', 'the', 'not', 'at', 'with', 'it', 'as', 'but', 'for', 'on', 'nor', 'until', 'if', 'unless', 'its',
     ];
-
-    public function capitalizeHeadlines(string $fileContent): string
-    {
-        // skip comments in code snippets
-        $codeSnippetMatches = Strings::matchAll($fileContent, '#^```(?<code>.*?)```$#ms');
-
-        return Strings::replace($fileContent, self::MARKDOWN_HEADLINE_REGEX, function (
-            array $match
-        ) use ($codeSnippetMatches) {
-            $headline = $match['headline'];
-            foreach ($codeSnippetMatches as $codeSnippetMatch) {
-                if (Strings::contains($codeSnippetMatch['code'], $headline)) {
-                    // return original content
-                    return $match[0];
-                }
-            }
-
-            $newHeadline = $this->capitalizeHeadline($headline);
-
-            return $match['prefix'] . $newHeadline;
-        });
-    }
 
     public function capitalizeHeadline(string $headline): string
     {
