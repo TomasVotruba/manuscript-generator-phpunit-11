@@ -18,10 +18,13 @@ use BookTools\Markua\Processor\ProcessInlineResourcesNodeVisitor;
 use BookTools\ResourceLoader\DelegatingResourceLoader;
 use BookTools\ResourceLoader\FileResourceLoader;
 use BookTools\ResourceLoader\PHPUnit\PhpUnitOutputResourceLoader;
+use BookTools\ResourceLoader\RectorOutputResourceLoader;
 use BookTools\ResourceLoader\VendorResourceLoader;
 use BookTools\ResourcePreProcessor\ApplyCropAttributesPreProcessor;
 use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
+use BookTools\ResourcePreProcessor\InsignificantWhitespaceStripper;
 use BookTools\ResourcePreProcessor\RemoveSuperfluousIndentationResourcePreProcessor;
+use BookTools\ResourcePreProcessor\StripWhitespacesAtEndOfLineProcessor;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -53,6 +56,7 @@ final class DevelopmentServiceContainer
                             new CropResourcePreProcessor(),
                             new ApplyCropAttributesPreProcessor(),
                             new RemoveSuperfluousIndentationResourcePreProcessor(),
+                            new StripWhitespacesAtEndOfLineProcessor(new InsignificantWhitespaceStripper()),
                         ]
                     ),
                     new CapitalizeHeadlinesNodeVisitor(
@@ -110,6 +114,7 @@ final class DevelopmentServiceContainer
             [
                 new VendorResourceLoader($this->fileOperations()),
                 new PhpUnitOutputResourceLoader($this->fileOperations()),
+                new RectorOutputResourceLoader($this->fileOperations()),
                 new FileResourceLoader(),
             ]
         );

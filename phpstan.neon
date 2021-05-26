@@ -4,5 +4,7 @@ parameters:
         - src
         - tests
     tmpDir: %currentWorkingDirectory%/cache/phpstan
+    excludes_analyse:
+        - tests/EndToEnd/Project/manuscript-src/resources/
 includes:
     - phpstan-baseline.neon

@@ -11,3 +11,6 @@
 ![](tests/phpunit-output.txt)
 
 ![`EventDispatcherInterface`](vendor/symfony/event-dispatcher-contracts/EventDispatcherInterface.php)
+
+{crop-start: 3}
+![](rector/rector-output.diff)

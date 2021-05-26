@@ -28,6 +28,7 @@ final class GenerateManuscriptTest extends TestCase
         $generatedFiles = [
             $this->manuscriptSrcDir . '/resources/tests/phpunit-output.txt',
             $this->manuscriptSrcDir . '/resources/vendor/symfony/event-dispatcher-contracts/EventDispatcherInterface.php',
+            $this->manuscriptSrcDir . '/resources/rector/rector-output.diff',
         ];
         foreach ($generatedFiles as $file) {
             if (is_file($file)) {
