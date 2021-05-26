@@ -13,62 +13,61 @@ use Symfony\Component\Finder\SplFileInfo;
 
 final class GenerateManuscriptTest extends TestCase
 {
-    private string $manuscriptDir;
-
-    private string $manuscriptSrcDir;
-
-    private ?string $commandOutput = null;
-
-    protected function setUp(): void
-    {
-        $this->manuscriptSrcDir = __DIR__ . '/Project/manuscript-src';
-        $this->manuscriptDir = sys_get_temp_dir() . '/' . uniqid('manuscript');
-    }
-
-    protected function tearDown(): void
-    {
-        if ($this->commandOutput === null) {
-            return;
-        }
-
-        $filesystem = new Filesystem();
-
-        $result = preg_match_all("/created (.+)\n/", $this->commandOutput, $matches);
-        assert($result !== false);
-        $filesystem->remove(array_map(fn (string $file) => getcwd() . $file, $matches[1]));
-        $filesystem->remove($this->manuscriptDir);
-    }
-
     public function testItGeneratesTheManuscriptFolderBasedOnFilesReferencedInBookMdAndSubsetMd(): void
     {
-        $tester = new CommandTester(new GenerateManuscriptCommand());
-        $tester->execute(
-            [
-                '--manuscript-dir' => $this->manuscriptDir,
-                '--manuscript-src-dir' => $this->manuscriptSrcDir,
-                '--capitalize-headlines' => true,
-            ]
+        $generatedManuscriptDir = $this->randomGeneratedManuscriptDir();
+        $tester = $this->generateManuscript(
+            __DIR__ . '/Project/manuscript-src',
+            $generatedManuscriptDir,
+            __DIR__ . '/Project/manuscript-expected'
         );
 
-        self::assertDirectoryContentsEquals(__DIR__ . '/Project/manuscript-expected', $this->manuscriptDir);
+        $this->cleanUp($tester, $generatedManuscriptDir);
 
         self::assertSame(0, $tester->getStatusCode());
-
-        $this->commandOutput = $tester->getDisplay();
     }
 
     public function testItFailsWhenUsingDryRunAndFilesWereModified(): void
     {
         $tester = new CommandTester(new GenerateManuscriptCommand());
+        $generatedManuscriptDir = $this->randomGeneratedManuscriptDir();
+
         $tester->execute(
             [
-                '--manuscript-dir' => $this->manuscriptDir,
-                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+                '--manuscript-dir' => $generatedManuscriptDir,
+                '--manuscript-src-dir' => __DIR__ . '/Project/manuscript-src',
                 '--dry-run' => true,
             ]
         );
 
+        $this->cleanUp($tester, $generatedManuscriptDir);
+
         self::assertSame(1, $tester->getStatusCode());
+    }
+
+    protected function randomGeneratedManuscriptDir(): string
+    {
+        return sys_get_temp_dir() . '/' . uniqid('manuscript');
+    }
+
+    private function generateManuscript(
+        string $manuscriptSrcDir,
+        string $manuscriptTargetDir,
+        string $expectedManuscriptDir
+    ): CommandTester
+    {
+        $tester = new CommandTester(new GenerateManuscriptCommand());
+        $tester->execute(
+            [
+                '--manuscript-dir' => $manuscriptTargetDir,
+                '--manuscript-src-dir' => $manuscriptSrcDir,
+                '--capitalize-headlines' => true,
+            ]
+        );
+
+        self::assertDirectoryContentsEquals($expectedManuscriptDir, $manuscriptTargetDir);
+
+        return $tester;
     }
 
     private static function assertDirectoryContentsEquals(string $expectedDir, string $actualDir): void
@@ -92,5 +91,18 @@ final class GenerateManuscriptTest extends TestCase
                 sprintf('File "%s" does not contain the expected contents.', $expectedFile->getRelativePathname())
             );
         }
+    }
+
+    private function cleanUp(CommandTester $tester, string $generatedManuscriptDir): void
+    {
+        $commandOutput = $tester->getDisplay();
+
+        $filesystem = new Filesystem();
+
+        // @TODO fragile solution, maybe register an optional listener or something
+        $result = preg_match_all("/created (.+)\n/", $commandOutput, $matches);
+        assert($result !== false);
+        $filesystem->remove(array_map(fn (string $file) => getcwd() . $file, $matches[1]));
+        $filesystem->remove($generatedManuscriptDir);
     }
 }
