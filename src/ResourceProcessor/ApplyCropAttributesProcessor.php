@@ -12,13 +12,13 @@ use BookTools\ResourceLoader\LoadedResource;
  */
 final class ApplyCropAttributesProcessor implements ResourceProcessor
 {
-    public function process(LoadedResource $includedResource, AttributeList $resourceAttributes): LoadedResource
+    public function process(LoadedResource $includedResource, AttributeList $resourceAttributes): void
     {
         $cropStart = $resourceAttributes->get('crop-start');
         $cropEnd = $resourceAttributes->get('crop-end');
 
         if ($cropStart === null && $cropEnd === null) {
-            return $includedResource;
+            return;
         }
 
         $croppedContent = $this->selectLines(
@@ -30,7 +30,7 @@ final class ApplyCropAttributesProcessor implements ResourceProcessor
         $resourceAttributes->remove('crop-start');
         $resourceAttributes->remove('crop-end');
 
-        return $includedResource->withContents($croppedContent);
+        $includedResource->setContents($croppedContent);
     }
 
     public static function selectLines(string $contents, ?int $firstLineIncluded, ?int $lastLineIncluded): string

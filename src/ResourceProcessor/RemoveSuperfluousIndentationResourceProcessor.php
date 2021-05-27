@@ -13,14 +13,14 @@ use BookTools\Test\RemoveSuperfluousIndentationResourceProcessorTest;
  */
 final class RemoveSuperfluousIndentationResourceProcessor implements ResourceProcessor
 {
-    public function process(LoadedResource $includedResource, AttributeList $resourceAttributes): LoadedResource
+    public function process(LoadedResource $includedResource, AttributeList $resourceAttributes): void
     {
         $fileContents = $this->trim($includedResource->contents());
 
         $result = preg_match_all('/(^|\n)([ ]*).+/', $fileContents, $matches);
         if ($result === 0) {
             // The file has no indentation at all
-            return $includedResource;
+            return;
         }
 
         $indentationLevels = array_map(fn (string $indentation) => strlen($indentation), $matches[2]);
@@ -35,14 +35,14 @@ final class RemoveSuperfluousIndentationResourceProcessor implements ResourcePro
         );
 
         if ($minimumLevel === 0) {
-            return $includedResource;
+            return;
         }
 
         $fileContents = preg_replace('/(^|\n)([ ]{' . $minimumLevel . '})/', '$1', $fileContents);
 
         assert(is_string($fileContents));
 
-        return $includedResource->withContents($fileContents);
+        $includedResource->setContents($fileContents);
     }
 
     private function trim(string $fileContents): string

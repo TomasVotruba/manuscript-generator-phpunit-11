@@ -20,29 +20,28 @@ final class CropResourcePreProcessorTest extends TestCase
 
     public function testItRemovesThePartStartingWithCropEnd(): void
     {
-        $result = $this->processor->process(
-            $this->resourceWithContents("\$code;\n// crop-end\n// this will be removed\n"),
-            $this->attributes()
-        );
+        $resource = $this->resourceWithContents("\$code;\n// crop-end\n// this will be removed\n");
+        $this->processor->process($resource, $this->attributes());
 
-        self::assertSame("\$code;\n", $result->contents());
+        self::assertSame("\$code;\n", $resource->contents());
     }
 
     public function testItRemovesThePartEndingWithCropStart(): void
     {
-        $result = $this->processor->process(
-            $this->resourceWithContents("// this will be removed\n// crop-start\n\$code;\n"),
-            $this->attributes()
-        );
+        $resource = $this->resourceWithContents("// this will be removed\n// crop-start\n\$code;\n");
 
-        self::assertSame("\$code;\n", $result->contents());
+        $this->processor->process($resource, $this->attributes());
+
+        self::assertSame("\$code;\n", $resource->contents());
     }
 
     public function testItLeavesTheCodeAsIsIfThereAreNoMarkers(): void
     {
-        $result = $this->processor->process($this->resourceWithContents("\$code\n"), $this->attributes());
+        $resource = $this->resourceWithContents("\$code\n");
 
-        self::assertSame("\$code\n", $result->contents());
+        $this->processor->process($resource, $this->attributes());
+
+        self::assertSame("\$code\n", $resource->contents());
     }
 
     private function resourceWithContents(string $contents): LoadedResource

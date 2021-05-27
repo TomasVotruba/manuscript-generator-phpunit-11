@@ -48,7 +48,6 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
         $dryRun = $input->getOption('dry-run');
         assert(is_bool($dryRun));
 
-        // @TODO use a factory
         $manuscriptSrcDir = $input->getOption('manuscript-src-dir');
         assert(is_string($manuscriptSrcDir));
 

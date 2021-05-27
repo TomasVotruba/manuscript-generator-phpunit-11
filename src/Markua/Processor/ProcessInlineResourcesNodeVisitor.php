@@ -29,7 +29,7 @@ final class ProcessInlineResourcesNodeVisitor implements NodeVisitor
         $processedResource = LoadedResource::createFromInlineResource($node);
 
         foreach ($this->resourceProcessors as $processor) {
-            $processedResource = $processor->process($processedResource, $node->attributes);
+            $processor->process($processedResource, $node->attributes);
         }
 
         $node->contents = $processedResource->contents();

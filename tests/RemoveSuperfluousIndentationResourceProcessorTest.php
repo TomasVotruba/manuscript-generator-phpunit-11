@@ -34,11 +34,10 @@ final class RemoveSuperfluousIndentationResourceProcessorTest extends TestCase
         }
         CODE_SAMPLE;
 
-        self::assertSame(
-            $expected,
-            $this->processor->process($this->resourceWithContents($code), $this->attributes())
-                ->contents()
-        );
+        $resource = $this->resourceWithContents($code);
+        $this->processor->process($resource, $this->attributes());
+
+        self::assertSame($expected, $resource->contents());
     }
 
     public function testItTrimsTheContentsBeforeRemovingSuperfluousIndentation(): void
@@ -59,11 +58,10 @@ final class RemoveSuperfluousIndentationResourceProcessorTest extends TestCase
         }
         CODE_SAMPLE;
 
-        self::assertSame(
-            $expected,
-            $this->processor->process($this->resourceWithContents($code), $this->attributes())
-                ->contents()
-        );
+        $resource = $this->resourceWithContents($code);
+        $this->processor->process($resource, $this->attributes());
+
+        self::assertSame($expected, $resource->contents());
     }
 
     public function testItIgnoresLinesWithNoIndentation(): void
@@ -86,11 +84,10 @@ final class RemoveSuperfluousIndentationResourceProcessorTest extends TestCase
         }
         CODE_SAMPLE;
 
-        self::assertSame(
-            $expected,
-            $this->processor->process($this->resourceWithContents($code), $this->attributes())
-                ->contents()
-        );
+        $resource = $this->resourceWithContents($code);
+        $this->processor->process($resource, $this->attributes());
+
+        self::assertSame($expected, $resource->contents());
     }
 
     public function testSkipIfNoSuperfluousIndentation(): void
@@ -102,11 +99,10 @@ final class RemoveSuperfluousIndentationResourceProcessorTest extends TestCase
         }
         CODE_SAMPLE;
 
-        self::assertSame(
-            $code,
-            $this->processor->process($this->resourceWithContents($code), $this->attributes())
-                ->contents()
-        );
+        $resource = $this->resourceWithContents($code);
+        $this->processor->process($resource, $this->attributes());
+
+        self::assertSame($code, $resource->contents());
     }
 
     private function resourceWithContents(string $contents): LoadedResource

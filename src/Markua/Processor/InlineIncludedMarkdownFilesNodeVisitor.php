@@ -37,8 +37,7 @@ final class InlineIncludedMarkdownFilesNodeVisitor implements NodeVisitor
         $includedFromFile = $node->getAttribute('file');
         assert($includedFromFile instanceof SmartFileInfo);
 
-        // @TODO allow returning an array of nodes
-        // @TODO this causes an additional newline
+        // @TODO allow returning an array of nodes, the way it works now it causes an additional newline
         return $this->markuaParser->parseDocument($this->resourceLoader->load($node) ->contents());
     }
 }

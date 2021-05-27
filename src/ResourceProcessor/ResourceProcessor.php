@@ -9,8 +9,5 @@ use BookTools\ResourceLoader\LoadedResource;
 
 interface ResourceProcessor
 {
-    /**
-     * @TODO merge arguments
-     */
-    public function process(LoadedResource $includedResource, AttributeList $resourceAttributes): LoadedResource;
+    public function process(LoadedResource $includedResource, AttributeList $resourceAttributes): void;
 }

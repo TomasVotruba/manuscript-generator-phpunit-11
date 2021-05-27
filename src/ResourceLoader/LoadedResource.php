@@ -29,9 +29,9 @@ final class LoadedResource
         return $this->contents;
     }
 
-    public function withContents(string $newContents): self
+    public function setContents(string $newContents): void
     {
-        return new self($this->format, $newContents);
+        $this->contents = $newContents;
     }
 
     public static function createFromPathAndContents(string $pathname, string $contents): self
