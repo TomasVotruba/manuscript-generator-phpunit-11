@@ -4,8 +4,15 @@ declare(strict_types=1);
 
 namespace BookTools;
 
+use BookTools\ResourceLoader\GeneratedResources\ResourceGenerator;
+
 final class BookProjectConfiguration
 {
+    /**
+     * @var array<ResourceGenerator>
+     */
+    private array $resourceGenerators = [];
+
     public function __construct(
         private string $manuscriptSrcDir = 'manuscript-src',
         private string $manuscriptTargetDir = 'manuscript',
@@ -46,5 +53,18 @@ final class BookProjectConfiguration
     public function setCapitalizeHeadings(bool $capitalizeHeadlines): void
     {
         $this->capitalizeHeadlines = $capitalizeHeadlines;
+    }
+
+    public function addResourceGenerator(ResourceGenerator $resourceGenerator): void
+    {
+        $this->resourceGenerators[] = $resourceGenerator;
+    }
+
+    /**
+     * @return array<ResourceGenerator>
+     */
+    public function resourceGenerators(): array
+    {
+        return $this->resourceGenerators;
     }
 }

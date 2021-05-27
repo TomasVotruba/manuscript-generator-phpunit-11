@@ -41,6 +41,7 @@ final class GenerateManuscriptTest extends TestCase
                 __DIR__ . '/GeneratedResources/manuscript-src/resources/tests/phpunit-output.txt',
                 __DIR__ . '/GeneratedResources/manuscript-src/resources/tokens/hello_world.table_of_tokens.md',
                 __DIR__ . '/GeneratedResources/manuscript-src/resources/php_script/script.php_script_output.txt',
+                __DIR__ . '/GeneratedResources/manuscript-src/resources/example.buffered-output.txt',
             ]
         );
         // Remove the entire generated manuscript dir
@@ -68,6 +69,7 @@ final class GenerateManuscriptTest extends TestCase
             [
                 '--manuscript-dir' => $this->generatedManuscriptDir,
                 '--manuscript-src-dir' => __DIR__ . '/GeneratedResources/manuscript-src',
+                '--config' => __DIR__ . '/GeneratedResources/manuscript-src/book.php',
             ]
         );
 
@@ -83,6 +85,7 @@ final class GenerateManuscriptTest extends TestCase
             [
                 '--manuscript-dir' => $this->generatedManuscriptDir,
                 '--manuscript-src-dir' => __DIR__ . '/GeneratedResources/manuscript-src',
+                '--config' => __DIR__ . '/GeneratedResources/manuscript-src/book.php',
             ]
         );
 

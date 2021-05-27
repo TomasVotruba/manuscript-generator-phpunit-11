@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace BookTools;
 
+use BookTools\ResourceLoader\GeneratedResources\ResourceGenerator;
+
 final class RuntimeConfiguration
 {
     public function __construct(
@@ -30,5 +32,13 @@ final class RuntimeConfiguration
     public function readOnlyFilesystem(): bool
     {
         return $this->readOnlyFilesystem;
+    }
+
+    /**
+     * @return array<ResourceGenerator>
+     */
+    public function additionalResourceGenerators(): array
+    {
+        return $this->bookProjectConfiguration->resourceGenerators();
     }
 }

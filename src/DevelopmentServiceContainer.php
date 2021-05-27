@@ -120,12 +120,15 @@ final class DevelopmentServiceContainer
                 new VendorResourceLoader($this->fileOperations()),
                 new CachedResourceLoader(
                     new GeneratedResourceLoader(
-                        [
-                            new PhpUnitResourceGenerator(),
-                            new RectorOutputResourceLoader(),
-                            new TableOfTokensResourceGenerator(),
-                            new PhpScriptOutputResourceGenerator(),
-                        ],
+                        array_merge(
+                            [
+                                new PhpUnitResourceGenerator(),
+                                new RectorOutputResourceLoader(),
+                                new TableOfTokensResourceGenerator(),
+                                new PhpScriptOutputResourceGenerator(),
+                            ],
+                            $this->configuration->additionalResourceGenerators()
+                        ),
                         $this->fileOperations()
                     ),
                     new FileResourceLoader(),

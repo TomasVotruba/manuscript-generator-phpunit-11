@@ -39,3 +39,8 @@ Tests: 1, Assertions: 1, Failures: 1.
 ```
 Hello, world!
 ```
+
+{format: txt}
+```
+Echo whatever you want based on /app/tests/EndToEnd/GeneratedResources/manuscript-src/resources/example.buffered-output.txt
+```

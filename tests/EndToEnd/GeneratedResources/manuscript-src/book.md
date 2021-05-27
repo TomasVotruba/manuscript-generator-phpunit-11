@@ -3,3 +3,5 @@
 ![](tokens/hello_world.table_of_tokens.md)
 
 ![](php_script/script.php_script_output.txt)
+
+![](example.buffered-output.txt)
