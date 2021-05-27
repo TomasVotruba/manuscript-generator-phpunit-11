@@ -56,6 +56,21 @@ final class GenerateManuscriptTest extends TestCase
         self::assertSame(0, $this->tester->getStatusCode());
     }
 
+    public function testItGeneratesResources(): void
+    {
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->generatedManuscriptDir,
+                '--manuscript-src-dir' => __DIR__ . '/GeneratedResources/manuscript-src',
+            ]
+        );
+
+        self::assertDirectoryContentsEquals(
+            __DIR__ . '/GeneratedResources/manuscript-expected',
+            $this->generatedManuscriptDir
+        );
+    }
+
     public function testItGeneratesResourcesOnlyIfTheyNeedToBeRefreshed(): void
     {
         $this->tester->execute(

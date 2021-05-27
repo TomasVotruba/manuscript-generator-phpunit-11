@@ -21,6 +21,7 @@ use BookTools\ResourceLoader\GeneratedResources\CachedResourceLoader;
 use BookTools\ResourceLoader\GeneratedResources\GeneratedResourceLoader;
 use BookTools\ResourceLoader\GeneratedResources\PHPUnit\PhpUnitResourceGenerator;
 use BookTools\ResourceLoader\GeneratedResources\RectorOutputResourceLoader;
+use BookTools\ResourceLoader\GeneratedResources\TableOfTokensResourceGenerator;
 use BookTools\ResourceLoader\GeneratedResources\VendorResourceLoader;
 use BookTools\ResourceProcessor\ApplyCropAttributesProcessor;
 use BookTools\ResourceProcessor\CropResourceProcessor;
@@ -118,7 +119,11 @@ final class DevelopmentServiceContainer
                 new VendorResourceLoader($this->fileOperations()),
                 new CachedResourceLoader(
                     new GeneratedResourceLoader(
-                        [new PhpUnitResourceGenerator(), new RectorOutputResourceLoader()],
+                        [
+                            new PhpUnitResourceGenerator(),
+                            new RectorOutputResourceLoader(),
+                            new TableOfTokensResourceGenerator(),
+                        ],
                         $this->fileOperations()
                     ),
                     new FileResourceLoader(),
