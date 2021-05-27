@@ -72,7 +72,12 @@ final class ResultPrinter implements EventSubscriberInterface
         $this->output->writeln(sprintf('<info>done</info> %s', $this->relativePathname($event->manuscriptDir())));
         $this->output->writeln('');
         $this->output->writeln(
-            sprintf('Generated: %d, Created: %d, Updated: %d', $this->countResourcesGenerated, $this->countFilesCreated, $this->countFilesUpdated)
+            sprintf(
+                'Generated: %d, Created: %d, Updated: %d',
+                $this->countResourcesGenerated,
+                $this->countFilesCreated,
+                $this->countFilesUpdated
+            )
         );
 
         $this->resetCounters();

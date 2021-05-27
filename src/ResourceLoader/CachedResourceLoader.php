@@ -31,7 +31,7 @@ final class CachedResourceLoader implements ResourceLoader
         foreach (
             [
                 dirname($filePath), // the directory that contains the file
-                // @TODO add vendor/ directory
+                getcwd() . '/vendor', // the vendor directory, since it may influence the generated output
             ]
             as $filePathToCheck
         ) {
