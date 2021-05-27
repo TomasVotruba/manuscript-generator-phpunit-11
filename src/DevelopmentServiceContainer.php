@@ -19,6 +19,7 @@ use BookTools\ResourceLoader\DelegatingResourceLoader;
 use BookTools\ResourceLoader\FileResourceLoader;
 use BookTools\ResourceLoader\GeneratedResources\CachedResourceLoader;
 use BookTools\ResourceLoader\GeneratedResources\GeneratedResourceLoader;
+use BookTools\ResourceLoader\GeneratedResources\PhpScriptOutputResourceGenerator;
 use BookTools\ResourceLoader\GeneratedResources\PHPUnit\PhpUnitResourceGenerator;
 use BookTools\ResourceLoader\GeneratedResources\RectorOutputResourceLoader;
 use BookTools\ResourceLoader\GeneratedResources\TableOfTokensResourceGenerator;
@@ -123,6 +124,7 @@ final class DevelopmentServiceContainer
                             new PhpUnitResourceGenerator(),
                             new RectorOutputResourceLoader(),
                             new TableOfTokensResourceGenerator(),
+                            new PhpScriptOutputResourceGenerator(),
                         ],
                         $this->fileOperations()
                     ),

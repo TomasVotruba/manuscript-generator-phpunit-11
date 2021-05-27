@@ -36,7 +36,13 @@ final class GenerateManuscriptTest extends TestCase
         $filesystem->remove($generatedFiles);
 
         // Reset files for generated resources test
-        $filesystem->remove(__DIR__ . '/GeneratedResources/manuscript-src/resources/tests/phpunit-output.txt');
+        $filesystem->remove(
+            [
+                __DIR__ . '/GeneratedResources/manuscript-src/resources/tests/phpunit-output.txt',
+                __DIR__ . '/GeneratedResources/manuscript-src/resources/tokens/hello_world.table_of_tokens.md',
+                __DIR__ . '/GeneratedResources/manuscript-src/resources/php_script/script.php_script_output.txt',
+            ]
+        );
         // Remove the entire generated manuscript dir
         $filesystem->remove($this->generatedManuscriptDir);
     }
