@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BookTools\ResourceLoader\PHPUnit;
 
 use BookTools\FileOperations\FileOperations;
+use BookTools\Markua\Parser\Node\IncludedResource;
 use BookTools\ResourceLoader\CouldNotLoadFile;
 use BookTools\ResourceLoader\GeneratedResources\ResourceWasGenerated;
 use BookTools\ResourceLoader\LoadedResource;
@@ -12,7 +13,6 @@ use BookTools\ResourceLoader\ResourceLoader;
 use function str_ends_with;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\Process;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class PhpUnitOutputResourceLoader implements ResourceLoader
 {
@@ -22,21 +22,21 @@ final class PhpUnitOutputResourceLoader implements ResourceLoader
     ) {
     }
 
-    public function load(SmartFileInfo $includedFromFile, string $link): LoadedResource
+    public function load(IncludedResource $includedResource): LoadedResource
     {
-        if (! str_ends_with($link, 'phpunit-output.txt')) {
+        if (! str_ends_with($includedResource->link, 'phpunit-output.txt')) {
             throw CouldNotLoadFile::becauseResourceIsNotSupported();
         }
 
-        $expectedPath = $includedFromFile->getPath() . '/resources/' . $link;
+        $expectedPath = $includedResource->expectedFilePathname();
 
         $outputOfPhpUnitRun = $this->getOutputOfPhpUnitRun(dirname($expectedPath));
 
-        $this->eventDispatcher->dispatch(new ResourceWasGenerated($link));
+        $this->eventDispatcher->dispatch(new ResourceWasGenerated($includedResource->link));
 
         $this->fileOperations->putContents($expectedPath, $outputOfPhpUnitRun);
 
-        return LoadedResource::createFromPathAndContents($link, $outputOfPhpUnitRun);
+        return LoadedResource::createFromPathAndContents($includedResource->link, $outputOfPhpUnitRun);
     }
 
     private function getOutputOfPhpUnitRun(string $workingDir): string

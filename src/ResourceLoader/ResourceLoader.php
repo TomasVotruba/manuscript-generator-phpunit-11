@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace BookTools\ResourceLoader;
 
-use Symplify\SmartFileSystem\SmartFileInfo;
+use BookTools\Markua\Parser\Node\IncludedResource;
 
 interface ResourceLoader
 {
-    public function load(SmartFileInfo $includedFromFile, string $link): LoadedResource;
+    public function load(IncludedResource $includedResource): LoadedResource;
 }

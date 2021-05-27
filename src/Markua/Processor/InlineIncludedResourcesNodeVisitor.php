@@ -27,7 +27,7 @@ final class InlineIncludedResourcesNodeVisitor implements NodeVisitor
         $includedFromFile = $node->getAttribute('file');
         assert($includedFromFile instanceof SmartFileInfo);
 
-        $resource = $this->resourceLoader->load($includedFromFile, $node->link);
+        $resource = $this->resourceLoader->load($node);
 
         if (in_array($resource->format(), ['gif', 'jpeg', 'jpg', 'png', 'svg'], true)) {
             // Don't try to inline images

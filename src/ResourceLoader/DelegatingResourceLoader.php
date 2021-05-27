@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\ResourceLoader;
 
-use Symplify\SmartFileSystem\SmartFileInfo;
+use BookTools\Markua\Parser\Node\IncludedResource;
 
 final class DelegatingResourceLoader implements ResourceLoader
 {
@@ -16,13 +16,13 @@ final class DelegatingResourceLoader implements ResourceLoader
     ) {
     }
 
-    public function load(SmartFileInfo $includedFromFile, string $link): LoadedResource
+    public function load(IncludedResource $includedResource): LoadedResource
     {
         $lastException = null;
 
         foreach ($this->loaders as $loader) {
             try {
-                return $loader->load($includedFromFile, $link);
+                return $loader->load($includedResource);
             } catch (CouldNotLoadFile $exception) {
                 $lastException = CouldNotLoadFile::createFromPrevious($exception, $lastException);
             }
@@ -30,9 +30,10 @@ final class DelegatingResourceLoader implements ResourceLoader
 
         throw new CouldNotLoadFile(
             sprintf(
-                'None of the loaders was able to load this resource "%s" included by file "%s"',
-                $link,
-                $includedFromFile->getRelativePathname()
+                'None of the loaders was able to load included resource "%s" included by file "%s"',
+                $includedResource->link,
+                $includedResource->includedFromFile()
+                    ->getRelativePathname()
             ),
             0,
             $lastException

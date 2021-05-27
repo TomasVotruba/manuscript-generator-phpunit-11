@@ -39,9 +39,6 @@ final class InlineIncludedMarkdownFilesNodeVisitor implements NodeVisitor
 
         // @TODO allow returning an array of nodes
         // @TODO this causes an additional newline
-        return $this->markuaParser->parseDocument(
-            $this->resourceLoader->load($includedFromFile, $node->link)
-                ->contents()
-        );
+        return $this->markuaParser->parseDocument($this->resourceLoader->load($node) ->contents());
     }
 }

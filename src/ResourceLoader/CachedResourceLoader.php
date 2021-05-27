@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\ResourceLoader;
 
-use Symplify\SmartFileSystem\SmartFileInfo;
+use BookTools\Markua\Parser\Node\IncludedResource;
 
 final class CachedResourceLoader implements ResourceLoader
 {
@@ -14,14 +14,14 @@ final class CachedResourceLoader implements ResourceLoader
     ) {
     }
 
-    public function load(SmartFileInfo $includedFromFile, string $link): LoadedResource
+    public function load(IncludedResource $includedResource): LoadedResource
     {
-        $expectedFilePathname = $includedFromFile->getPath() . '/resources/' . $link;
+        $expectedFilePathname = $includedResource->expectedFilePathname();
         if (is_file($expectedFilePathname) && $this->stillFresh($expectedFilePathname)) {
-            return $this->fileLoader->load($includedFromFile, $link);
+            return $this->fileLoader->load($includedResource);
         }
 
-        return $this->realLoader->load($includedFromFile, $link);
+        return $this->realLoader->load($includedResource);
     }
 
     private function stillFresh(string $filePath): bool

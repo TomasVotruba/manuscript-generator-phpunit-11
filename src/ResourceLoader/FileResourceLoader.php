@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace BookTools\ResourceLoader;
 
-use Symplify\SmartFileSystem\SmartFileInfo;
+use BookTools\Markua\Parser\Node\IncludedResource;
 
 final class FileResourceLoader implements ResourceLoader
 {
-    public function load(SmartFileInfo $includedFromFile, string $link): LoadedResource
+    public function load(IncludedResource $includedResource): LoadedResource
     {
-        $expectedFilePathname = $includedFromFile->getPath() . '/resources/' . $link;
+        $expectedFilePathname = $includedResource->expectedFilePathname();
 
         if (! is_file($expectedFilePathname)) {
             throw new CouldNotLoadFile('File not found: ' . $expectedFilePathname);
@@ -19,6 +19,6 @@ final class FileResourceLoader implements ResourceLoader
         $contents = file_get_contents($expectedFilePathname);
         assert(is_string($contents));
 
-        return LoadedResource::createFromPathAndContents($link, $contents);
+        return LoadedResource::createFromPathAndContents($includedResource->link, $contents);
     }
 }
