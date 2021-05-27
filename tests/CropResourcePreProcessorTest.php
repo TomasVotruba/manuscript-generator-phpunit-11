@@ -6,16 +6,16 @@ namespace BookTools\Test;
 
 use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\ResourceLoader\LoadedResource;
-use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
+use BookTools\ResourceProcessor\CropResourceProcessor;
 use PHPUnit\Framework\TestCase;
 
 final class CropResourcePreProcessorTest extends TestCase
 {
-    private CropResourcePreProcessor $processor;
+    private CropResourceProcessor $processor;
 
     protected function setUp(): void
     {
-        $this->processor = new CropResourcePreProcessor();
+        $this->processor = new CropResourceProcessor();
     }
 
     public function testItRemovesThePartStartingWithCropEnd(): void

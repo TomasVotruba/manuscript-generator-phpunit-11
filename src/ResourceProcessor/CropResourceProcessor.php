@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourcePreProcessor;
+namespace BookTools\ResourceProcessor;
 
 use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\ResourceLoader\LoadedResource;
 
-final class CropResourcePreProcessor implements ResourcePreProcessor
+final class CropResourceProcessor implements ResourceProcessor
 {
     private const CROP_END_MARKER = '// crop-end';
 

@@ -6,16 +6,16 @@ namespace BookTools\Test;
 
 use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\ResourceLoader\LoadedResource;
-use BookTools\ResourcePreProcessor\RemoveSuperfluousIndentationResourcePreProcessor;
+use BookTools\ResourceProcessor\RemoveSuperfluousIndentationResourceProcessor;
 use PHPUnit\Framework\TestCase;
 
-final class RemoveSuperfluousIndentationResourcePreProcessorTest extends TestCase
+final class RemoveSuperfluousIndentationResourceProcessorTest extends TestCase
 {
-    private RemoveSuperfluousIndentationResourcePreProcessor $processor;
+    private RemoveSuperfluousIndentationResourceProcessor $processor;
 
     protected function setUp(): void
     {
-        $this->processor = new RemoveSuperfluousIndentationResourcePreProcessor();
+        $this->processor = new RemoveSuperfluousIndentationResourceProcessor();
     }
 
     public function testItRemovesSuperfluousIndentationOfPhpResources(): void

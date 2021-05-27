@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace BookTools\Test;
 
-use BookTools\ResourcePreProcessor\ApplyCropAttributesPreProcessor;
+use BookTools\ResourceProcessor\ApplyCropAttributesProcessor;
 use PHPUnit\Framework\TestCase;
 
-final class ApplyCropAttributesPreProcessorTest extends TestCase
+final class ApplyCropAttributesProcessorTest extends TestCase
 {
     public function testItAppliesCropStartAndEnd(): void
     {
@@ -18,7 +18,7 @@ Line 3
 Line 4
 CODE_SAMPLE;
 
-        self::assertSame($text, ApplyCropAttributesPreProcessor::selectLines($text, null, null));
+        self::assertSame($text, ApplyCropAttributesProcessor::selectLines($text, null, null));
 
         self::assertSame(
             <<<CODE_SAMPLE
@@ -27,14 +27,14 @@ Line 3
 Line 4
 CODE_SAMPLE
 ,
-            ApplyCropAttributesPreProcessor::selectLines($text, 2, null),
+            ApplyCropAttributesProcessor::selectLines($text, 2, null),
         );
 
         self::assertSame(<<<CODE_SAMPLE
 Line 2
 Line 3
 CODE_SAMPLE
-, ApplyCropAttributesPreProcessor::selectLines($text, 2, 3));
+, ApplyCropAttributesProcessor::selectLines($text, 2, 3));
 
         self::assertSame(
             <<<CODE_SAMPLE
@@ -43,7 +43,7 @@ Line 2
 Line 3
 CODE_SAMPLE
 ,
-            ApplyCropAttributesPreProcessor::selectLines($text, null, 3)
+            ApplyCropAttributesProcessor::selectLines($text, null, 3)
         );
         self::assertSame(
             <<<CODE_SAMPLE
@@ -53,7 +53,7 @@ Line 3
 Line 4
 CODE_SAMPLE
 ,
-            ApplyCropAttributesPreProcessor::selectLines($text, null, 5)
+            ApplyCropAttributesProcessor::selectLines($text, null, 5)
         );
     }
 }

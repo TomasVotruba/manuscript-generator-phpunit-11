@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourcePreProcessor;
+namespace BookTools\ResourceProcessor;
 
 use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\ResourceLoader\LoadedResource;
-use BookTools\Test\ApplyCropAttributesPreProcessorTest;
 
 /**
- * @see ApplyCropAttributesPreProcessorTest
+ * @see ApplyCropAttributesProcessorTest
  */
-final class ApplyCropAttributesPreProcessor implements ResourcePreProcessor
+final class ApplyCropAttributesProcessor implements ResourceProcessor
 {
     public function process(LoadedResource $includedResource, AttributeList $resourceAttributes): LoadedResource
     {

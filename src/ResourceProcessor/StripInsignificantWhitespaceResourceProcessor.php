@@ -2,18 +2,16 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourcePreProcessor;
+namespace BookTools\ResourceProcessor;
 
 use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\ResourceLoader\LoadedResource;
 
-final class StripWhitespacesAtEndOfLineProcessor implements ResourcePreProcessor
+final class StripInsignificantWhitespaceResourceProcessor implements ResourceProcessor
 {
-    private InsignificantWhitespaceStripper $stripper;
-
-    public function __construct(InsignificantWhitespaceStripper $stripper)
-    {
-        $this->stripper = $stripper;
+    public function __construct(
+        private InsignificantWhitespaceStripper $stripper
+    ) {
     }
 
     public function process(LoadedResource $includedResource, AttributeList $resourceAttributes): LoadedResource

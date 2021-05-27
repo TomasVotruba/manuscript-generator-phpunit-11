@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourcePreProcessor;
+namespace BookTools\ResourceProcessor;
 
 use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\ResourceLoader\LoadedResource;
-use BookTools\Test\RemoveSuperfluousIndentationResourcePreProcessorTest;
+use BookTools\Test\RemoveSuperfluousIndentationResourceProcessorTest;
 
 /**
- * @see RemoveSuperfluousIndentationResourcePreProcessorTest
+ * @see RemoveSuperfluousIndentationResourceProcessorTest
  */
-final class RemoveSuperfluousIndentationResourcePreProcessor implements ResourcePreProcessor
+final class RemoveSuperfluousIndentationResourceProcessor implements ResourceProcessor
 {
     public function process(LoadedResource $includedResource, AttributeList $resourceAttributes): LoadedResource
     {

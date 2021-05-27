@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BookTools\Test;
 
-use BookTools\ResourcePreProcessor\InsignificantWhitespaceStripper;
+use BookTools\ResourceProcessor\InsignificantWhitespaceStripper;
 use Generator;
 use Iterator;
 use PHPUnit\Framework\TestCase;

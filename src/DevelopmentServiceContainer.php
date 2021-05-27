@@ -21,11 +21,11 @@ use BookTools\ResourceLoader\FileResourceLoader;
 use BookTools\ResourceLoader\PHPUnit\PhpUnitOutputResourceLoader;
 use BookTools\ResourceLoader\RectorOutputResourceLoader;
 use BookTools\ResourceLoader\VendorResourceLoader;
-use BookTools\ResourcePreProcessor\ApplyCropAttributesPreProcessor;
-use BookTools\ResourcePreProcessor\CropResourcePreProcessor;
-use BookTools\ResourcePreProcessor\InsignificantWhitespaceStripper;
-use BookTools\ResourcePreProcessor\RemoveSuperfluousIndentationResourcePreProcessor;
-use BookTools\ResourcePreProcessor\StripWhitespacesAtEndOfLineProcessor;
+use BookTools\ResourceProcessor\ApplyCropAttributesProcessor;
+use BookTools\ResourceProcessor\CropResourceProcessor;
+use BookTools\ResourceProcessor\InsignificantWhitespaceStripper;
+use BookTools\ResourceProcessor\RemoveSuperfluousIndentationResourceProcessor;
+use BookTools\ResourceProcessor\StripInsignificantWhitespaceResourceProcessor;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,10 +54,10 @@ final class DevelopmentServiceContainer
                     new InlineIncludedResourcesNodeVisitor($this->resourceLoader(),),
                     new ProcessInlineResourcesNodeVisitor(
                         [
-                            new CropResourcePreProcessor(),
-                            new ApplyCropAttributesPreProcessor(),
-                            new RemoveSuperfluousIndentationResourcePreProcessor(),
-                            new StripWhitespacesAtEndOfLineProcessor(new InsignificantWhitespaceStripper()),
+                            new CropResourceProcessor(),
+                            new ApplyCropAttributesProcessor(),
+                            new RemoveSuperfluousIndentationResourceProcessor(),
+                            new StripInsignificantWhitespaceResourceProcessor(new InsignificantWhitespaceStripper()),
                         ]
                     ),
                     new CapitalizeHeadlinesNodeVisitor(

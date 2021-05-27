@@ -8,12 +8,12 @@ use BookTools\Markua\Parser\Node;
 use BookTools\Markua\Parser\Node\InlineResource;
 use BookTools\Markua\Parser\Visitor\NodeVisitor;
 use BookTools\ResourceLoader\LoadedResource;
-use BookTools\ResourcePreProcessor\ResourcePreProcessor;
+use BookTools\ResourceProcessor\ResourceProcessor;
 
 final class ProcessInlineResourcesNodeVisitor implements NodeVisitor
 {
     /**
-     * @param array<ResourcePreProcessor> $resourceProcessors
+     * @param array<ResourceProcessor> $resourceProcessors
      */
     public function __construct(
         private array $resourceProcessors

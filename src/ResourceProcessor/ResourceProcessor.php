@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourcePreProcessor;
+namespace BookTools\ResourceProcessor;
 
 use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\ResourceLoader\LoadedResource;
 
-interface ResourcePreProcessor
+interface ResourceProcessor
 {
     /**
      * @TODO merge arguments

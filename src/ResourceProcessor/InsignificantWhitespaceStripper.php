@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourcePreProcessor;
+namespace BookTools\ResourceProcessor;
 
 final class InsignificantWhitespaceStripper
 {
