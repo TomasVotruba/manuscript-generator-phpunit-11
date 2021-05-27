@@ -20,7 +20,7 @@ use BookTools\ResourceLoader\FileResourceLoader;
 use BookTools\ResourceLoader\GeneratedResources\CachedResourceLoader;
 use BookTools\ResourceLoader\GeneratedResources\PHPUnit\PhpUnitOutputResourceLoader;
 use BookTools\ResourceLoader\GeneratedResources\RectorOutputResourceLoader;
-use BookTools\ResourceLoader\VendorResourceLoader;
+use BookTools\ResourceLoader\GeneratedResources\VendorResourceLoader;
 use BookTools\ResourceProcessor\ApplyCropAttributesProcessor;
 use BookTools\ResourceProcessor\CropResourceProcessor;
 use BookTools\ResourceProcessor\InsignificantWhitespaceStripper;
