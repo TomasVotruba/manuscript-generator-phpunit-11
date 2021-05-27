@@ -2,10 +2,14 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourceLoader;
+namespace BookTools\ResourceLoader\GeneratedResources;
 
 use BookTools\FileOperations\FileOperations;
 use BookTools\Markua\Parser\Node\IncludedResource;
+use BookTools\ResourceLoader\CouldNotLoadFile;
+use BookTools\ResourceLoader\LoadedResource;
+use BookTools\ResourceLoader\ResourceLoader;
+use function str_ends_with;
 use Symfony\Component\Process\Process;
 
 final class RectorOutputResourceLoader implements ResourceLoader

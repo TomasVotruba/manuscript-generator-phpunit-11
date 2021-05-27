@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourceLoader\PHPUnit;
+namespace BookTools\ResourceLoader\GeneratedResources\PHPUnit;
 
 use BookTools\FileOperations\FileOperations;
 use BookTools\Markua\Parser\Node\IncludedResource;

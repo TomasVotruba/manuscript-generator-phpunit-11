@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourceLoader;
+namespace BookTools\ResourceLoader\GeneratedResources;
 
 use BookTools\Markua\Parser\Node\IncludedResource;
+use BookTools\ResourceLoader\LoadedResource;
+use BookTools\ResourceLoader\ResourceLoader;
 
 final class CachedResourceLoader implements ResourceLoader
 {
