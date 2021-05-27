@@ -7,12 +7,14 @@ namespace BookTools\ResourceLoader\GeneratedResources;
 use BookTools\Markua\Parser\Node\IncludedResource;
 use BookTools\ResourceLoader\LoadedResource;
 use BookTools\ResourceLoader\ResourceLoader;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 final class CachedResourceLoader implements ResourceLoader
 {
     public function __construct(
         private ResourceLoader $realLoader,
-        private ResourceLoader $fileLoader
+        private ResourceLoader $fileLoader,
+        private EventDispatcherInterface $eventDispatcher
     ) {
     }
 
@@ -20,10 +22,16 @@ final class CachedResourceLoader implements ResourceLoader
     {
         $expectedFilePathname = $includedResource->expectedFilePathname();
         if (is_file($expectedFilePathname) && $this->stillFresh($expectedFilePathname)) {
+            $this->eventDispatcher->dispatch(new GeneratedResourceWasStillFresh($includedResource->link));
+
             return $this->fileLoader->load($includedResource);
         }
 
-        return $this->realLoader->load($includedResource);
+        $resource = $this->realLoader->load($includedResource);
+
+        $this->eventDispatcher->dispatch(new ResourceWasGenerated($includedResource->link));
+
+        return $resource;
     }
 
     private function stillFresh(string $filePath): bool

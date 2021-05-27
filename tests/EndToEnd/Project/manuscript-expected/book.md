@@ -69,7 +69,7 @@ interface EventDispatcherInterface extends PsrEventDispatcherInterface
 1 file with changes
 ===================
 
-1) tests/EndToEnd/Project/manuscript-src/resources/rector/Foo.php
+1) Foo.php
 
     ---------- begin diff ----------
 --- Original

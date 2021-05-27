@@ -116,8 +116,9 @@ final class DevelopmentServiceContainer
             [
                 new VendorResourceLoader($this->fileOperations()),
                 new CachedResourceLoader(
-                    new PhpUnitOutputResourceLoader($this->fileOperations(), $this->eventDispatcher()),
-                    new FileResourceLoader()
+                    new PhpUnitOutputResourceLoader($this->fileOperations()),
+                    new FileResourceLoader(),
+                    $this->eventDispatcher()
                 ),
                 new RectorOutputResourceLoader($this->fileOperations()),
                 new FileResourceLoader(),

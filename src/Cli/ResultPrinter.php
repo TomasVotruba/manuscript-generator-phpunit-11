@@ -7,6 +7,7 @@ namespace BookTools\Cli;
 use BookTools\FileOperations\FileWasCreated;
 use BookTools\FileOperations\FileWasModified;
 use BookTools\ManuscriptWasGenerated;
+use BookTools\ResourceLoader\GeneratedResources\GeneratedResourceWasStillFresh;
 use BookTools\ResourceLoader\GeneratedResources\ResourceWasGenerated;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -15,6 +16,8 @@ use Symplify\ConsoleColorDiff\Console\Output\ConsoleDiffer;
 final class ResultPrinter implements EventSubscriberInterface
 {
     private int $countResourcesGenerated = 0;
+
+    private int $countResourcesStillFresh = 0;
 
     private int $countFilesCreated = 0;
 
@@ -51,6 +54,13 @@ final class ResultPrinter implements EventSubscriberInterface
         $this->output->writeln(sprintf('<comment>generated</comment> %s', $event->link()));
     }
 
+    public function whenResourceWasStillFresh(GeneratedResourceWasStillFresh $event): void
+    {
+        $this->countResourcesStillFresh++;
+
+        $this->output->writeln(sprintf('<comment>fresh</comment> %s', $event->link()));
+    }
+
     public function whenFileWasCreated(FileWasCreated $event): void
     {
         $this->countFilesCreated++;
@@ -73,8 +83,9 @@ final class ResultPrinter implements EventSubscriberInterface
         $this->output->writeln('');
         $this->output->writeln(
             sprintf(
-                'Generated: %d, Created: %d, Updated: %d',
+                'Resources generated: %d, Resources still fresh: %d, Files created: %d, Files updated: %d',
                 $this->countResourcesGenerated,
+                $this->countResourcesStillFresh,
                 $this->countFilesCreated,
                 $this->countFilesUpdated
             )

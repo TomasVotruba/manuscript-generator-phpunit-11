@@ -36,9 +36,7 @@ final class RectorOutputResourceLoader implements ResourceLoader
 
     private function getOutputOfRectorRun(string $workingDir): string
     {
-        $process = new Process(
-            [getcwd() . '/vendor/bin/rector', 'process', '--dry-run', '--config', $workingDir . '/rector.php']
-        );
+        $process = new Process([getcwd() . '/vendor/bin/rector', 'process', '--dry-run'], $workingDir);
         $process->run();
 
         return $process->getOutput();

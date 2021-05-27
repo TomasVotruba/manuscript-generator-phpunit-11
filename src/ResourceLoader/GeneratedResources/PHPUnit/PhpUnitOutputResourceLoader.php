@@ -7,18 +7,15 @@ namespace BookTools\ResourceLoader\GeneratedResources\PHPUnit;
 use BookTools\FileOperations\FileOperations;
 use BookTools\Markua\Parser\Node\IncludedResource;
 use BookTools\ResourceLoader\CouldNotLoadFile;
-use BookTools\ResourceLoader\GeneratedResources\ResourceWasGenerated;
 use BookTools\ResourceLoader\LoadedResource;
 use BookTools\ResourceLoader\ResourceLoader;
 use function str_ends_with;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\Process;
 
 final class PhpUnitOutputResourceLoader implements ResourceLoader
 {
     public function __construct(
-        private FileOperations $fileOperations,
-        private EventDispatcherInterface $eventDispatcher
+        private FileOperations $fileOperations
     ) {
     }
 
@@ -31,8 +28,6 @@ final class PhpUnitOutputResourceLoader implements ResourceLoader
         $expectedPath = $includedResource->expectedFilePathname();
 
         $outputOfPhpUnitRun = $this->getOutputOfPhpUnitRun(dirname($expectedPath));
-
-        $this->eventDispatcher->dispatch(new ResourceWasGenerated($includedResource->link));
 
         $this->fileOperations->putContents($expectedPath, $outputOfPhpUnitRun);
 
