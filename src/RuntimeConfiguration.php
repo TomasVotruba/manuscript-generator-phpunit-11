@@ -4,29 +4,27 @@ declare(strict_types=1);
 
 namespace BookTools;
 
-final class Configuration
+final class RuntimeConfiguration
 {
     public function __construct(
-        private string $manuscriptSrcDir,
-        private string $manuscriptTargetDir,
-        private bool $capitalizeHeadlines = false,
+        private BookProjectConfiguration $bookProjectConfiguration,
         private bool $readOnlyFilesystem = false
     ) {
     }
 
     public function manuscriptSrcDir(): string
     {
-        return $this->manuscriptSrcDir;
+        return $this->bookProjectConfiguration->manuscriptSrcDir();
     }
 
     public function manuscriptTargetDir(): string
     {
-        return $this->manuscriptTargetDir;
+        return $this->bookProjectConfiguration->manuscriptTargetDir();
     }
 
     public function capitalizeHeadlines(): bool
     {
-        return $this->capitalizeHeadlines;
+        return $this->bookProjectConfiguration->capitalizeHeadlines();
     }
 
     public function readOnlyFilesystem(): bool

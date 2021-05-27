@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace BookTools\Cli;
 
-use BookTools\Configuration;
+use BookTools\BookProjectConfiguration;
 use BookTools\DevelopmentServiceContainer;
 use BookTools\FileOperations\FileWasCreated;
 use BookTools\FileOperations\FileWasModified;
+use BookTools\RuntimeConfiguration;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -38,9 +40,9 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
     {
         $this->setName('generate-manuscript')
             ->addOption('dry-run', null, InputOption::VALUE_NONE)
-            ->addOption('manuscript-dir', null, InputOption::VALUE_REQUIRED, '', 'manuscript')
-            ->addOption('manuscript-src-dir', null, InputOption::VALUE_REQUIRED, 'manuscript-src')
-            ->addOption('capitalize-headlines', null, InputOption::VALUE_NONE);
+            ->addOption('config', 'c', InputOption::VALUE_REQUIRED, '', 'book.php')
+            ->addOption('manuscript-dir', null, InputOption::VALUE_REQUIRED)
+            ->addOption('manuscript-src-dir', null, InputOption::VALUE_REQUIRED);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -48,17 +50,8 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
         $dryRun = $input->getOption('dry-run');
         assert(is_bool($dryRun));
 
-        $manuscriptSrcDir = $input->getOption('manuscript-src-dir');
-        assert(is_string($manuscriptSrcDir));
-
-        $manuscriptTargetDir = $input->getOption('manuscript-dir');
-        assert(is_string($manuscriptTargetDir));
-
-        $capitalizeHeadlines = $input->getOption('capitalize-headlines');
-        assert(is_bool($capitalizeHeadlines));
-
         $container = new DevelopmentServiceContainer(
-            new Configuration($manuscriptSrcDir, $manuscriptTargetDir, $capitalizeHeadlines, $dryRun)
+            new RuntimeConfiguration($this->loadBookProjectConfiguration($input), $dryRun)
         );
 
         // For showing results while generating the manuscript:
@@ -77,5 +70,34 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
         }
         // --dry-run will fail CI if the filesystem was touched
         return 1;
+    }
+
+    private function loadBookProjectConfiguration(InputInterface $input): BookProjectConfiguration
+    {
+        $config = $input->getOption('config');
+        assert(is_string($config));
+
+        if (is_file($config)) {
+            $bookProjectConfiguration = require $config;
+            if (! $bookProjectConfiguration instanceof BookProjectConfiguration) {
+                throw new RuntimeException(
+                    sprintf('Expected file "%s" to return an instance of BookProjectConfiguration', $config)
+                );
+            }
+        } else {
+            $bookProjectConfiguration = BookProjectConfiguration::usingDefaults();
+        }
+
+        $manuscriptSrcDir = $input->getOption('manuscript-src-dir');
+        if (is_string($manuscriptSrcDir)) {
+            $bookProjectConfiguration->setManuscriptSrcDir($manuscriptSrcDir);
+        }
+
+        $manuscriptTargetDir = $input->getOption('manuscript-dir');
+        if (is_string($manuscriptTargetDir)) {
+            $bookProjectConfiguration->setManuscriptTargetDir($manuscriptTargetDir);
+        }
+
+        return $bookProjectConfiguration;
     }
 }

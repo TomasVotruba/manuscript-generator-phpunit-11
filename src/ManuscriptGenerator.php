@@ -12,7 +12,7 @@ use Symplify\SmartFileSystem\SmartFileInfo;
 final class ManuscriptGenerator
 {
     public function __construct(
-        private Configuration $configuration,
+        private RuntimeConfiguration $configuration,
         private FileOperations $fileOperations,
         private MarkuaProcessor $markuaProcessor,
         private EventDispatcherInterface $eventDispatcher

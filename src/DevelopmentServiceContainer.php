@@ -39,7 +39,7 @@ final class DevelopmentServiceContainer
     private ?EventDispatcher $eventDispatcher = null;
 
     public function __construct(
-        private Configuration $configuration
+        private RuntimeConfiguration $configuration
     ) {
     }
 

@@ -47,7 +47,7 @@ final class GenerateManuscriptTest extends TestCase
             [
                 '--manuscript-dir' => $this->generatedManuscriptDir,
                 '--manuscript-src-dir' => __DIR__ . '/Project/manuscript-src',
-                '--capitalize-headlines' => true,
+                '--config' => __DIR__ . '/Project/book.php',
             ]
         );
 

@@ -29,9 +29,6 @@ return static function (
         __DIR__ . '/rector.php',
     ]);
 
-    $parameters->set(Option::CACHE_DIR, __DIR__ . '/cache/rector');
-    $parameters->set(Option::ENABLE_CACHE, true);
-
     $parameters->set(Option::SKIP, [
         AddArrayReturnDocTypeRector::class,
         'tests/EndToEnd/Project/manuscript-src/resources/',
