@@ -36,4 +36,19 @@ final class IncludedResource extends AbstractNode
 
         return $includedFromFile;
     }
+
+    public function format(): string
+    {
+        $formatAttribute = $this->attributes->get('format');
+        if ($formatAttribute !== null) {
+            return $formatAttribute;
+        }
+
+        $extension = pathinfo($this->link, PATHINFO_EXTENSION);
+        if ($extension !== '') {
+            return $extension;
+        }
+
+        return 'guess';
+    }
 }

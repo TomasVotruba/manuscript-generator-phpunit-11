@@ -9,7 +9,7 @@ use BookTools\ResourceLoader\LoadedResource;
 use BookTools\ResourceProcessor\CropResourceProcessor;
 use PHPUnit\Framework\TestCase;
 
-final class CropResourcePreProcessorTest extends TestCase
+final class CropResourceProcessorTest extends TestCase
 {
     private CropResourceProcessor $processor;
 
@@ -21,7 +21,7 @@ final class CropResourcePreProcessorTest extends TestCase
     public function testItRemovesThePartStartingWithCropEnd(): void
     {
         $resource = $this->resourceWithContents("\$code;\n// crop-end\n// this will be removed\n");
-        $this->processor->process($resource, $this->attributes());
+        $this->processor->process($resource);
 
         self::assertSame("\$code;\n", $resource->contents());
     }
@@ -30,7 +30,7 @@ final class CropResourcePreProcessorTest extends TestCase
     {
         $resource = $this->resourceWithContents("// this will be removed\n// crop-start\n\$code;\n");
 
-        $this->processor->process($resource, $this->attributes());
+        $this->processor->process($resource);
 
         self::assertSame("\$code;\n", $resource->contents());
     }
@@ -39,18 +39,13 @@ final class CropResourcePreProcessorTest extends TestCase
     {
         $resource = $this->resourceWithContents("\$code\n");
 
-        $this->processor->process($resource, $this->attributes());
+        $this->processor->process($resource);
 
         self::assertSame("\$code\n", $resource->contents());
     }
 
     private function resourceWithContents(string $contents): LoadedResource
     {
-        return new LoadedResource('php', $contents);
-    }
-
-    private function attributes(): AttributeList
-    {
-        return new AttributeList([]);
+        return new LoadedResource('php', $contents, new AttributeList([]));
     }
 }

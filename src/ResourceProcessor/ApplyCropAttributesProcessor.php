@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace BookTools\ResourceProcessor;
 
-use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\ResourceLoader\LoadedResource;
 
 /**
@@ -12,10 +11,10 @@ use BookTools\ResourceLoader\LoadedResource;
  */
 final class ApplyCropAttributesProcessor implements ResourceProcessor
 {
-    public function process(LoadedResource $includedResource, AttributeList $resourceAttributes): void
+    public function process(LoadedResource $includedResource): void
     {
-        $cropStart = $resourceAttributes->get('crop-start');
-        $cropEnd = $resourceAttributes->get('crop-end');
+        $cropStart = $includedResource->getAttribute('crop-start');
+        $cropEnd = $includedResource->getAttribute('crop-end');
 
         if ($cropStart === null && $cropEnd === null) {
             return;
@@ -27,8 +26,8 @@ final class ApplyCropAttributesProcessor implements ResourceProcessor
             $cropEnd === null ? null : (int) $cropEnd,
         );
 
-        $resourceAttributes->remove('crop-start');
-        $resourceAttributes->remove('crop-end');
+        $includedResource->removeAttribute('crop-start');
+        $includedResource->removeAttribute('crop-end');
 
         $includedResource->setContents($croppedContent);
     }

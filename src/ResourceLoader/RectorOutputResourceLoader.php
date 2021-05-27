@@ -27,7 +27,7 @@ final class RectorOutputResourceLoader implements ResourceLoader
 
         $this->fileOperations->putContents($expectedPath, $outputOfPhpUnitRun);
 
-        return LoadedResource::createFromPathAndContents($includedResource->link, $outputOfPhpUnitRun);
+        return LoadedResource::createFromIncludedResource($includedResource, $outputOfPhpUnitRun);
     }
 
     private function getOutputOfRectorRun(string $workingDir): string

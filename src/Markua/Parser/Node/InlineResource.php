@@ -20,4 +20,9 @@ final class InlineResource extends AbstractNode
     {
         return ['attributes'];
     }
+
+    public function format(): string
+    {
+        return $this->attributes->get('format') ?? 'guess';
+    }
 }

@@ -30,7 +30,7 @@ final class VendorResourceLoader implements ResourceLoader
             $contents = $vendorResource->getContents();
             $this->fileOperations->putContents($targetPathname, $contents);
 
-            return LoadedResource::createFromPathAndContents($expectedPathname, $contents);
+            return LoadedResource::createFromIncludedResource($includedResource, $contents);
         } catch (FileNotFoundException $exception) {
             throw CouldNotLoadFile::createFromPrevious($exception);
         }

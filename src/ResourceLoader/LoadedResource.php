@@ -4,19 +4,27 @@ declare(strict_types=1);
 
 namespace BookTools\ResourceLoader;
 
+use BookTools\Markua\Parser\Node\AttributeList;
+use BookTools\Markua\Parser\Node\IncludedResource;
 use BookTools\Markua\Parser\Node\InlineResource;
 
 final class LoadedResource
 {
     public function __construct(
         private string $format,
-        private string $contents
+        private string $contents,
+        private AttributeList $attributes
     ) {
     }
 
-    public static function createFromInlineResource(InlineResource $node): self
+    public static function createFromInlineResource(InlineResource $inlineResource): self
     {
-        return new self($node->attributes->get('format') ?? 'guess', $node->contents);
+        return new self($inlineResource->format(), $inlineResource->contents, $inlineResource->attributes);
+    }
+
+    public static function createFromIncludedResource(IncludedResource $includedResource, string $contents): self
+    {
+        return new self($includedResource->format(), $contents, $includedResource->attributes);
     }
 
     public function format(): string
@@ -34,8 +42,18 @@ final class LoadedResource
         $this->contents = $newContents;
     }
 
-    public static function createFromPathAndContents(string $pathname, string $contents): self
+    public function getAttribute(string $key): ?string
     {
-        return new self(pathinfo($pathname, PATHINFO_EXTENSION), $contents);
+        return $this->attributes->get($key);
+    }
+
+    public function setAttribute(string $key, string $value): void
+    {
+        $this->attributes->set($key, $value);
+    }
+
+    public function removeAttribute(string $key): void
+    {
+        $this->attributes->remove($key);
     }
 }

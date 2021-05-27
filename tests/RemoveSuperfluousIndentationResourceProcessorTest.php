@@ -35,7 +35,7 @@ final class RemoveSuperfluousIndentationResourceProcessorTest extends TestCase
         CODE_SAMPLE;
 
         $resource = $this->resourceWithContents($code);
-        $this->processor->process($resource, $this->attributes());
+        $this->processor->process($resource);
 
         self::assertSame($expected, $resource->contents());
     }
@@ -59,7 +59,7 @@ final class RemoveSuperfluousIndentationResourceProcessorTest extends TestCase
         CODE_SAMPLE;
 
         $resource = $this->resourceWithContents($code);
-        $this->processor->process($resource, $this->attributes());
+        $this->processor->process($resource);
 
         self::assertSame($expected, $resource->contents());
     }
@@ -85,7 +85,7 @@ final class RemoveSuperfluousIndentationResourceProcessorTest extends TestCase
         CODE_SAMPLE;
 
         $resource = $this->resourceWithContents($code);
-        $this->processor->process($resource, $this->attributes());
+        $this->processor->process($resource);
 
         self::assertSame($expected, $resource->contents());
     }
@@ -100,18 +100,13 @@ final class RemoveSuperfluousIndentationResourceProcessorTest extends TestCase
         CODE_SAMPLE;
 
         $resource = $this->resourceWithContents($code);
-        $this->processor->process($resource, $this->attributes());
+        $this->processor->process($resource);
 
         self::assertSame($code, $resource->contents());
     }
 
     private function resourceWithContents(string $contents): LoadedResource
     {
-        return new LoadedResource('php', $contents);
-    }
-
-    private function attributes(): AttributeList
-    {
-        return new AttributeList([]);
+        return new LoadedResource('php', $contents, new AttributeList([]));
     }
 }

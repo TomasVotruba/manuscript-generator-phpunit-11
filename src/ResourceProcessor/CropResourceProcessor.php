@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace BookTools\ResourceProcessor;
 
-use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\ResourceLoader\LoadedResource;
 
 final class CropResourceProcessor implements ResourceProcessor
@@ -20,7 +19,7 @@ final class CropResourceProcessor implements ResourceProcessor
         $this->textCropper = new TextCropper(self::CROP_START_MARKER, self::CROP_END_MARKER);
     }
 
-    public function process(LoadedResource $includedResource, AttributeList $resourceAttributes): void
+    public function process(LoadedResource $includedResource): void
     {
         $includedResource->setContents($this->textCropper->crop($includedResource->contents()));
     }
