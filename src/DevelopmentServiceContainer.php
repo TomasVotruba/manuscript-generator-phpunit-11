@@ -18,7 +18,8 @@ use BookTools\Markua\Processor\ProcessInlineResourcesNodeVisitor;
 use BookTools\ResourceLoader\DelegatingResourceLoader;
 use BookTools\ResourceLoader\FileResourceLoader;
 use BookTools\ResourceLoader\GeneratedResources\CachedResourceLoader;
-use BookTools\ResourceLoader\GeneratedResources\PHPUnit\PhpUnitOutputResourceLoader;
+use BookTools\ResourceLoader\GeneratedResources\GeneratedResourceLoader;
+use BookTools\ResourceLoader\GeneratedResources\PHPUnit\PhpUnitResourceGenerator;
 use BookTools\ResourceLoader\GeneratedResources\RectorOutputResourceLoader;
 use BookTools\ResourceLoader\GeneratedResources\VendorResourceLoader;
 use BookTools\ResourceProcessor\ApplyCropAttributesProcessor;
@@ -116,11 +117,13 @@ final class DevelopmentServiceContainer
             [
                 new VendorResourceLoader($this->fileOperations()),
                 new CachedResourceLoader(
-                    new PhpUnitOutputResourceLoader($this->fileOperations()),
+                    new GeneratedResourceLoader(
+                        [new PhpUnitResourceGenerator(), new RectorOutputResourceLoader()],
+                        $this->fileOperations()
+                    ),
                     new FileResourceLoader(),
                     $this->eventDispatcher()
                 ),
-                new RectorOutputResourceLoader($this->fileOperations()),
                 new FileResourceLoader(),
             ]
         );
