@@ -113,7 +113,7 @@ final class SimpleMarkuaParser
         return keepFirst(
             atLeastOne(
                 collect(
-                        choice(
+                    choice(
                             collect(
                                 self::textBetweenSquareBrackets()->label('linkText'), // 0
                                 self::textBetweenBrackets()->label('target'), // 1
@@ -123,19 +123,19 @@ final class SimpleMarkuaParser
                                 ->and(
                                     atLeastOne(
                                         choice(
-                                        noneOf(["\n", '[']),
-                                        newline()
+                                            noneOf(["\n", '[']),
+                                            newline()
                                             ->notFollowedBy(newline()),
-                                        char('\\')
+                                            char('\\')
                                             ->followedBy(char('['))
                                             ->map(fn () => '[')
-                                    )
+                                        )
                                     )
                                 )
                                 ->map(fn (?string $text) => new Span((string) $text))
                                 ->label('span'),
                         )
-                    )
+                )
             ),
             self::newLineOrEof()
         )

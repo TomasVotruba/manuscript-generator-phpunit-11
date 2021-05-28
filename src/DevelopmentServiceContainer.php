@@ -16,7 +16,7 @@ use BookTools\Markua\Processor\Headlines\CapitalizeHeadlinesNodeVisitor;
 use BookTools\Markua\Processor\Headlines\HeadlineCapitalizer;
 use BookTools\Markua\Processor\InlineIncludedMarkdownFilesNodeVisitor;
 use BookTools\Markua\Processor\InlineIncludedResourcesNodeVisitor;
-use BookTools\Markua\Processor\LinkRegistry\GenerateLinksForLinkRegistryNodeVisitor;
+use BookTools\Markua\Processor\LinkRegistry\CollectLinksForLinkRegistryNodeVisitor;
 use BookTools\Markua\Processor\ProcessInlineResourcesNodeVisitor;
 use BookTools\ResourceLoader\DelegatingResourceLoader;
 use BookTools\ResourceLoader\FileResourceLoader;
@@ -151,7 +151,7 @@ final class DevelopmentServiceContainer
         ];
 
         if ($this->configuration->isLinkRegistryEnabled()) {
-            $nodeVisitors[] = new GenerateLinksForLinkRegistryNodeVisitor(
+            $nodeVisitors[] = new CollectLinksForLinkRegistryNodeVisitor(
                 $this->fileOperations(),
                 $this->configuration->linkRegistryConfiguration(),
                 $this->configuration

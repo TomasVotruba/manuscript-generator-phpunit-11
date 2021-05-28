@@ -21,6 +21,7 @@ final class GenerateManuscriptTest extends TestCase
     {
         $this->tester = new CommandTester(new GenerateManuscriptCommand());
         $this->generatedManuscriptDir = sys_get_temp_dir() . '/' . uniqid('manuscript');
+        mkdir($this->generatedManuscriptDir);
     }
 
     protected function tearDown(): void
@@ -142,6 +143,26 @@ final class GenerateManuscriptTest extends TestCase
         self::assertDirectoryContentsEquals(
             __DIR__ . '/LinkRegistry/manuscript-expected',
             $this->generatedManuscriptDir
+        );
+    }
+
+    public function testItKeepsExistingLinks(): void
+    {
+        $existingLinks = '/example https://example.com';
+
+        file_put_contents($this->generatedManuscriptDir . '/links.txt', $existingLinks);
+
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->generatedManuscriptDir,
+                '--manuscript-src-dir' => __DIR__ . '/LinkRegistry/manuscript-src',
+                '--config' => __DIR__ . '/LinkRegistry/book.php',
+            ]
+        );
+
+        self::assertStringContainsString(
+            $existingLinks,
+            (string) file_get_contents($this->generatedManuscriptDir . '/links.txt')
         );
     }
 

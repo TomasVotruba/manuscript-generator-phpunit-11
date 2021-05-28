@@ -12,12 +12,9 @@ use BookTools\Markua\Parser\Node\Document;
 use BookTools\Markua\Parser\Node\Link;
 use BookTools\Markua\Parser\Visitor\AbstractNodeVisitor;
 
-final class GenerateLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
+final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
 {
-    /**
-     * @var array<string,string>
-     */
-    private array $links = [];
+    private ExternalLinkCollector $linkCollector;
 
     public function __construct(
         private FileOperations $fileOperations,
@@ -28,7 +25,13 @@ final class GenerateLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
 
     public function beforeTraversing(Document $document): void
     {
-        $this->links = [];
+        if (is_file($this->linkFilePathname())) {
+            $this->linkCollector = ExternalLinkCollector::loadFromString(
+                (string) file_get_contents($this->linkFilePathname())
+            );
+        } else {
+            $this->linkCollector = new ExternalLinkCollector();
+        }
     }
 
     public function enterNode(Node $node): ?Node
@@ -46,11 +49,7 @@ final class GenerateLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
             throw CouldNotProcessExternalLink::becauseItHasNoSlugAttribute($node);
         }
 
-        if (! str_starts_with($slug, '/')) {
-            $slug = '/' . $slug;
-        }
-
-        $this->links[$slug] = $node->target;
+        $this->linkCollector->add($slug, $node->target);
 
         $node->target = $this->linkRegistryConfiguration->linkRegistryBaseUrl() . $slug;
 
@@ -61,14 +60,11 @@ final class GenerateLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
 
     public function afterTraversing(Document $document): void
     {
-        $lines = [];
-        foreach ($this->links as $slug => $url) {
-            $lines[] = $slug . ' ' . $url;
-        }
+        $this->fileOperations->putContents($this->linkFilePathname(), $this->linkCollector->asString());
+    }
 
-        $this->fileOperations->putContents(
-            $this->configuration->manuscriptTargetDir() . '/' . $this->linkRegistryConfiguration->linksFile(),
-            implode("\n", $lines) . "\n"
-        );
+    private function linkFilePathname(): string
+    {
+        return $this->configuration->manuscriptTargetDir() . '/' . $this->linkRegistryConfiguration->linksFile();
     }
 }
