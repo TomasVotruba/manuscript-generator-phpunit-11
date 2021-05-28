@@ -13,6 +13,7 @@ use BookTools\Markua\Parser\Node\Heading;
 use BookTools\Markua\Parser\Node\IncludedResource;
 use BookTools\Markua\Parser\Node\InlineResource;
 use BookTools\Markua\Parser\Node\Paragraph;
+use BookTools\Markua\Parser\Node\Span;
 use LogicException;
 
 final class MarkuaPrinter
@@ -52,15 +53,20 @@ final class MarkuaPrinter
         } elseif ($node instanceof Heading) {
             $result->startBlock();
             $this->printNode($node->attributes, $result);
-            $result->appendToBlock(str_repeat('#', $node->level) . ' ' . $node->title);
+            $result->appendToCurrentBlock(str_repeat('#', $node->level) . ' ' . $node->title);
         } elseif ($node instanceof Directive) {
             $result->addBlock('{' . $node->name . '}');
         } elseif ($node instanceof Paragraph) {
-            $result->addBlock($node->text);
+            $result->startBlock();
+            foreach ($node->parts as $part) {
+                $this->printNode($part, $result);
+            }
+        } elseif ($node instanceof Span) {
+            $result->appendToCurrentBlock($node->text);
         } elseif ($node instanceof IncludedResource) {
             $result->startBlock();
             $this->printNode($node->attributes, $result);
-            $result->appendToBlock('![' . $node->caption . '](' . $node->link . ')');
+            $result->appendToCurrentBlock('![' . $node->caption . '](' . $node->link . ')');
         } elseif ($node instanceof InlineResource) {
             $result->startBlock();
             $this->printNode($node->attributes, $result);
@@ -68,7 +74,7 @@ final class MarkuaPrinter
             if (! str_ends_with($contents, "\n")) {
                 $contents .= "\n";
             }
-            $result->appendToBlock('```' . $node->format . "\n" . $contents . '```');
+            $result->appendToCurrentBlock('```' . $node->format . "\n" . $contents . '```');
         } else {
             throw new LogicException('Unknown node type: ' . $node::class);
         }

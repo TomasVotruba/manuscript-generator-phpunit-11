@@ -12,6 +12,7 @@ use BookTools\Markua\Parser\Node\Heading;
 use BookTools\Markua\Parser\Node\IncludedResource;
 use BookTools\Markua\Parser\Node\InlineResource;
 use BookTools\Markua\Parser\Node\Paragraph;
+use BookTools\Markua\Parser\Node\Span;
 use BookTools\Markua\Parser\SimpleMarkuaParser;
 use Parsica\Parsica\ParserHasFailed;
 use PHPUnit\Framework\TestCase;
@@ -221,7 +222,7 @@ CODE_SAMPLE
     public function testParagraph(): void
     {
         self::assertEquals(
-            new Document([new Heading(1, 'Title'), new Paragraph('Paragraph 1')]),
+            new Document([new Heading(1, 'Title'), new Paragraph([new Span('Paragraph 1')])]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 # Title
 
@@ -234,7 +235,11 @@ CODE_SAMPLE
     public function testMultipleParagraphs(): void
     {
         self::assertEquals(
-            new Document([new Heading(1, 'Title'), new Paragraph('Paragraph 1'), new Paragraph('Paragraph 2')]),
+            new Document([
+                new Heading(1, 'Title'),
+                new Paragraph([new Span('Paragraph 1')]),
+                new Paragraph([new Span('Paragraph 2')]),
+            ]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 # Title
 
@@ -249,7 +254,10 @@ CODE_SAMPLE
     public function testMultilineParagraphs(): void
     {
         self::assertEquals(
-            new Document([new Heading(1, 'Title'), new Paragraph("Paragraph 1\nLine 2 of the same paragraph")]),
+            new Document([
+                new Heading(1, 'Title'),
+                new Paragraph([new Span("Paragraph 1\nLine 2 of the same paragraph")]),
+            ]),
             $this->parser->parseDocument(
                 <<<CODE_SAMPLE
 # Title

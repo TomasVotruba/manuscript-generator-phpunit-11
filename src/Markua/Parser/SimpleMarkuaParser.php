@@ -12,6 +12,7 @@ use BookTools\Markua\Parser\Node\Heading;
 use BookTools\Markua\Parser\Node\IncludedResource;
 use BookTools\Markua\Parser\Node\InlineResource;
 use BookTools\Markua\Parser\Node\Paragraph;
+use BookTools\Markua\Parser\Node\Span;
 use function Parsica\Parsica\alphaChar;
 use function Parsica\Parsica\alphaNumChar;
 use function Parsica\Parsica\any;
@@ -78,9 +79,9 @@ final class SimpleMarkuaParser
      */
     private static function paragraph(): Parser
     {
-        return noneOf(['`', '!'])->and(
+        return noneOf(['`', '!', '{'])->and(
             keepFirst(atLeastOne(choice(noneOf(["\n"]), newline()->notFollowedBy(newline()))), self::newLineOrEof())
-        )->map(fn (?string $text) => new Paragraph((string) $text));
+        )->map(fn (?string $text) => new Paragraph([new Span((string) $text)]));
     }
 
     /**

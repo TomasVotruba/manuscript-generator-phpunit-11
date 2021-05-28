@@ -23,14 +23,14 @@ final class Result
         $this->blocks[] = $block;
     }
 
-    public function appendToBlock(string $line): void
+    public function appendToCurrentBlock(string $string): void
     {
-        $this->blocks[count($this->blocks) - 1] .= $line;
+        $this->blocks[count($this->blocks) - 1] .= $string;
     }
 
     public function appendLineToBlock(string $line): void
     {
-        $this->appendToBlock($line . "\n");
+        $this->appendToCurrentBlock($line . "\n");
     }
 
     public function startBlock(): void

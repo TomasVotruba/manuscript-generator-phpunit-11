@@ -10,6 +10,7 @@ use BookTools\Markua\Parser\Node\AttributeList;
 use BookTools\Markua\Parser\Node\Document;
 use BookTools\Markua\Parser\Node\Heading;
 use BookTools\Markua\Parser\Node\Paragraph;
+use BookTools\Markua\Parser\Node\Span;
 use BookTools\Markua\Parser\Visitor\NodeTraverser;
 use BookTools\Markua\Parser\Visitor\NodeVisitor;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +22,7 @@ final class NodeTraverserTest extends TestCase
         $document = new Document(
             [
                 new Heading(1, 'Chapter 1', new AttributeList([new Attribute('id', 'chapter-1')])),
-                new Paragraph('Paragraph'),
+                new Paragraph([new Span('Paragraph')]),
             ]
         );
 
@@ -31,7 +32,13 @@ final class NodeTraverserTest extends TestCase
         $traverser->traverseDocument($document);
 
         self::assertEquals(
-            ['enterNode: Heading', 'enterNode: AttributeList', 'enterNode: Attribute', 'enterNode: Paragraph'],
+            [
+                'enterNode: Heading',
+                'enterNode: AttributeList',
+                'enterNode: Attribute',
+                'enterNode: Paragraph',
+                'enterNode: Span',
+            ],
             $spy->calledMethods()
         );
     }
@@ -63,7 +70,7 @@ final class NodeTraverserTest extends TestCase
                 public function enterNode(Node $node): Node
                 {
                     if ($node instanceof Heading) {
-                        return new Paragraph($node->title);
+                        return new Paragraph([new Span($node->title)]);
                     }
 
                     return $node;
@@ -73,7 +80,7 @@ final class NodeTraverserTest extends TestCase
 
         $result = $traverser->traverseDocument(new Document([new Heading(1, 'Chapter 1')]));
 
-        self::assertEquals(new Document([new Paragraph('Chapter 1')]), $result);
+        self::assertEquals(new Document([new Paragraph([new Span('Chapter 1')])]), $result);
     }
 
     public function testReplaceExistingSubnodes(): void
