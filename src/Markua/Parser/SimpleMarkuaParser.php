@@ -124,7 +124,7 @@ final class SimpleMarkuaParser
     private static function heading(): Parser
     {
         return collect(
-            optional(either(self::attributeList(), self::idAttributeList())),
+            optional(keepFirst(either(self::attributeList(), self::idAttributeList()), self::newLineOrEof())),
             keepFirst(atLeastOne(char('#')), skipSpace1()),
             atLeastOne(satisfy(fn (string $char) => ! in_array($char, ["\n"], true))),
             self::newLineOrEof()
@@ -174,7 +174,7 @@ final class SimpleMarkuaParser
     private static function includedResource(): Parser
     {
         return collect(
-            optional(self::attributeList()),
+            optional(keepFirst(self::attributeList(), self::newLineOrEof())),
             char('!')
                 ->then(
                     between(
@@ -204,7 +204,7 @@ final class SimpleMarkuaParser
     private static function inlineResource(): Parser
     {
         return collect(
-            optional(self::attributeList()), // 0
+            optional(keepFirst(self::attributeList(), self::newLineOrEof())), // 0
             repeat(3, char('`')), // 1
             keepFirst(optional(atLeastOne(alphaChar())), newline())
                 ->label('format'), // 2
@@ -225,14 +225,12 @@ final class SimpleMarkuaParser
      */
     private static function attributeList(): Parser
     {
-        return keepFirst(
-            between(
-                self::token(char('{')),
-                self::token(char('}')),
-                sepBy(self::token(char(',')), self::attribute())
-            )->label('attributes'),
-            self::newLineOrEof()
-        )->map(fn (array $members) => new AttributeList($members));
+        return between(
+            self::token(char('{')),
+            self::token(char('}')),
+            sepBy(self::token(char(',')), self::attribute())
+        )->label('attributes')
+            ->map(fn (array $members) => new AttributeList($members));
     }
 
     /**
@@ -240,14 +238,12 @@ final class SimpleMarkuaParser
      */
     private static function idAttributeList(): Parser
     {
-        return keepFirst(
-            between(
-                self::token(char('{')),
-                self::token(char('}')),
-                char('#')
-                    ->then(atLeastOne(choice(alphaNumChar(), char('_'), char('-'))))
-            )->label('idAttribute'),
-            self::newLineOrEof()
-        )->map(fn (string $id) => new AttributeList([new Attribute('id', $id)]));
+        return between(
+            self::token(char('{')),
+            self::token(char('}')),
+            char('#')
+                ->then(atLeastOne(choice(alphaNumChar(), char('_'), char('-'))))
+        )->label('idAttribute')
+            ->map(fn (string $id) => new AttributeList([new Attribute('id', $id)]));
     }
 }

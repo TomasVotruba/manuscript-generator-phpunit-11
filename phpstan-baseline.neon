@@ -4,9 +4,3 @@ parameters:
 			message: "#^Parameter \\#1 \\$other of method Parsica\\\\Parsica\\\\Parser\\<string\\>\\:\\:and\\(\\) expects Parsica\\\\Parsica\\\\Parser\\<string\\|null\\>, Parsica\\\\Parsica\\\\Parser\\<string\\> given\\.$#"
 			count: 1
 			path: src/Markua/Parser/SimpleMarkuaParser.php
-
-		-
-			message: "#^Parameter \\#1 \\$transform of method Parsica\\\\Parsica\\\\Parser\\<string\\>\\:\\:map\\(\\) expects callable\\(string\\)\\: BookTools\\\\Markua\\\\Parser\\\\Node\\\\AttributeList, Closure\\(array\\)\\: BookTools\\\\Markua\\\\Parser\\\\Node\\\\AttributeList given\\.$#"
-			count: 1
-			path: src/Markua/Parser/SimpleMarkuaParser.php
-
