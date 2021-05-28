@@ -129,6 +129,22 @@ final class GenerateManuscriptTest extends TestCase
         self::assertSame(1, $this->tester->getStatusCode());
     }
 
+    public function testItReplacesExternalLinksWithLinksToTheLinkRegistry(): void
+    {
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->generatedManuscriptDir,
+                '--manuscript-src-dir' => __DIR__ . '/LinkRegistry/manuscript-src',
+                '--config' => __DIR__ . '/LinkRegistry/book.php',
+            ]
+        );
+
+        self::assertDirectoryContentsEquals(
+            __DIR__ . '/LinkRegistry/manuscript-expected',
+            $this->generatedManuscriptDir
+        );
+    }
+
     private static function assertDirectoryContentsEquals(string $expectedDir, string $actualDir): void
     {
         /** @var SplFileInfo[] $expectedFiles */

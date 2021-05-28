@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use BookTools\BookProjectConfiguration;
+use BookTools\Configuration\BookProjectConfiguration;
 use BookTools\Markua\Parser\Node\IncludedResource;
 use BookTools\ResourceLoader\GeneratedResources\AbstractOutputBufferResourceGenerator;
 

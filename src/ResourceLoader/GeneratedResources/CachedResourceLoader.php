@@ -45,6 +45,10 @@ final class CachedResourceLoader implements ResourceLoader
             ]
             as $filePathToCheck
         ) {
+            if (! file_exists($filePathToCheck)) {
+                continue;
+            }
+
             if ((int) filemtime($filePathToCheck) > $generatedFileLastModified) {
                 return false;
             }

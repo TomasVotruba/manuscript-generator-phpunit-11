@@ -19,9 +19,17 @@ final class NodeTraverser
 
     public function traverseDocument(Document $document): Document
     {
+        foreach ($this->nodeVisitors as $nodeVisitor) {
+            $nodeVisitor->beforeTraversing($document);
+        }
+
         $document = $this->traverseNode($document);
 
         assert($document instanceof Document);
+
+        foreach ($this->nodeVisitors as $nodeVisitor) {
+            $nodeVisitor->afterTraversing($document);
+        }
 
         return $document;
     }

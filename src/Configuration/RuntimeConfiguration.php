@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools;
+namespace BookTools\Configuration;
 
 use BookTools\ResourceLoader\GeneratedResources\ResourceGenerator;
 
@@ -40,5 +40,15 @@ final class RuntimeConfiguration
     public function additionalResourceGenerators(): array
     {
         return $this->bookProjectConfiguration->resourceGenerators();
+    }
+
+    public function isLinkRegistryEnabled(): bool
+    {
+        return $this->bookProjectConfiguration->isLinkRegistryEnabled();
+    }
+
+    public function linkRegistryConfiguration(): LinkRegistryConfiguration
+    {
+        return $this->bookProjectConfiguration->linkRegistryConfiguration();
     }
 }

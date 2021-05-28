@@ -7,7 +7,7 @@ namespace BookTools\Markua\Parser\Visitor;
 use BookTools\Markua\Parser\Node;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class AddFileAttributeNodeVisitor implements NodeVisitor
+final class AddFileAttributeNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
         private SmartFileInfo $file

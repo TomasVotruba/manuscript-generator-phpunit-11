@@ -5,15 +5,18 @@ declare(strict_types=1);
 namespace BookTools;
 
 use BookTools\Cli\ResultPrinter;
+use BookTools\Configuration\RuntimeConfiguration;
 use BookTools\FileOperations\FileOperations;
 use BookTools\FileOperations\Filesystem;
 use BookTools\Markua\Parser\SimpleMarkuaParser;
+use BookTools\Markua\Parser\Visitor\NodeVisitor;
 use BookTools\Markua\Printer\MarkuaPrinter;
 use BookTools\Markua\Processor\AstBasedMarkuaProcessor;
 use BookTools\Markua\Processor\Headlines\CapitalizeHeadlinesNodeVisitor;
 use BookTools\Markua\Processor\Headlines\HeadlineCapitalizer;
 use BookTools\Markua\Processor\InlineIncludedMarkdownFilesNodeVisitor;
 use BookTools\Markua\Processor\InlineIncludedResourcesNodeVisitor;
+use BookTools\Markua\Processor\LinkRegistry\GenerateLinksForLinkRegistryNodeVisitor;
 use BookTools\Markua\Processor\ProcessInlineResourcesNodeVisitor;
 use BookTools\ResourceLoader\DelegatingResourceLoader;
 use BookTools\ResourceLoader\FileResourceLoader;
@@ -51,26 +54,7 @@ final class DevelopmentServiceContainer
         return new ManuscriptGenerator(
             $this->configuration,
             $this->fileOperations(),
-            new AstBasedMarkuaProcessor(
-                [
-                    new InlineIncludedMarkdownFilesNodeVisitor($this->resourceLoader(), $this->markuaParser()),
-                    new InlineIncludedResourcesNodeVisitor($this->resourceLoader(),),
-                    new ProcessInlineResourcesNodeVisitor(
-                        [
-                            new CropResourceProcessor(),
-                            new ApplyCropAttributesProcessor(),
-                            new RemoveSuperfluousIndentationResourceProcessor(),
-                            new StripInsignificantWhitespaceResourceProcessor(new InsignificantWhitespaceStripper()),
-                        ]
-                    ),
-                    new CapitalizeHeadlinesNodeVisitor(
-                        new HeadlineCapitalizer(),
-                        $this->configuration->capitalizeHeadlines()
-                    ),
-                ],
-                $this->markuaParser(),
-                new MarkuaPrinter()
-            ),
+            new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaParser(), new MarkuaPrinter()),
             $this->eventDispatcher()
         );
     }
@@ -142,5 +126,38 @@ final class DevelopmentServiceContainer
     private function markuaParser(): SimpleMarkuaParser
     {
         return new SimpleMarkuaParser();
+    }
+
+    /**
+     * @return array<NodeVisitor>
+     */
+    private function markuaNodeVisitors(): array
+    {
+        $nodeVisitors = [
+            new InlineIncludedMarkdownFilesNodeVisitor($this->resourceLoader(), $this->markuaParser()),
+            new InlineIncludedResourcesNodeVisitor($this->resourceLoader(),),
+            new ProcessInlineResourcesNodeVisitor(
+                [
+                    new CropResourceProcessor(),
+                    new ApplyCropAttributesProcessor(),
+                    new RemoveSuperfluousIndentationResourceProcessor(),
+                    new StripInsignificantWhitespaceResourceProcessor(new InsignificantWhitespaceStripper()),
+                ]
+            ),
+            new CapitalizeHeadlinesNodeVisitor(
+                new HeadlineCapitalizer(),
+                $this->configuration->capitalizeHeadlines()
+            ),
+        ];
+
+        if ($this->configuration->isLinkRegistryEnabled()) {
+            $nodeVisitors[] = new GenerateLinksForLinkRegistryNodeVisitor(
+                $this->fileOperations(),
+                $this->configuration->linkRegistryConfiguration(),
+                $this->configuration
+            );
+        }
+
+        return $nodeVisitors;
     }
 }

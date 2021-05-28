@@ -11,8 +11,8 @@ use BookTools\Markua\Parser\Node\Document;
 use BookTools\Markua\Parser\Node\Heading;
 use BookTools\Markua\Parser\Node\Paragraph;
 use BookTools\Markua\Parser\Node\Span;
+use BookTools\Markua\Parser\Visitor\AbstractNodeVisitor;
 use BookTools\Markua\Parser\Visitor\NodeTraverser;
-use BookTools\Markua\Parser\Visitor\NodeVisitor;
 use PHPUnit\Framework\TestCase;
 
 final class NodeTraverserTest extends TestCase
@@ -33,11 +33,13 @@ final class NodeTraverserTest extends TestCase
 
         self::assertEquals(
             [
+                'beforeTraversing',
                 'enterNode: Heading',
                 'enterNode: AttributeList',
                 'enterNode: Attribute',
                 'enterNode: Paragraph',
                 'enterNode: Span',
+                'afterTraversing',
             ],
             $spy->calledMethods()
         );
@@ -46,7 +48,7 @@ final class NodeTraverserTest extends TestCase
     public function testModifyExistingNodes(): void
     {
         $traverser = new NodeTraverser(
-            [new class() implements NodeVisitor {
+            [new class() extends AbstractNodeVisitor {
                 public function enterNode(Node $node): Node
                 {
                     if ($node instanceof Heading) {
@@ -66,7 +68,7 @@ final class NodeTraverserTest extends TestCase
     public function testReplaceExistingNodes(): void
     {
         $traverser = new NodeTraverser(
-            [new class() implements NodeVisitor {
+            [new class() extends AbstractNodeVisitor {
                 public function enterNode(Node $node): Node
                 {
                     if ($node instanceof Heading) {
@@ -86,7 +88,7 @@ final class NodeTraverserTest extends TestCase
     public function testReplaceExistingSubnodes(): void
     {
         $traverser = new NodeTraverser(
-            [new class() implements NodeVisitor {
+            [new class() extends AbstractNodeVisitor {
                 public function enterNode(Node $node): ?Node
                 {
                     if (! $node instanceof Attribute) {

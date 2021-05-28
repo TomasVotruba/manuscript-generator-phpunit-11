@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BookTools\Cli;
 
-use BookTools\BookProjectConfiguration;
+use BookTools\Configuration\BookProjectConfiguration;
+use BookTools\Configuration\RuntimeConfiguration;
 use BookTools\DevelopmentServiceContainer;
 use BookTools\FileOperations\FileWasCreated;
 use BookTools\FileOperations\FileWasModified;
-use BookTools\RuntimeConfiguration;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,6 +18,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final class GenerateManuscriptCommand extends Command implements EventSubscriberInterface
 {
+    public const DEFAULT_CONFIG_FILE = 'book.php';
+
     private bool $filesystemWasTouched = false;
 
     /**
@@ -40,7 +42,7 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
     {
         $this->setName('generate-manuscript')
             ->addOption('dry-run', null, InputOption::VALUE_NONE)
-            ->addOption('config', 'c', InputOption::VALUE_REQUIRED, '', 'book.php')
+            ->addOption('config', 'c', InputOption::VALUE_REQUIRED)
             ->addOption('manuscript-dir', null, InputOption::VALUE_REQUIRED)
             ->addOption('manuscript-src-dir', null, InputOption::VALUE_REQUIRED);
     }
@@ -75,9 +77,14 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
     private function loadBookProjectConfiguration(InputInterface $input): BookProjectConfiguration
     {
         $config = $input->getOption('config');
-        assert(is_string($config));
+        if (is_string($config) && ! is_file($config)) {
+            throw new RuntimeException('Configuration file not found: ' . $config);
+        }
+        if (is_file(self::DEFAULT_CONFIG_FILE)) {
+            $config = self::DEFAULT_CONFIG_FILE;
+        }
 
-        if (is_file($config)) {
+        if (is_string($config)) {
             $bookProjectConfiguration = require $config;
             if (! $bookProjectConfiguration instanceof BookProjectConfiguration) {
                 throw new RuntimeException(

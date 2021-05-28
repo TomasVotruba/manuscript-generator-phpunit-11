@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools;
+namespace BookTools\Configuration;
 
 use BookTools\ResourceLoader\GeneratedResources\ResourceGenerator;
 
@@ -16,7 +16,8 @@ final class BookProjectConfiguration
     public function __construct(
         private string $manuscriptSrcDir = 'manuscript-src',
         private string $manuscriptTargetDir = 'manuscript',
-        private bool $capitalizeHeadlines = false
+        private bool $capitalizeHeadlines = false,
+        private ?LinkRegistryConfiguration $linkRegistryConfiguration = null
     ) {
     }
 
@@ -66,5 +67,22 @@ final class BookProjectConfiguration
     public function resourceGenerators(): array
     {
         return $this->resourceGenerators;
+    }
+
+    public function setLinkRegistryConfiguration(LinkRegistryConfiguration $linkRegistryConfiguration): void
+    {
+        $this->linkRegistryConfiguration = $linkRegistryConfiguration;
+    }
+
+    public function isLinkRegistryEnabled(): bool
+    {
+        return $this->linkRegistryConfiguration !== null;
+    }
+
+    public function linkRegistryConfiguration(): LinkRegistryConfiguration
+    {
+        assert($this->linkRegistryConfiguration !== null);
+
+        return $this->linkRegistryConfiguration;
     }
 }

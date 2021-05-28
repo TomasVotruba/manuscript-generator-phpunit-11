@@ -7,11 +7,11 @@ namespace BookTools\Markua\Processor;
 use BookTools\Markua\Parser\Node;
 use BookTools\Markua\Parser\Node\IncludedResource;
 use BookTools\Markua\Parser\Node\InlineResource;
-use BookTools\Markua\Parser\Visitor\NodeVisitor;
+use BookTools\Markua\Parser\Visitor\AbstractNodeVisitor;
 use BookTools\ResourceLoader\ResourceLoader;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class InlineIncludedResourcesNodeVisitor implements NodeVisitor
+final class InlineIncludedResourcesNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
         private ResourceLoader $resourceLoader

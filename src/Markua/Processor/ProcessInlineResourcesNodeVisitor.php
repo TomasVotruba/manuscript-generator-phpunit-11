@@ -6,11 +6,11 @@ namespace BookTools\Markua\Processor;
 
 use BookTools\Markua\Parser\Node;
 use BookTools\Markua\Parser\Node\InlineResource;
-use BookTools\Markua\Parser\Visitor\NodeVisitor;
+use BookTools\Markua\Parser\Visitor\AbstractNodeVisitor;
 use BookTools\ResourceLoader\LoadedResource;
 use BookTools\ResourceProcessor\ResourceProcessor;
 
-final class ProcessInlineResourcesNodeVisitor implements NodeVisitor
+final class ProcessInlineResourcesNodeVisitor extends AbstractNodeVisitor
 {
     /**
      * @param array<ResourceProcessor> $resourceProcessors

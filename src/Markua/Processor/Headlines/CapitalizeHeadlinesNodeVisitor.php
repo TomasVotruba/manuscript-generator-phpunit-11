@@ -6,9 +6,9 @@ namespace BookTools\Markua\Processor\Headlines;
 
 use BookTools\Markua\Parser\Node;
 use BookTools\Markua\Parser\Node\Heading;
-use BookTools\Markua\Parser\Visitor\NodeVisitor;
+use BookTools\Markua\Parser\Visitor\AbstractNodeVisitor;
 
-final class CapitalizeHeadlinesNodeVisitor implements NodeVisitor
+final class CapitalizeHeadlinesNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
         private HeadlineCapitalizer $headlineCapitalizer,
