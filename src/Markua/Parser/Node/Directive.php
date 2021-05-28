@@ -10,9 +10,4 @@ final class Directive extends AbstractNode
         public string $name
     ) {
     }
-
-    public function subnodeNames(): array
-    {
-        return [];
-    }
 }

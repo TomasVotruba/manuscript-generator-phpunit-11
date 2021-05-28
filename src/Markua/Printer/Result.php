@@ -37,4 +37,9 @@ final class Result
     {
         $this->blocks[] = '';
     }
+
+    public function newLine(): void
+    {
+        $this->appendToCurrentBlock("\n");
+    }
 }

@@ -1,6 +1,2 @@
 parameters:
 	ignoreErrors:
-		-
-			message: "#^Parameter \\#1 \\$other of method Parsica\\\\Parsica\\\\Parser\\<string\\>\\:\\:and\\(\\) expects Parsica\\\\Parsica\\\\Parser\\<string\\|null\\>, Parsica\\\\Parsica\\\\Parser\\<string\\> given\\.$#"
-			count: 1
-			path: src/Markua/Parser/SimpleMarkuaParser.php

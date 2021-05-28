@@ -22,4 +22,9 @@ abstract class AbstractNode implements Node
     {
         return $this->internalAttributes[$key] ?? null;
     }
+
+    public function subnodeNames(): array
+    {
+        return [];
+    }
 }

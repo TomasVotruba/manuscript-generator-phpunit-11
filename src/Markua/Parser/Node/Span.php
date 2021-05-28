@@ -10,9 +10,4 @@ final class Span extends AbstractNode
         public string $text
     ) {
     }
-
-    public function subnodeNames(): array
-    {
-        return [];
-    }
 }

@@ -12,6 +12,7 @@ use BookTools\Markua\Parser\Node\Document;
 use BookTools\Markua\Parser\Node\Heading;
 use BookTools\Markua\Parser\Node\IncludedResource;
 use BookTools\Markua\Parser\Node\InlineResource;
+use BookTools\Markua\Parser\Node\Link;
 use BookTools\Markua\Parser\Node\Paragraph;
 use BookTools\Markua\Parser\Node\Span;
 use LogicException;
@@ -33,26 +34,9 @@ final class MarkuaPrinter
             foreach ($node->nodes as $subnode) {
                 $this->printNode($subnode, $result);
             }
-        } elseif ($node instanceof AttributeList) {
-            if (count($node->attributes) === 0) {
-                return;
-            }
-            $result->appendLineToBlock(
-                '{' .
-                implode(
-                    ', ',
-                    array_map(
-                        fn (Attribute $attribute) => $attribute->key . ': ' . $this->printAttributeValue(
-                            $attribute->value
-                        ),
-                        $node->attributes
-                    )
-                )
-                . '}'
-            );
         } elseif ($node instanceof Heading) {
             $result->startBlock();
-            $this->printNode($node->attributes, $result);
+            $this->printAttributes($node->attributes, $result, true);
             $result->appendToCurrentBlock(str_repeat('#', $node->level) . ' ' . $node->title);
         } elseif ($node instanceof Directive) {
             $result->addBlock('{' . $node->name . '}');
@@ -63,13 +47,16 @@ final class MarkuaPrinter
             }
         } elseif ($node instanceof Span) {
             $result->appendToCurrentBlock($node->text);
+        } elseif ($node instanceof Link) {
+            $result->appendToCurrentBlock('[' . $node->linkText . '](' . $node->target . ')');
+            $this->printAttributes($node->attributes, $result, false);
         } elseif ($node instanceof IncludedResource) {
             $result->startBlock();
-            $this->printNode($node->attributes, $result);
+            $this->printAttributes($node->attributes, $result, true);
             $result->appendToCurrentBlock('![' . $node->caption . '](' . $node->link . ')');
         } elseif ($node instanceof InlineResource) {
             $result->startBlock();
-            $this->printNode($node->attributes, $result);
+            $this->printAttributes($node->attributes, $result, true);
             $contents = $node->contents;
             if (! str_ends_with($contents, "\n")) {
                 $contents .= "\n";
@@ -88,5 +75,33 @@ final class MarkuaPrinter
         }
 
         return '"' . addslashes($value) . '"';
+    }
+
+    private function printAttributes(AttributeList $node, Result $result, bool $addNewline): void
+    {
+        /*
+         * The addNewline argument really represents whether whether the parent node is a block-level element.
+         * To be refactored later...
+         */
+        if (count($node->attributes) === 0) {
+            return;
+        }
+        $result->appendToCurrentBlock(
+            '{' .
+            implode(
+                ', ',
+                array_map(
+                    fn (Attribute $attribute) => $attribute->key . ': ' . $this->printAttributeValue(
+                        $attribute->value
+                    ),
+                    $node->attributes
+                )
+            )
+            . '}'
+        );
+
+        if ($addNewline) {
+            $result->newLine();
+        }
     }
 }

@@ -19,9 +19,4 @@ final class Attribute extends AbstractNode
     {
         return '"' . addslashes($value) . '"';
     }
-
-    public function subnodeNames(): array
-    {
-        return [];
-    }
 }

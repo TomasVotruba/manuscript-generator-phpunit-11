@@ -11,6 +11,7 @@ use BookTools\Markua\Parser\Node\Document;
 use BookTools\Markua\Parser\Node\Heading;
 use BookTools\Markua\Parser\Node\IncludedResource;
 use BookTools\Markua\Parser\Node\InlineResource;
+use BookTools\Markua\Parser\Node\Link;
 use BookTools\Markua\Parser\Node\Paragraph;
 use BookTools\Markua\Parser\Node\Span;
 use function Parsica\Parsica\alphaChar;
@@ -60,6 +61,36 @@ final class SimpleMarkuaParser
     }
 
     /**
+     * @return Parser<string>
+     */
+    private static function textBetweenBrackets(): Parser
+    {
+        return between(
+            char('('),
+            char(')'),
+            zeroOrMore(satisfy(fn (string $char) => ! in_array($char, [')'], true)))
+        );
+    }
+
+    /**
+     * @return Parser<string>
+     */
+    private static function textBetweenSquareBrackets(): Parser
+    {
+        return between(
+            char('['),
+            char(']'),
+            zeroOrMore(
+                choice(
+                    satisfy(fn (string $char) => ! in_array($char, [']', '\\'], true)),
+                    char('\\')
+                        ->followedBy(char(']'))
+                )
+            )
+        );
+    }
+
+    /**
      * @return Parser<Directive>
      */
     private static function directive(): Parser
@@ -79,9 +110,37 @@ final class SimpleMarkuaParser
      */
     private static function paragraph(): Parser
     {
-        return noneOf(['`', '!', '{'])->and(
-            keepFirst(atLeastOne(choice(noneOf(["\n"]), newline()->notFollowedBy(newline()))), self::newLineOrEof())
-        )->map(fn (?string $text) => new Paragraph([new Span((string) $text)]));
+        return keepFirst(
+            atLeastOne(
+                    collect(
+                        choice(
+                            collect(
+                                self::textBetweenSquareBrackets()->label('linkText'), // 0
+                                self::textBetweenBrackets()->label('target'), // 1
+                                optional(self::attributeList()) // 2
+                            )->map(fn (array $parts) => new Link($parts[1], $parts[0], $parts[2])),
+                            noneOf(['`', '!', '{', "\n"])
+                                ->and(
+                                    atLeastOne(
+                                    choice(
+                                        noneOf(["\n", '[']),
+                                        newline()
+                                            ->notFollowedBy(newline()),
+                                        char('\\')
+                                            ->followedBy(char('['))
+                                            ->map(fn () => '[')
+                                    )
+                                )
+                                )
+                                ->map(fn (?string $text) => new Span((string) $text))
+                                ->label('span'),
+                        )
+                    )
+                ),
+            self::newLineOrEof()
+        )
+            ->map(fn ($parts) => new Paragraph($parts))
+            ->label('paragraph');
     }
 
     /**
@@ -177,24 +236,8 @@ final class SimpleMarkuaParser
         return collect(
             optional(keepFirst(self::attributeList(), self::newLineOrEof())),
             char('!')
-                ->then(
-                    between(
-                        char('['),
-                        char(']'),
-                        zeroOrMore(
-                            choice(
-                                satisfy(fn (string $char) => ! in_array($char, [']', '\\'], true)),
-                                char('\\')
-                                    ->followedBy(char(']'))
-                            )
-                        )
-                    )
-                )->label('caption'),
-            between(
-                char('('),
-                char(')'),
-                zeroOrMore(satisfy(fn (string $char) => ! in_array($char, [')'], true)))
-            )->label('link'),
+                ->then(self::textBetweenSquareBrackets())->label('caption'),
+            self::textBetweenBrackets()->label('link'),
             self::newLineOrEof()
         )->map(fn (array $collected) => new IncludedResource($collected[2], $collected[1], $collected[0]));
     }
