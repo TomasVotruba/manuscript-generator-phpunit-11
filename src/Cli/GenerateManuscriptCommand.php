@@ -20,6 +20,8 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
 {
     public const DEFAULT_CONFIG_FILE = 'book.php';
 
+    public const COMMAND_NAME = 'generate-manuscript';
+
     private bool $filesystemWasTouched = false;
 
     /**
@@ -40,7 +42,7 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
 
     protected function configure(): void
     {
-        $this->setName('generate-manuscript')
+        $this->setName(self::COMMAND_NAME)
             ->addOption('dry-run', null, InputOption::VALUE_NONE)
             ->addOption('config', 'c', InputOption::VALUE_REQUIRED)
             ->addOption('manuscript-dir', null, InputOption::VALUE_REQUIRED)

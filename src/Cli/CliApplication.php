@@ -14,6 +14,6 @@ final class CliApplication extends Application
 
         $command = new GenerateManuscriptCommand();
         $this->add($command);
-        $this->setDefaultCommand($command->getName(), true);
+        $this->setDefaultCommand(GenerateManuscriptCommand::COMMAND_NAME, true);
     }
 }

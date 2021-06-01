@@ -311,6 +311,17 @@ CODE_SAMPLE
         );
     }
 
+    public function testLinkWithOneCharacterBeforeEndOfLine(): void
+    {
+        self::assertEquals(
+            new Document([new Paragraph([new Link('https://matthiasnoback.nl', 'Blog'), new Span('.')])]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+[Blog](https://matthiasnoback.nl).
+CODE_SAMPLE
+            )
+        );
+    }
+
     public function testLinkWithAttributes(): void
     {
         self::assertEquals(

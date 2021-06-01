@@ -115,13 +115,13 @@ final class SimpleMarkuaParser
                 collect(
                     choice(
                         collect(
-                                self::textBetweenSquareBrackets()->label('linkText'), // 0
+                            self::textBetweenSquareBrackets()->label('linkText'), // 0
                                 self::textBetweenBrackets()->label('target'), // 1
                                 optional(self::attributeList()) // 2
-                            )->map(fn (array $parts) => new Link($parts[1], $parts[0], $parts[2])),
-                        noneOf(['`', '!', '{', "\n"])
-                                ->and(
-                                    atLeastOne(
+                        )->map(fn (array $parts) => new Link($parts[1], $parts[0], $parts[2])),
+                        noneOf(['`', '!', '{', '[', "\n"])
+                            ->and(
+                                zeroOrMore(
                                         choice(
                                             noneOf(["\n", '[']),
                                             newline()
@@ -131,9 +131,9 @@ final class SimpleMarkuaParser
                                                 ->map(fn () => '[')
                                         )
                                     )
-                                )
-                                ->map(fn (?string $text) => new Span((string) $text))
-                                ->label('span'),
+                            )
+                            ->map(fn (?string $text) => new Span((string) $text))
+                            ->label('span'),
                     )
                 )
             ),
