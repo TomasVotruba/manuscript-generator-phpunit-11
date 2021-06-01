@@ -27,5 +27,5 @@
         "symplify/easy-coding-standard": "^9.3",
         "symplify/coding-standard": "^9.3"
     },
-    "bin": ["bin/book.php"]
+    "bin": ["bin/generate-manuscript"]
 }
