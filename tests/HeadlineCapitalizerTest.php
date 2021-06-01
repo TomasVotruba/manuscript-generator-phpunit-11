@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Test;
+namespace ManuscriptGenerator\Test;
 
-use BookTools\Markua\Processor\Headlines\HeadlineCapitalizer;
 use Iterator;
+use ManuscriptGenerator\Markua\Processor\Headlines\HeadlineCapitalizer;
 use PHPUnit\Framework\TestCase;
 
 final class HeadlineCapitalizerTest extends TestCase

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Processor;
+namespace ManuscriptGenerator\Markua\Processor;
 
 use Symplify\SmartFileSystem\SmartFileInfo;
 

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Processor\Headlines;
+namespace ManuscriptGenerator\Markua\Processor\Headlines;
 
-use BookTools\Markua\Parser\Node;
-use BookTools\Markua\Parser\Node\Heading;
-use BookTools\Markua\Parser\Visitor\AbstractNodeVisitor;
+use ManuscriptGenerator\Markua\Parser\Node;
+use ManuscriptGenerator\Markua\Parser\Node\Heading;
+use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
 
 final class CapitalizeHeadlinesNodeVisitor extends AbstractNodeVisitor
 {

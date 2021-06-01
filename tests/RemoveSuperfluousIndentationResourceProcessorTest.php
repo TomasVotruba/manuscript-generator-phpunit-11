@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Test;
+namespace ManuscriptGenerator\Test;
 
-use BookTools\Markua\Parser\Node\AttributeList;
-use BookTools\ResourceLoader\LoadedResource;
-use BookTools\ResourceProcessor\RemoveSuperfluousIndentationResourceProcessor;
+use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
+use ManuscriptGenerator\ResourceLoader\LoadedResource;
+use ManuscriptGenerator\ResourceProcessor\RemoveSuperfluousIndentationResourceProcessor;
 use PHPUnit\Framework\TestCase;
 
 final class RemoveSuperfluousIndentationResourceProcessorTest extends TestCase

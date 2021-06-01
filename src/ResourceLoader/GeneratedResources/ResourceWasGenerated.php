@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourceLoader\GeneratedResources;
+namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
 final class ResourceWasGenerated
 {

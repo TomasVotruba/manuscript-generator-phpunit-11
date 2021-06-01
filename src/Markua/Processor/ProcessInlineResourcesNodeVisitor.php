@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Processor;
+namespace ManuscriptGenerator\Markua\Processor;
 
-use BookTools\Markua\Parser\Node;
-use BookTools\Markua\Parser\Node\InlineResource;
-use BookTools\Markua\Parser\Visitor\AbstractNodeVisitor;
-use BookTools\ResourceLoader\LoadedResource;
-use BookTools\ResourceProcessor\ResourceProcessor;
+use ManuscriptGenerator\Markua\Parser\Node;
+use ManuscriptGenerator\Markua\Parser\Node\InlineResource;
+use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
+use ManuscriptGenerator\ResourceLoader\LoadedResource;
+use ManuscriptGenerator\ResourceProcessor\ResourceProcessor;
 
 final class ProcessInlineResourcesNodeVisitor extends AbstractNodeVisitor
 {

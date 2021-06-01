@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Test\Markua;
+namespace ManuscriptGenerator\Test\Markua;
 
-use BookTools\Markua\Parser\Node;
-use BookTools\Markua\Parser\Node\Document;
-use BookTools\Markua\Parser\Visitor\AbstractNodeVisitor;
+use ManuscriptGenerator\Markua\Parser\Node;
+use ManuscriptGenerator\Markua\Parser\Node\Document;
+use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
 
 final class NodeVisitorSpy extends AbstractNodeVisitor
 {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Parser\Visitor;
+namespace ManuscriptGenerator\Markua\Parser\Visitor;
 
-use BookTools\Markua\Parser\Node;
-use BookTools\Markua\Parser\Node\Document;
+use ManuscriptGenerator\Markua\Parser\Node;
+use ManuscriptGenerator\Markua\Parser\Node\Document;
 
 final class NodeTraverser
 {

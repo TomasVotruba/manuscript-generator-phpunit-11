@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Processor\LinkRegistry;
+namespace ManuscriptGenerator\Markua\Processor\LinkRegistry;
 
-use BookTools\Markua\Parser\Node\Link;
+use ManuscriptGenerator\Markua\Parser\Node\Link;
 use RuntimeException;
 
 final class CouldNotProcessExternalLink extends RuntimeException

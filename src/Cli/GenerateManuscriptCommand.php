@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Cli;
+namespace ManuscriptGenerator\Cli;
 
-use BookTools\Configuration\BookProjectConfiguration;
-use BookTools\Configuration\RuntimeConfiguration;
-use BookTools\DevelopmentServiceContainer;
-use BookTools\FileOperations\FileWasCreated;
-use BookTools\FileOperations\FileWasModified;
+use ManuscriptGenerator\Configuration\BookProjectConfiguration;
+use ManuscriptGenerator\Configuration\RuntimeConfiguration;
+use ManuscriptGenerator\DevelopmentServiceContainer;
+use ManuscriptGenerator\FileOperations\FileWasCreated;
+use ManuscriptGenerator\FileOperations\FileWasModified;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourceLoader;
+namespace ManuscriptGenerator\ResourceLoader;
 
-use BookTools\Markua\Parser\Node\AttributeList;
-use BookTools\Markua\Parser\Node\IncludedResource;
-use BookTools\Markua\Parser\Node\InlineResource;
+use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
+use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
+use ManuscriptGenerator\Markua\Parser\Node\InlineResource;
 
 final class LoadedResource
 {

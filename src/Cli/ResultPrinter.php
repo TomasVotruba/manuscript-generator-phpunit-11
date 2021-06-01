@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Cli;
+namespace ManuscriptGenerator\Cli;
 
-use BookTools\FileOperations\FileWasCreated;
-use BookTools\FileOperations\FileWasModified;
-use BookTools\ManuscriptWasGenerated;
-use BookTools\ResourceLoader\GeneratedResources\GeneratedResourceWasStillFresh;
-use BookTools\ResourceLoader\GeneratedResources\ResourceWasGenerated;
+use ManuscriptGenerator\FileOperations\FileWasCreated;
+use ManuscriptGenerator\FileOperations\FileWasModified;
+use ManuscriptGenerator\ManuscriptWasGenerated;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\GeneratedResourceWasStillFresh;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceWasGenerated;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symplify\ConsoleColorDiff\Console\Output\ConsoleDiffer;

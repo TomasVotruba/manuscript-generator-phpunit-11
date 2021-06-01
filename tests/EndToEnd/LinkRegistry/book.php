@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-use BookTools\Configuration\BookProjectConfiguration;
-use BookTools\Configuration\LinkRegistryConfiguration;
+use ManuscriptGenerator\Configuration\BookProjectConfiguration;
+use ManuscriptGenerator\Configuration\LinkRegistryConfiguration;
 
 $configuration = BookProjectConfiguration::usingDefaults();
-$configuration->setLinkRegistryConfiguration(new LinkRegistryConfiguration('links.txt', 'https://booktools.com'));
+$configuration->setLinkRegistryConfiguration(
+    new LinkRegistryConfiguration('links.txt', 'https://manuscriptGenerator.com')
+);
 
 return $configuration;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourceLoader\GeneratedResources;
+namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
-use BookTools\Markua\Parser\Node\IncludedResource;
-use BookTools\ResourceLoader\LoadedResource;
-use BookTools\ResourceLoader\ResourceLoader;
+use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
+use ManuscriptGenerator\ResourceLoader\LoadedResource;
+use ManuscriptGenerator\ResourceLoader\ResourceLoader;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 final class CachedResourceLoader implements ResourceLoader

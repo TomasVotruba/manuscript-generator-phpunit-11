@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourceLoader\GeneratedResources\PHPUnit;
+namespace ManuscriptGenerator\ResourceLoader\GeneratedResources\PHPUnit;
 
-use BookTools\Markua\Parser\Node\IncludedResource;
-use BookTools\ResourceLoader\GeneratedResources\ResourceGenerator;
+use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
 use function str_ends_with;
 use Symfony\Component\Process\Process;
 

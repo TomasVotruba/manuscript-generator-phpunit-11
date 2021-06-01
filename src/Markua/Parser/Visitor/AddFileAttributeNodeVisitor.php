@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Parser\Visitor;
+namespace ManuscriptGenerator\Markua\Parser\Visitor;
 
-use BookTools\Markua\Parser\Node;
+use ManuscriptGenerator\Markua\Parser\Node;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class AddFileAttributeNodeVisitor extends AbstractNodeVisitor

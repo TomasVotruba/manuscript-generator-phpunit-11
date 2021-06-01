@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Cli;
+namespace ManuscriptGenerator\Cli;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;

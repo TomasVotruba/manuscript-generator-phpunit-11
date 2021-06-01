@@ -2,12 +2,12 @@
     "name": "lean-book-tools/manuscript-generator",
     "autoload": {
         "psr-4": {
-            "BookTools\\": "src/"
+            "ManuscriptGenerator\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "BookTools\\Test\\": "tests/"
+            "ManuscriptGenerator\\Test\\": "tests/"
         }
     },
     "require": {

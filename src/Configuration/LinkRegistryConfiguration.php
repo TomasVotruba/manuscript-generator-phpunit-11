@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Configuration;
+namespace ManuscriptGenerator\Configuration;
 
 use Assert\Assert;
 

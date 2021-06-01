@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourceLoader\GeneratedResources;
+namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
-use BookTools\Markua\Parser\Node\IncludedResource;
+use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 
 abstract class AbstractOutputBufferResourceGenerator implements ResourceGenerator
 {

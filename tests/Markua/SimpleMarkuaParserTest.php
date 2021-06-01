@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Test\Markua;
+namespace ManuscriptGenerator\Test\Markua;
 
-use BookTools\Markua\Parser\Node\Attribute;
-use BookTools\Markua\Parser\Node\AttributeList;
-use BookTools\Markua\Parser\Node\Directive;
-use BookTools\Markua\Parser\Node\Document;
-use BookTools\Markua\Parser\Node\Heading;
-use BookTools\Markua\Parser\Node\IncludedResource;
-use BookTools\Markua\Parser\Node\InlineResource;
-use BookTools\Markua\Parser\Node\Link;
-use BookTools\Markua\Parser\Node\Paragraph;
-use BookTools\Markua\Parser\Node\Span;
-use BookTools\Markua\Parser\SimpleMarkuaParser;
+use ManuscriptGenerator\Markua\Parser\Node\Attribute;
+use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
+use ManuscriptGenerator\Markua\Parser\Node\Directive;
+use ManuscriptGenerator\Markua\Parser\Node\Document;
+use ManuscriptGenerator\Markua\Parser\Node\Heading;
+use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
+use ManuscriptGenerator\Markua\Parser\Node\InlineResource;
+use ManuscriptGenerator\Markua\Parser\Node\Link;
+use ManuscriptGenerator\Markua\Parser\Node\Paragraph;
+use ManuscriptGenerator\Markua\Parser\Node\Span;
+use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
 use Parsica\Parsica\ParserHasFailed;
 use PHPUnit\Framework\TestCase;
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use BookTools\Configuration\BookProjectConfiguration;
-use BookTools\Markua\Parser\Node\IncludedResource;
-use BookTools\ResourceLoader\GeneratedResources\AbstractOutputBufferResourceGenerator;
+use ManuscriptGenerator\Configuration\BookProjectConfiguration;
+use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\AbstractOutputBufferResourceGenerator;
 
 $configuration = BookProjectConfiguration::usingDefaults();
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Printer;
+namespace ManuscriptGenerator\Markua\Printer;
 
 final class Result
 {

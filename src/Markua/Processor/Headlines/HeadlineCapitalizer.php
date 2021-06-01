@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Processor\Headlines;
+namespace ManuscriptGenerator\Markua\Processor\Headlines;
 
 use Nette\Utils\Strings;
 

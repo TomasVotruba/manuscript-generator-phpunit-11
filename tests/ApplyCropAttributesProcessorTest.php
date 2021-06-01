@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Test;
+namespace ManuscriptGenerator\Test;
 
-use BookTools\ResourceProcessor\ApplyCropAttributesProcessor;
+use ManuscriptGenerator\ResourceProcessor\ApplyCropAttributesProcessor;
 use PHPUnit\Framework\TestCase;
 
 final class ApplyCropAttributesProcessorTest extends TestCase

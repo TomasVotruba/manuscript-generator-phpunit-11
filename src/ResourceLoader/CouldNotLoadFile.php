@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourceLoader;
+namespace ManuscriptGenerator\ResourceLoader;
 
 use Exception;
 use RuntimeException;

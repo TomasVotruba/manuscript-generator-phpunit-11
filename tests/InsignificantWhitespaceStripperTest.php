@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Test;
+namespace ManuscriptGenerator\Test;
 
-use BookTools\ResourceProcessor\InsignificantWhitespaceStripper;
 use Generator;
 use Iterator;
+use ManuscriptGenerator\ResourceProcessor\InsignificantWhitespaceStripper;
 use PHPUnit\Framework\TestCase;
 
 final class InsignificantWhitespaceStripperTest extends TestCase

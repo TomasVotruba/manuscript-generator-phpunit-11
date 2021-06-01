@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourceLoader\GeneratedResources;
+namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
-use BookTools\FileOperations\FileOperations;
-use BookTools\Markua\Parser\Node\IncludedResource;
-use BookTools\ResourceLoader\CouldNotLoadFile;
-use BookTools\ResourceLoader\LoadedResource;
-use BookTools\ResourceLoader\ResourceLoader;
+use ManuscriptGenerator\FileOperations\FileOperations;
+use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
+use ManuscriptGenerator\ResourceLoader\CouldNotLoadFile;
+use ManuscriptGenerator\ResourceLoader\LoadedResource;
+use ManuscriptGenerator\ResourceLoader\ResourceLoader;
 
 final class GeneratedResourceLoader implements ResourceLoader
 {

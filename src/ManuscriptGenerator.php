@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BookTools;
+namespace ManuscriptGenerator;
 
-use BookTools\Configuration\RuntimeConfiguration;
-use BookTools\FileOperations\FileOperations;
-use BookTools\Markua\Processor\MarkuaProcessor;
+use ManuscriptGenerator\Configuration\RuntimeConfiguration;
+use ManuscriptGenerator\FileOperations\FileOperations;
+use ManuscriptGenerator\Markua\Processor\MarkuaProcessor;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symplify\SmartFileSystem\SmartFileInfo;
 

@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use BookTools\Cli\BookCliApplication;
-use BookTools\Cli\GenerateManuscriptCommand;
+use ManuscriptGenerator\Cli\BookCliApplication;
+use ManuscriptGenerator\Cli\GenerateManuscriptCommand;
 
 require __DIR__ . '/../vendor/autoload.php';
 

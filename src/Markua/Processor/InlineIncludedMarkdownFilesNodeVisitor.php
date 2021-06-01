@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Processor;
+namespace ManuscriptGenerator\Markua\Processor;
 
-use BookTools\Markua\Parser\Node;
-use BookTools\Markua\Parser\Node\IncludedResource;
-use BookTools\Markua\Parser\SimpleMarkuaParser;
-use BookTools\Markua\Parser\Visitor\AbstractNodeVisitor;
-use BookTools\ResourceLoader\ResourceLoader;
+use ManuscriptGenerator\Markua\Parser\Node;
+use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
+use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
+use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
+use ManuscriptGenerator\ResourceLoader\ResourceLoader;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class InlineIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor

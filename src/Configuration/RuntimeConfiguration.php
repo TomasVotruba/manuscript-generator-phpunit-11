@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Configuration;
+namespace ManuscriptGenerator\Configuration;
 
-use BookTools\ResourceLoader\GeneratedResources\ResourceGenerator;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
 
 final class RuntimeConfiguration
 {

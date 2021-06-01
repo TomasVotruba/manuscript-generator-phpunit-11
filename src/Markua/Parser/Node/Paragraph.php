@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Parser\Node;
+namespace ManuscriptGenerator\Markua\Parser\Node;
 
-use BookTools\Markua\Parser\Node;
+use ManuscriptGenerator\Markua\Parser\Node;
 
 final class Paragraph extends AbstractNode
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Processor\LinkRegistry;
+namespace ManuscriptGenerator\Markua\Processor\LinkRegistry;
 
 use RuntimeException;
 
@@ -13,8 +13,7 @@ final class ExternalLinkCollector
      */
     public function __construct(
         private array $externalLinks = []
-    )
-    {
+    ) {
     }
 
     public static function loadFromString(string $string): self

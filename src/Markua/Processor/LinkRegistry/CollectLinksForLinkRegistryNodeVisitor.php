@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Processor\LinkRegistry;
+namespace ManuscriptGenerator\Markua\Processor\LinkRegistry;
 
-use BookTools\Configuration\LinkRegistryConfiguration;
-use BookTools\Configuration\RuntimeConfiguration;
-use BookTools\FileOperations\FileOperations;
-use BookTools\Markua\Parser\Node;
-use BookTools\Markua\Parser\Node\Document;
-use BookTools\Markua\Parser\Node\Link;
-use BookTools\Markua\Parser\Visitor\AbstractNodeVisitor;
+use ManuscriptGenerator\Configuration\LinkRegistryConfiguration;
+use ManuscriptGenerator\Configuration\RuntimeConfiguration;
+use ManuscriptGenerator\FileOperations\FileOperations;
+use ManuscriptGenerator\Markua\Parser\Node;
+use ManuscriptGenerator\Markua\Parser\Node\Document;
+use ManuscriptGenerator\Markua\Parser\Node\Link;
+use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
 
 final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
 {

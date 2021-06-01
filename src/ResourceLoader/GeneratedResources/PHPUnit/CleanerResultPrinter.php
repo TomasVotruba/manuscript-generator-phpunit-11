@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourceLoader\GeneratedResources\PHPUnit;
+namespace ManuscriptGenerator\ResourceLoader\GeneratedResources\PHPUnit;
 
 use function count;
 use PHPUnit\Framework\TestFailure;

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Test\Markua\Printer;
+namespace ManuscriptGenerator\Test\Markua\Printer;
 
-use BookTools\Markua\Parser\SimpleMarkuaParser;
-use BookTools\Markua\Printer\MarkuaPrinter;
 use Generator;
 use Iterator;
+use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
+use ManuscriptGenerator\Markua\Printer\MarkuaPrinter;
 use PHPUnit\Framework\TestCase;
 
 final class MarkuaPrinterTest extends TestCase

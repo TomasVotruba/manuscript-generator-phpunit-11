@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Processor\LinkRegistry;
+namespace ManuscriptGenerator\Markua\Processor\LinkRegistry;
 
 use RuntimeException;
 

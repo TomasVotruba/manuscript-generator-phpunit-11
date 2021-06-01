@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BookTools\FileOperations;
+namespace ManuscriptGenerator\FileOperations;
 
 final class FileWasModified
 {

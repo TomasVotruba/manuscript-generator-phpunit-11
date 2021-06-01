@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Markua\Parser;
+namespace ManuscriptGenerator\Markua\Parser;
 
-use BookTools\Markua\Parser\Node\Attribute;
-use BookTools\Markua\Parser\Node\AttributeList;
-use BookTools\Markua\Parser\Node\Directive;
-use BookTools\Markua\Parser\Node\Document;
-use BookTools\Markua\Parser\Node\Heading;
-use BookTools\Markua\Parser\Node\IncludedResource;
-use BookTools\Markua\Parser\Node\InlineResource;
-use BookTools\Markua\Parser\Node\Link;
-use BookTools\Markua\Parser\Node\Paragraph;
-use BookTools\Markua\Parser\Node\Span;
+use ManuscriptGenerator\Markua\Parser\Node\Attribute;
+use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
+use ManuscriptGenerator\Markua\Parser\Node\Directive;
+use ManuscriptGenerator\Markua\Parser\Node\Document;
+use ManuscriptGenerator\Markua\Parser\Node\Heading;
+use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
+use ManuscriptGenerator\Markua\Parser\Node\InlineResource;
+use ManuscriptGenerator\Markua\Parser\Node\Link;
+use ManuscriptGenerator\Markua\Parser\Node\Paragraph;
+use ManuscriptGenerator\Markua\Parser\Node\Span;
 use function Parsica\Parsica\alphaChar;
 use function Parsica\Parsica\alphaNumChar;
 use function Parsica\Parsica\any;
@@ -114,27 +114,27 @@ final class SimpleMarkuaParser
             atLeastOne(
                 collect(
                     choice(
-                            collect(
+                        collect(
                                 self::textBetweenSquareBrackets()->label('linkText'), // 0
                                 self::textBetweenBrackets()->label('target'), // 1
                                 optional(self::attributeList()) // 2
                             )->map(fn (array $parts) => new Link($parts[1], $parts[0], $parts[2])),
-                            noneOf(['`', '!', '{', "\n"])
+                        noneOf(['`', '!', '{', "\n"])
                                 ->and(
                                     atLeastOne(
                                         choice(
                                             noneOf(["\n", '[']),
                                             newline()
-                                            ->notFollowedBy(newline()),
+                                                ->notFollowedBy(newline()),
                                             char('\\')
-                                            ->followedBy(char('['))
-                                            ->map(fn () => '[')
+                                                ->followedBy(char('['))
+                                                ->map(fn () => '[')
                                         )
                                     )
                                 )
                                 ->map(fn (?string $text) => new Span((string) $text))
                                 ->label('span'),
-                        )
+                    )
                 )
             ),
             self::newLineOrEof()

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BookTools\ResourceProcessor;
+namespace ManuscriptGenerator\ResourceProcessor;
 
-use BookTools\ResourceLoader\LoadedResource;
-use BookTools\Test\RemoveSuperfluousIndentationResourceProcessorTest;
+use ManuscriptGenerator\ResourceLoader\LoadedResource;
+use ManuscriptGenerator\Test\RemoveSuperfluousIndentationResourceProcessorTest;
 
 /**
  * @see RemoveSuperfluousIndentationResourceProcessorTest

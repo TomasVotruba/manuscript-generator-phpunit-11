@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Test;
+namespace ManuscriptGenerator\Test;
 
-use BookTools\Markua\Processor\LinkRegistry\CouldNotAddExternalLink;
-use BookTools\Markua\Processor\LinkRegistry\ExternalLink;
-use BookTools\Markua\Processor\LinkRegistry\ExternalLinkCollector;
 use Generator;
 use Iterator;
+use ManuscriptGenerator\Markua\Processor\LinkRegistry\CouldNotAddExternalLink;
+use ManuscriptGenerator\Markua\Processor\LinkRegistry\ExternalLink;
+use ManuscriptGenerator\Markua\Processor\LinkRegistry\ExternalLinkCollector;
 use PHPUnit\Framework\TestCase;
 
 final class ExternalLinkCollectorTest extends TestCase

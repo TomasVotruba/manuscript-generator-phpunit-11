@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BookTools\Test\EndToEnd;
+namespace ManuscriptGenerator\Test\EndToEnd;
 
-use BookTools\Cli\GenerateManuscriptCommand;
+use ManuscriptGenerator\Cli\GenerateManuscriptCommand;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;
