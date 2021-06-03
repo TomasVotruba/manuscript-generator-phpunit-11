@@ -29,6 +29,7 @@ final class VendorResourceLoader implements ResourceLoader
         $targetPathname = $includedResource->expectedFilePathname();
 
         try {
+            // @TODO use project root dir instead of getcwd here
             $expectedPathname = getcwd() . '/' . $includedResource->link;
             $vendorResource = new SmartFileInfo($expectedPathname);
             $contents = $vendorResource->getContents();

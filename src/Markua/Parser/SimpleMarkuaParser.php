@@ -92,15 +92,15 @@ final class SimpleMarkuaParser
     {
         return keepFirst(
             collect(
-                    string('{blurb'), // 0
+                string('{blurb'), // 0
                 optional(keepSecond(string(', '), self::attributes())), // 1
                 keepFirst(string('}'), eol()), // 2
                 zeroOrMore( // 3
                     choice(noneOf(['{']), char('{') ->notFollowedBy(string('/blurb}')))
                 )
                     ->map(fn (string $chars) => self::parseBlock($chars)),
-                    string('{/blurb}')
-                ),
+                string('{/blurb}')
+            ),
             self::newLineOrEof()
         )->label('blurb')
             ->map(fn (array $parts) => new Blurb($parts[3], $parts[1]));
