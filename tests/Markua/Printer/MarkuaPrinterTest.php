@@ -62,6 +62,14 @@ Second line of paragraph 2
 
 See also: [Blog](https://matthiasnoback.nl){slug: blog}
 
+{aside}
+This chapter covers:
+{/aside}
+
+{blurb, class: tip}
+Test
+{/blurb}
+
 CODE_SAMPLE
         ];
     }

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Test\Markua;
 
+use ManuscriptGenerator\Markua\Parser\Node\Aside;
 use ManuscriptGenerator\Markua\Parser\Node\Attribute;
 use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
+use ManuscriptGenerator\Markua\Parser\Node\Blurb;
 use ManuscriptGenerator\Markua\Parser\Node\Directive;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
 use ManuscriptGenerator\Markua\Parser\Node\Heading;
@@ -238,6 +240,14 @@ CODE_SAMPLE
         );
     }
 
+    public function testLastParagraphOfFileWithAdditionalNewline(): void
+    {
+        self::assertEquals(
+            new Document([new Paragraph([new Span('Paragraph 1')])]),
+            $this->parser->parseDocument("Paragraph 1\n")
+        );
+    }
+
     public function testMultipleParagraphs(): void
     {
         self::assertEquals(
@@ -338,6 +348,52 @@ CODE_SAMPLE
             $this->parser->parseDocument(
                 <<<CODE_SAMPLE
 See also: [Blog](https://matthiasnoback.nl){slug: blog}
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testAside(): void
+    {
+        self::assertEquals(
+            new Document([new Aside([new Paragraph([new Span('Paragraph')])])]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+{aside}
+Paragraph
+{/aside}
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testBlurb(): void
+    {
+        self::assertEquals(
+            new Document([new Blurb([new Paragraph([new Span('Paragraph')])])]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+{blurb}
+Paragraph
+{/blurb}
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testBlurbWithAttributes(): void
+    {
+        self::assertEquals(
+            new Document(
+                [
+                    new Blurb(
+                        [new Paragraph([new Span('Paragraph')])],
+                        new AttributeList([new Attribute('class', 'tip')])
+                    ),
+                ]
+            ),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+{blurb, class: tip}
+Paragraph
+{/blurb}
 CODE_SAMPLE
             )
         );

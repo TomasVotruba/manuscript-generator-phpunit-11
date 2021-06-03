@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Markua\Parser;
 
+use ManuscriptGenerator\Markua\Parser\Node\Aside;
 use ManuscriptGenerator\Markua\Parser\Node\Attribute;
 use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
+use ManuscriptGenerator\Markua\Parser\Node\Blurb;
 use ManuscriptGenerator\Markua\Parser\Node\Directive;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
 use ManuscriptGenerator\Markua\Parser\Node\Heading;
@@ -24,7 +26,9 @@ use function Parsica\Parsica\choice;
 use function Parsica\Parsica\collect;
 use function Parsica\Parsica\either;
 use function Parsica\Parsica\eof;
+use function Parsica\Parsica\eol;
 use function Parsica\Parsica\keepFirst;
+use function Parsica\Parsica\keepSecond;
 use function Parsica\Parsica\map;
 use function Parsica\Parsica\newline;
 use function Parsica\Parsica\noneOf;
@@ -45,6 +49,8 @@ final class SimpleMarkuaParser
         $parser = zeroOrMore(
             collect(
                 any(
+                    self::aside(),
+                    self::blurb(),
                     self::directive(),
                     self::heading(),
                     self::includedResource(),
@@ -57,6 +63,60 @@ final class SimpleMarkuaParser
             ->map(fn (array $nodes) => new Document($nodes));
 
         return $parser->tryString($markua)
+            ->output();
+    }
+
+    /**
+     * @return Parser<Aside>
+     */
+    public static function aside(): Parser
+    {
+        return keepFirst(
+            between(
+                keepFirst(string('{aside}'), eol()),
+                string('{/aside}'),
+                zeroOrMore(
+                    choice(noneOf(['{']), char('{') ->notFollowedBy(string('/aside')))
+                )->map(fn (string $contents) => self::parseBlock($contents))
+            ),
+            self::newLineOrEof()
+        )
+            ->label('aside')
+            ->map(fn (array $subnodes) => new Aside($subnodes));
+    }
+
+    /**
+     * @return Parser<Blurb>
+     */
+    public static function blurb(): Parser
+    {
+        return keepFirst(
+            collect(
+                    string('{blurb'), // 0
+                optional(keepSecond(string(', '), self::attributes())), // 1
+                keepFirst(string('}'), eol()), // 2
+                zeroOrMore( // 3
+                    choice(noneOf(['{']), char('{') ->notFollowedBy(string('/blurb}')))
+                )
+                    ->map(fn (string $chars) => self::parseBlock($chars)),
+                    string('{/blurb}')
+                ),
+            self::newLineOrEof()
+        )->label('blurb')
+            ->map(fn (array $parts) => new Blurb($parts[3], $parts[1]));
+    }
+
+    /**
+     * @return array<Node>
+     */
+    private static function parseBlock(string $blockContents): array
+    {
+        $parser = zeroOrMore(
+            collect(any(self::heading(), self::includedResource(), self::inlineResource(), self::paragraph()))
+        )
+            ->thenEof();
+
+        return $parser->tryString($blockContents)
             ->output();
     }
 
@@ -122,15 +182,8 @@ final class SimpleMarkuaParser
                         noneOf(['`', '!', '{', '[', "\n"])
                             ->and(
                                 zeroOrMore(
-                                        choice(
-                                            noneOf(["\n", '[']),
-                                            newline()
-                                                ->notFollowedBy(newline()),
-                                            char('\\')
-                                                ->followedBy(char('['))
-                                                ->map(fn () => '[')
-                                        )
-                                    )
+                                    choice(noneOf(["\n", '[']), newline() ->notFollowedBy(either(newline(), eof())))
+                                )
                             )
                             ->map(fn (?string $text) => new Span((string) $text))
                             ->label('span'),
@@ -150,7 +203,7 @@ final class SimpleMarkuaParser
     {
         return map(
             collect(
-                self::token(zeroOrMore(satisfy(fn (string $char): bool => ! in_array($char, [':'], true)),)),
+                self::token(zeroOrMore(satisfy(fn (string $char): bool => ! in_array($char, [':'], true)))),
                 self::token(char(':')),
                 choice(self::token(self::stringLiteral()), self::token(self::constant()))
             )->label('attribute'),
@@ -269,12 +322,16 @@ final class SimpleMarkuaParser
      */
     private static function attributeList(): Parser
     {
-        return between(
-            self::token(char('{')),
-            self::token(char('}')),
-            sepBy(self::token(char(',')), self::attribute())
-        )->label('attributes')
-            ->map(fn (array $members) => new AttributeList($members));
+        return between(self::token(char('{')), self::token(char('}')), self::attributes())->label('attribute list');
+    }
+
+    /**
+     * @return Parser<AttributeList>
+     */
+    private static function attributes(): Parser
+    {
+        return sepBy(self::token(char(',')), self::attribute())
+            ->map(fn (array $attributes) => new AttributeList($attributes));
     }
 
     /**

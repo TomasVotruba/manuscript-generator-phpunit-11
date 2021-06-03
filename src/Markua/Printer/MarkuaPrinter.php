@@ -6,8 +6,10 @@ namespace ManuscriptGenerator\Markua\Printer;
 
 use LogicException;
 use ManuscriptGenerator\Markua\Parser\Node;
+use ManuscriptGenerator\Markua\Parser\Node\Aside;
 use ManuscriptGenerator\Markua\Parser\Node\Attribute;
 use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
+use ManuscriptGenerator\Markua\Parser\Node\Blurb;
 use ManuscriptGenerator\Markua\Parser\Node\Directive;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
 use ManuscriptGenerator\Markua\Parser\Node\Heading;
@@ -25,6 +27,20 @@ final class MarkuaPrinter
 
         $this->printNode($document, $result);
 
+        return rtrim($result->asString()) . "\n";
+    }
+
+    /**
+     * @param array<Node> $nodes
+     */
+    public function printNodes(array $nodes): string
+    {
+        $result = new Result();
+
+        foreach ($nodes as $node) {
+            $this->printNode($node, $result);
+        }
+
         return $result->asString();
     }
 
@@ -36,10 +52,25 @@ final class MarkuaPrinter
             }
         } elseif ($node instanceof Heading) {
             $result->startBlock();
-            $this->printAttributes($node->attributes, $result, true);
+            $this->printAttributeList($node->attributes, $result, true);
             $result->appendToCurrentBlock(str_repeat('#', $node->level) . ' ' . $node->title);
         } elseif ($node instanceof Directive) {
             $result->addBlock('{' . $node->name . '}');
+        } elseif ($node instanceof Aside) {
+            $result->startBlock();
+            $result->appendLineToBlock('{aside}');
+            $result->appendLineToBlock(rtrim($this->printNodes($node->subnodes)));
+            $result->appendToCurrentBlock('{/aside}');
+        } elseif ($node instanceof Blurb) {
+            $result->startBlock();
+            $result->appendToCurrentBlock('{blurb');
+            if (! $node->attributes->isEmpty()) {
+                $result->appendToCurrentBlock(', ');
+            }
+            $this->printAttributes($node->attributes, $result);
+            $result->appendLineToBlock('}');
+            $result->appendLineToBlock(rtrim($this->printNodes($node->subnodes)));
+            $result->appendToCurrentBlock('{/blurb}');
         } elseif ($node instanceof Paragraph) {
             $result->startBlock();
             foreach ($node->parts as $part) {
@@ -49,14 +80,14 @@ final class MarkuaPrinter
             $result->appendToCurrentBlock($node->text);
         } elseif ($node instanceof Link) {
             $result->appendToCurrentBlock('[' . $node->linkText . '](' . $node->target . ')');
-            $this->printAttributes($node->attributes, $result, false);
+            $this->printAttributeList($node->attributes, $result, false);
         } elseif ($node instanceof IncludedResource) {
             $result->startBlock();
-            $this->printAttributes($node->attributes, $result, true);
+            $this->printAttributeList($node->attributes, $result, true);
             $result->appendToCurrentBlock('![' . $node->caption . '](' . $node->link . ')');
         } elseif ($node instanceof InlineResource) {
             $result->startBlock();
-            $this->printAttributes($node->attributes, $result, true);
+            $this->printAttributeList($node->attributes, $result, true);
             $contents = $node->contents;
             if (! str_ends_with($contents, "\n")) {
                 $contents .= "\n";
@@ -77,7 +108,7 @@ final class MarkuaPrinter
         return '"' . addslashes($value) . '"';
     }
 
-    private function printAttributes(AttributeList $node, Result $result, bool $addNewline): void
+    private function printAttributeList(AttributeList $node, Result $result, bool $addNewline): void
     {
         /*
          * The addNewline argument really represents whether whether the parent node is a block-level element.
@@ -86,22 +117,27 @@ final class MarkuaPrinter
         if (count($node->attributes) === 0) {
             return;
         }
+        $result->appendToCurrentBlock('{');
+        $this->printAttributes($node, $result);
+        $result->appendToCurrentBlock('}');
+
+        if ($addNewline) {
+            $result->newLine();
+        }
+    }
+
+    private function printAttributes(AttributeList $attributes, Result $result): void
+    {
         $result->appendToCurrentBlock(
-            '{' .
             implode(
                 ', ',
                 array_map(
                     fn (Attribute $attribute) => $attribute->key . ': ' . $this->printAttributeValue(
                         $attribute->value
                     ),
-                    $node->attributes
+                    $attributes->attributes
                 )
             )
-            . '}'
         );
-
-        if ($addNewline) {
-            $result->newLine();
-        }
     }
 }

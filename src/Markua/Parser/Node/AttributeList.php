@@ -61,4 +61,9 @@ final class AttributeList extends AbstractNode
 
         return false;
     }
+
+    public function isEmpty(): bool
+    {
+        return count($this->attributes) === 0;
+    }
 }

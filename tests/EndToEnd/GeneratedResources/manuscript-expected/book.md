@@ -34,7 +34,6 @@ Tests: 1, Assertions: 1, Failures: 1.
 | 5 | `;` | `;` |
 | 5 | `T_WHITESPACE` | `\n` |
 
-
 {format: txt}
 ```
 Hello, world!

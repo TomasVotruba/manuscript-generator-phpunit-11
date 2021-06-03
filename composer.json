@@ -17,7 +17,7 @@
         "symfony/process": "^5.2",
         "symfony/console": "^5.2",
         "symplify/console-color-diff": "^9.3",
-        "parsica-php/parsica": "^0.8.1",
+        "parsica-php/parsica": "@dev",
         "rector/rector": "^0.11.5",
         "beberlei/assert": "^3.3"
     },
