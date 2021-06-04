@@ -22,4 +22,11 @@ final class CouldNotGenerateResource extends RuntimeException
             )
         );
     }
+
+    public static function becauseSourceFileNotFound(string $sourceFilePathname): self
+    {
+        return new self(
+            sprintf('Could not generate resource because source file not found: %s', $sourceFilePathname)
+        );
+    }
 }

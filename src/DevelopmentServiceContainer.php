@@ -26,7 +26,7 @@ use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpScriptOutputResourc
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PHPUnit\PhpUnitResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\RectorOutputResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\TableOfTokensResourceGenerator;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\VendorResourceLoader;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\VendorResourceGenerator;
 use ManuscriptGenerator\ResourceProcessor\ApplyCropAttributesProcessor;
 use ManuscriptGenerator\ResourceProcessor\CropResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\InsignificantWhitespaceStripper;
@@ -101,11 +101,11 @@ final class DevelopmentServiceContainer
     {
         return new DelegatingResourceLoader(
             [
-                new VendorResourceLoader($this->fileOperations()),
                 new GeneratedResourceLoader(
                     array_merge(
                         $this->configuration->additionalResourceGenerators(),
                         [
+                            new VendorResourceGenerator(),
                             new PhpUnitResourceGenerator(),
                             new RectorOutputResourceLoader(),
                             new TableOfTokensResourceGenerator(),
