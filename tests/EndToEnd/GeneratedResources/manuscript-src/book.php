@@ -17,6 +17,11 @@ $configuration->addResourceGenerator(
             return str_ends_with($resource->link, self::EXPECTED_SUFFIX);
         }
 
+        public function sourcePathForResource(IncludedResource $resource): string
+        {
+            return __FILE__;
+        }
+
         protected function generateResourceByEchoingDirectly(IncludedResource $resource): void
         {
             echo 'Echo whatever you want based on ' . $resource->expectedFilePathname();

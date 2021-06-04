@@ -16,9 +16,14 @@ final class PhpUnitResourceGenerator implements ResourceGenerator
         return str_ends_with($resource->link, 'phpunit-output.txt');
     }
 
+    public function sourcePathForResource(IncludedResource $resource): string
+    {
+        return dirname($resource->expectedFilePathname());
+    }
+
     public function generateResource(IncludedResource $resource): string
     {
-        return $this->getOutputOfPhpUnitRun(dirname($resource->expectedFilePathname()));
+        return $this->getOutputOfPhpUnitRun($this->sourcePathForResource($resource));
     }
 
     private function getOutputOfPhpUnitRun(string $workingDir): string

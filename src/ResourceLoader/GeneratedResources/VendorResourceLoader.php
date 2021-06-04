@@ -13,6 +13,7 @@ use function str_starts_with;
 use Symplify\SmartFileSystem\Exception\FileNotFoundException;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
+// @TODO rewrite this as a resource generator
 final class VendorResourceLoader implements ResourceLoader
 {
     public function __construct(

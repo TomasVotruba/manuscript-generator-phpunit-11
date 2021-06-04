@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
@@ -8,18 +9,23 @@ use Symfony\Component\Process\Process;
 
 final class DrawioResourceGenerator implements ResourceGenerator
 {
-    const DRAWIO_PNG_SUFFIX = '.drawio.png';
+    private const DRAWIO_PNG_SUFFIX = '.drawio.png';
 
     public function supportsResource(IncludedResource $resource): bool
     {
         return str_ends_with($resource->expectedFilePathname(), self::DRAWIO_PNG_SUFFIX);
     }
 
+    public function sourcePathForResource(IncludedResource $resource): string
+    {
+        return str_replace(self::DRAWIO_PNG_SUFFIX, '.drawio', $resource->expectedFilePathname());
+    }
+
     public function generateResource(IncludedResource $resource): string
     {
-        $drawioFilePathname = str_replace(self::DRAWIO_PNG_SUFFIX, '.drawio', $resource->expectedFilePathname());
-
         $tmpFilePathname = tempnam(sys_get_temp_dir(), 'drawio');
+        assert(is_string($tmpFilePathname));
+
         $process = new Process(
             [
                 'drawio',
@@ -28,16 +34,16 @@ final class DrawioResourceGenerator implements ResourceGenerator
                 '--scale=2',
                 '--output',
                 $tmpFilePathname,
-                $drawioFilePathname
+                $this->sourcePathForResource($resource),
             ]
         );
         $process->run();
 
-        if (!$process->isSuccessful()) {
+        if (! $process->isSuccessful()) {
             throw CouldNotGenerateResource::becauseAnExternalProcessWasUnsuccessful($process);
         }
 
-        $generatedContents = file_get_contents($tmpFilePathname);
+        $generatedContents = (string) file_get_contents($tmpFilePathname);
         unlink($tmpFilePathname);
 
         return $generatedContents;

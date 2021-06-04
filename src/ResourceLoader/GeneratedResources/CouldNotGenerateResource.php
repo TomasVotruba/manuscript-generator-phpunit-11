@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
@@ -8,6 +9,9 @@ use Symfony\Component\Process\Process;
 
 final class CouldNotGenerateResource extends RuntimeException
 {
+    /**
+     * @param Process<string> $process
+     */
     public static function becauseAnExternalProcessWasUnsuccessful(Process $process): self
     {
         return new self(

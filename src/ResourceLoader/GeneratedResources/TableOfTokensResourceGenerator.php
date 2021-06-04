@@ -17,9 +17,14 @@ final class TableOfTokensResourceGenerator implements ResourceGenerator
         return str_ends_with($resource->link, self::FILE_SUFFIX);
     }
 
+    public function sourcePathForResource(IncludedResource $resource): string
+    {
+        return str_replace(self::FILE_SUFFIX, '.php', $resource->expectedFilePathname());
+    }
+
     public function generateResource(IncludedResource $resource): string
     {
-        $phpFile = new SmartFileInfo(str_replace(self::FILE_SUFFIX, '.php', $resource->expectedFilePathname()));
+        $phpFile = new SmartFileInfo($this->sourcePathForResource($resource));
 
         /** @var PhpToken[] $allTokens */
         $allTokens = PhpToken::tokenize($phpFile->getContents());

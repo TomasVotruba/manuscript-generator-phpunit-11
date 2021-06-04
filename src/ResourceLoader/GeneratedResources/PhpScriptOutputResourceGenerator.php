@@ -16,10 +16,18 @@ final class PhpScriptOutputResourceGenerator implements ResourceGenerator
         return str_ends_with($resource->link, self::PHP_SCRIPT_OUTPUT_TXT);
     }
 
+    public function sourcePathForResource(IncludedResource $resource): string
+    {
+        return str_replace(self::PHP_SCRIPT_OUTPUT_TXT, '.php', $resource->expectedFilePathname());
+    }
+
     public function generateResource(IncludedResource $resource): string
     {
-        $scriptPath = str_replace(self::PHP_SCRIPT_OUTPUT_TXT, '.php', $resource->expectedFilePathname());
-        $process = new Process(['php', '-dauto_prepend_file=vendor/autoload.php', $scriptPath]);
+        $process = new Process([
+            'php',
+            '-dauto_prepend_file=vendor/autoload.php',
+            $this->sourcePathForResource($resource),
+        ]);
         $process->run();
 
         return $process->getOutput();

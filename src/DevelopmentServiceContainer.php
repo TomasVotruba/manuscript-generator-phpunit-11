@@ -20,7 +20,6 @@ use ManuscriptGenerator\Markua\Processor\LinkRegistry\CollectLinksForLinkRegistr
 use ManuscriptGenerator\Markua\Processor\ProcessInlineResourcesNodeVisitor;
 use ManuscriptGenerator\ResourceLoader\DelegatingResourceLoader;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\CachedResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DrawioResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\GeneratedResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpScriptOutputResourceGenerator;
@@ -103,21 +102,19 @@ final class DevelopmentServiceContainer
         return new DelegatingResourceLoader(
             [
                 new VendorResourceLoader($this->fileOperations()),
-                new CachedResourceLoader(
-                    new GeneratedResourceLoader(
-                        array_merge(
-                            [
-                                new PhpUnitResourceGenerator(),
-                                new RectorOutputResourceLoader(),
-                                new TableOfTokensResourceGenerator(),
-                                new PhpScriptOutputResourceGenerator(),
-                                new DrawioResourceGenerator(),
-                            ],
-                            $this->configuration->additionalResourceGenerators()
-                        ),
-                        $this->fileOperations()
+                new GeneratedResourceLoader(
+                    array_merge(
+                        $this->configuration->additionalResourceGenerators(),
+                        [
+                            new PhpUnitResourceGenerator(),
+                            new RectorOutputResourceLoader(),
+                            new TableOfTokensResourceGenerator(),
+                            new PhpScriptOutputResourceGenerator(),
+                            new DrawioResourceGenerator(),
+                        ]
                     ),
                     new FileResourceLoader(),
+                    $this->fileOperations(),
                     $this->eventDispatcher()
                 ),
                 new FileResourceLoader(),

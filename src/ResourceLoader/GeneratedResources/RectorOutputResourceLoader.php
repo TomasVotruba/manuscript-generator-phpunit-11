@@ -15,9 +15,14 @@ final class RectorOutputResourceLoader implements ResourceGenerator
         return str_ends_with($resource->link, 'rector-output.diff');
     }
 
+    public function sourcePathForResource(IncludedResource $resource): string
+    {
+        return dirname($resource->expectedFilePathname());
+    }
+
     public function generateResource(IncludedResource $resource): string
     {
-        return $this->getOutputOfRectorRun(dirname($resource->expectedFilePathname()));
+        return $this->getOutputOfRectorRun($this->sourcePathForResource($resource));
     }
 
     private function getOutputOfRectorRun(string $workingDir): string
