@@ -33,7 +33,7 @@ final class DelegatingResourceLoader implements ResourceLoader
                 'None of the loaders was able to load included resource "%s" included by file "%s"',
                 $includedResource->link,
                 $includedResource->includedFromFile()
-                    ->getRelativePathname()
+                    ->pathnameRelativeTo(getcwd() ?: '')
             ),
             0,
             $lastException

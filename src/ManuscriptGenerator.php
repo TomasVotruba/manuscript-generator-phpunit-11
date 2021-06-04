@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace ManuscriptGenerator;
 
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
+use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\FileOperations\FileOperations;
 use ManuscriptGenerator\Markua\Processor\MarkuaProcessor;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class ManuscriptGenerator
 {
@@ -38,9 +38,9 @@ final class ManuscriptGenerator
                 continue;
             }
 
-            $srcFilePath = new SmartFileInfo($srcFilePath);
+            $srcFilePath = ExistingFile::fromPathname($srcFilePath);
 
-            $processedContents = $this->markuaProcessor->process($srcFilePath, $srcFilePath->getContents());
+            $processedContents = $this->markuaProcessor->process($srcFilePath, $srcFilePath->contents());
 
             $targetFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $srcFileName;
             $this->fileOperations->putContents($targetFilePathname, $processedContents);

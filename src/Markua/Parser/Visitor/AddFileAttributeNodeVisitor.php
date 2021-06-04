@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Markua\Parser\Visitor;
 
+use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\Markua\Parser\Node;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class AddFileAttributeNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
-        private SmartFileInfo $file
+        private ExistingFile $file
     ) {
     }
 

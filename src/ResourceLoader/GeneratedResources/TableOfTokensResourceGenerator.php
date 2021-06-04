@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
+use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use PhpToken;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class TableOfTokensResourceGenerator implements ResourceGenerator
 {
@@ -24,10 +24,10 @@ final class TableOfTokensResourceGenerator implements ResourceGenerator
 
     public function generateResource(IncludedResource $resource): string
     {
-        $phpFile = new SmartFileInfo($this->sourcePathForResource($resource));
+        $phpFile = ExistingFile::fromPathname($this->sourcePathForResource($resource));
 
         /** @var PhpToken[] $allTokens */
-        $allTokens = PhpToken::tokenize($phpFile->getContents());
+        $allTokens = PhpToken::tokenize($phpFile->contents());
 
         return $this->printTokens($allTokens);
     }

@@ -9,7 +9,6 @@ use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Markua\Parser\Node\InlineResource;
 use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
 use ManuscriptGenerator\ResourceLoader\ResourceLoader;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class InlineIncludedResourcesNodeVisitor extends AbstractNodeVisitor
 {
@@ -23,9 +22,6 @@ final class InlineIncludedResourcesNodeVisitor extends AbstractNodeVisitor
         if (! $node instanceof IncludedResource) {
             return null;
         }
-
-        $includedFromFile = $node->getAttribute('file');
-        assert($includedFromFile instanceof SmartFileInfo);
 
         $resource = $this->resourceLoader->load($node);
 

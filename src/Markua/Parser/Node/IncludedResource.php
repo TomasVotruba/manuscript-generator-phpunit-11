@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Markua\Parser\Node;
 
-use Symplify\SmartFileSystem\SmartFileInfo;
+use ManuscriptGenerator\FileOperations\ExistingFile;
 
 final class IncludedResource extends AbstractNode
 {
@@ -26,13 +26,13 @@ final class IncludedResource extends AbstractNode
     public function expectedFilePathname(): string
     {
         return $this->includedFromFile()
-            ->getPath() . '/resources/' . $this->link;
+            ->directory() . '/resources/' . $this->link;
     }
 
-    public function includedFromFile(): SmartFileInfo
+    public function includedFromFile(): ExistingFile
     {
         $includedFromFile = $this->getAttribute('file');
-        assert($includedFromFile instanceof SmartFileInfo);
+        assert($includedFromFile instanceof ExistingFile);
 
         return $includedFromFile;
     }
