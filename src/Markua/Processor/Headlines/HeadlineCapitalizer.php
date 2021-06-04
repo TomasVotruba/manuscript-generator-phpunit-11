@@ -25,7 +25,7 @@ final class HeadlineCapitalizer
             }
 
             // code, skip it
-            if (Strings::endsWith($headlinePart, '()')) {
+            if (\str_ends_with($headlinePart, '()')) {
                 continue;
             }
 
