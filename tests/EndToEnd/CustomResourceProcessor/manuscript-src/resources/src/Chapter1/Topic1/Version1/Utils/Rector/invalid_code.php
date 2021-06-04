@@ -1,3 +1,0 @@
-<?php
-
-'meaningless code' echo;

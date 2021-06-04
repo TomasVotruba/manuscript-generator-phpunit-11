@@ -36,7 +36,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         [
             // Because it makes no sense ;) (well, I just need assertEquals())
             PhpUnitStrictFixer::class,
-            'tests/EndToEnd/CustomResourceProcessor/manuscript-src/resources/src/Chapter1/Topic1/Version1/Utils/Rector/invalid_code.php',
         ]
     );
 };

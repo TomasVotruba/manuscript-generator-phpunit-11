@@ -5,8 +5,7 @@
 
 {format: txt}
 ```
-
-Parse error: syntax error, unexpected token "echo" in invalid_code.php on line 3
+This file is called: show_name.php
 ```
 
 {format: php}
