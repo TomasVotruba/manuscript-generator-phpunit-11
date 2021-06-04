@@ -34,6 +34,7 @@ use function Parsica\Parsica\newline;
 use function Parsica\Parsica\noneOf;
 use function Parsica\Parsica\optional;
 use Parsica\Parsica\Parser;
+use Parsica\Parsica\ParserHasFailed;
 use function Parsica\Parsica\repeat;
 use function Parsica\Parsica\satisfy;
 use function Parsica\Parsica\sepBy;
@@ -44,6 +45,9 @@ use function Parsica\Parsica\zeroOrMore;
 
 final class SimpleMarkuaParser
 {
+    /**
+     * @throws ParserHasFailed
+     */
     public function parseDocument(string $markua): Document
     {
         $parser = zeroOrMore(

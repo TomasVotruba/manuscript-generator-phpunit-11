@@ -9,6 +9,7 @@ use ManuscriptGenerator\Markua\Parser\Visitor\AddFileAttributeNodeVisitor;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeTraverser;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeVisitor;
 use ManuscriptGenerator\Markua\Printer\MarkuaPrinter;
+use Parsica\Parsica\ParserHasFailed;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class AstBasedMarkuaProcessor implements MarkuaProcessor
@@ -25,7 +26,11 @@ final class AstBasedMarkuaProcessor implements MarkuaProcessor
 
     public function process(SmartFileInfo $markuaFileInfo, string $markua): string
     {
-        $document = $this->parser->parseDocument($markua);
+        try {
+            $document = $this->parser->parseDocument($markua);
+        } catch (ParserHasFailed $exception) {
+            throw FailedToProcessMarkua::becauseItCouldNotBeParsed((string) $markuaFileInfo, $markua, $exception);
+        }
 
         $nodeTraverser = new NodeTraverser(
             array_merge([new AddFileAttributeNodeVisitor($markuaFileInfo)], $this->nodeVisitors)
