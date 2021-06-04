@@ -24,7 +24,7 @@ $configuration->addResourceGenerator(
 
         protected function generateResourceByEchoingDirectly(IncludedResource $resource): void
         {
-            echo 'Echo whatever you want based on ' . $resource->expectedFilePathname();
+            echo 'Echo whatever you want';
         }
     }
 );

@@ -41,5 +41,5 @@ Hello, world!
 
 {format: txt}
 ```
-Echo whatever you want based on /app/tests/EndToEnd/GeneratedResources/manuscript-src/resources/example.buffered-output.txt
+Echo whatever you want
 ```
