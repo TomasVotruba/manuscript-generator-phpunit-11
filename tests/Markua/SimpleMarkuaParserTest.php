@@ -353,6 +353,17 @@ CODE_SAMPLE
         );
     }
 
+    public function testNotReallyALink(): void
+    {
+        self::assertEquals(
+            new Document([new Paragraph([new Span('Method [...] has no return type.')])]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+Method [...] has no return type.
+CODE_SAMPLE
+            )
+        );
+    }
+
     public function testAside(): void
     {
         self::assertEquals(

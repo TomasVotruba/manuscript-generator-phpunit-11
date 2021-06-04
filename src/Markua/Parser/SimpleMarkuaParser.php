@@ -123,12 +123,12 @@ final class SimpleMarkuaParser
     /**
      * @return Parser<string>
      */
-    private static function textBetweenBrackets(): Parser
+    private static function uriBetweenBrackets(): Parser
     {
         return between(
             char('('),
             char(')'),
-            zeroOrMore(satisfy(fn (string $char) => ! in_array($char, [')'], true)))
+            zeroOrMore(noneOf([' ', "\n", ')'])) // quite a simplification
         );
     }
 
@@ -176,15 +176,23 @@ final class SimpleMarkuaParser
                     choice(
                         collect(
                             self::textBetweenSquareBrackets()->label('linkText'), // 0
-                                self::textBetweenBrackets()->label('target'), // 1
+                                self::uriBetweenBrackets()->label('target'), // 1
                                 optional(self::attributeList()) // 2
                         )->map(fn (array $parts) => new Link($parts[1], $parts[0], $parts[2])),
-                        noneOf(['`', '!', '{', '[', "\n"])
-                            ->and(
-                                zeroOrMore(
-                                    choice(noneOf(["\n", '[']), newline() ->notFollowedBy(either(newline(), eof())))
-                                )
-                            )
+                        choice(
+                            noneOf(['`', '!', '{', '[', "\n"])
+                                ->and(
+                                    zeroOrMore(
+                                        choice(
+                                            noneOf(["\n", '[']),
+                                            newline()
+                                                ->notFollowedBy(either(newline(), eof()))
+                                        )
+                                    )
+                                ),
+                            char('[')
+                                ->notFollowedBy(zeroOrMore(noneOf([']']))->followedBy(char(']')->then(char('('))))
+                        )
                             ->map(fn (?string $text) => new Span((string) $text))
                             ->label('span'),
                     )
@@ -192,8 +200,27 @@ final class SimpleMarkuaParser
             ),
             self::newLineOrEof()
         )
-            ->map(fn ($parts) => new Paragraph($parts))
+            ->map(fn ($parts) => new Paragraph(self::simplifyNodes($parts)))
             ->label('paragraph');
+    }
+
+    /**
+     * @param array<Node> $originalNodes
+     * @return array<Node>
+     */
+    private static function simplifyNodes(array $originalNodes): array
+    {
+        $simplified = [];
+        foreach ($originalNodes as $currentNode) {
+            $previousNode = $simplified[count($simplified) - 1] ?? null;
+            if ($currentNode instanceof Span && $previousNode instanceof Span) {
+                $previousNode->text .= $currentNode->text;
+            } else {
+                $simplified[] = $currentNode;
+            }
+        }
+
+        return $simplified;
     }
 
     /**
@@ -287,11 +314,11 @@ final class SimpleMarkuaParser
     private static function includedResource(): Parser
     {
         return collect(
-            optional(keepFirst(self::attributeList(), self::newLineOrEof())),
+            optional(keepFirst(self::attributeList(), self::newLineOrEof())), // 0
             char('!')
-                ->then(self::textBetweenSquareBrackets())->label('caption'),
-            self::textBetweenBrackets()->label('link'),
-            self::newLineOrEof()
+                ->then(self::textBetweenSquareBrackets())->label('caption'), // 1
+            self::uriBetweenBrackets()->label('link'), // 2
+            self::newLineOrEof() // 3
         )->map(fn (array $collected) => new IncludedResource($collected[2], $collected[1], $collected[0]));
     }
 
