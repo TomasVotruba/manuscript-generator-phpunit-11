@@ -32,8 +32,10 @@ use ManuscriptGenerator\ResourceLoader\GeneratedResources\VendorResourceGenerato
 use ManuscriptGenerator\ResourceProcessor\ApplyCropAttributesProcessor;
 use ManuscriptGenerator\ResourceProcessor\CropResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\InsignificantWhitespaceStripper;
+use ManuscriptGenerator\ResourceProcessor\Psr4SrcNamespaceCollector;
 use ManuscriptGenerator\ResourceProcessor\RemoveSuperfluousIndentationResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\StripInsignificantWhitespaceResourceProcessor;
+use ManuscriptGenerator\ResourceProcessor\StripNamespaceResourceProcessor;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\NullOutput;
@@ -147,6 +149,9 @@ final class ServiceContainer
                 array_merge(
                     $this->configuration->additionalResourceProcessors(),
                     [
+                        new StripNamespaceResourceProcessor(
+                            new Psr4SrcNamespaceCollector($this->configuration->manuscriptSrcDir() . '/resources/src')
+                        ),
                         new CropResourceProcessor(),
                         new ApplyCropAttributesProcessor(),
                         new RemoveSuperfluousIndentationResourceProcessor(),

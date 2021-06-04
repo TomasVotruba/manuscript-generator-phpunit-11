@@ -8,5 +8,5 @@ use ManuscriptGenerator\ResourceLoader\LoadedResource;
 
 interface ResourceProcessor
 {
-    public function process(LoadedResource $includedResource): void;
+    public function process(LoadedResource $resource): void;
 }

@@ -23,13 +23,14 @@ final class PhpScriptOutputResourceGenerator implements ResourceGenerator
 
     public function generateResource(IncludedResource $resource): string
     {
-        $process = new Process([
-            'php',
-            '-dauto_prepend_file=vendor/autoload.php',
-            $this->sourcePathForResource($resource),
-        ]);
+        $workingDir = dirname($resource->expectedFilePathname());
+
+        $process = new Process(['php', $this->sourcePathForResource($resource)], $workingDir);
         $process->run();
 
-        return $process->getOutput();
+        $output = $process->getOutput();
+
+        // Maybe generalize this: strip working dir from file paths in output
+        return str_replace($workingDir . '/', '', $output);
     }
 }

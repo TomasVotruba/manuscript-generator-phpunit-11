@@ -6,5 +6,6 @@ parameters:
     tmpDir: %currentWorkingDirectory%/cache/phpstan
     excludes_analyse:
         - tests/EndToEnd/Project/manuscript-src/resources/
+        - tests/EndToEnd/CustomResourceProcessor/manuscript-src/resources/src/Chapter1/Topic1/Version1/Utils/Rector/invalid_code.php
 includes:
     - phpstan-baseline.neon

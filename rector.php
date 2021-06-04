@@ -32,6 +32,7 @@ return static function (
     $parameters->set(Option::SKIP, [
         AddArrayReturnDocTypeRector::class,
         'tests/EndToEnd/Project/manuscript-src/resources/',
+        'tests/EndToEnd/CustomResourceProcessor/manuscript-src/resources/src/Chapter1/Topic1/Version1/Utils/Rector/invalid_code.php'
     ]);
 
     $services = $containerConfigurator->services();

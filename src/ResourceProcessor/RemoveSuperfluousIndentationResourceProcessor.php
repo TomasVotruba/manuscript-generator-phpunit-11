@@ -12,9 +12,9 @@ use ManuscriptGenerator\Test\RemoveSuperfluousIndentationResourceProcessorTest;
  */
 final class RemoveSuperfluousIndentationResourceProcessor implements ResourceProcessor
 {
-    public function process(LoadedResource $includedResource): void
+    public function process(LoadedResource $resource): void
     {
-        $fileContents = $this->trim($includedResource->contents());
+        $fileContents = $this->trim($resource->contents());
 
         $result = preg_match_all('/(^|\n)([ ]*).+/', $fileContents, $matches);
         if ($result === 0) {
@@ -41,7 +41,7 @@ final class RemoveSuperfluousIndentationResourceProcessor implements ResourcePro
 
         assert(is_string($fileContents));
 
-        $includedResource->setContents($fileContents);
+        $resource->setContents($fileContents);
     }
 
     private function trim(string $fileContents): string

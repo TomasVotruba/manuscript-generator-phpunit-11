@@ -10,10 +10,10 @@ $configuration = BookProjectConfiguration::usingDefaults();
 
 $configuration->addResourceProcessor(
     new class() implements ResourceProcessor {
-        public function process(LoadedResource $includedResource): void
+        public function process(LoadedResource $resource): void
         {
             // Fix smileys
-            $includedResource->setContents(str_replace('-)', ')', $includedResource->contents()));
+            $resource->setContents(str_replace('-)', ')', $resource->contents()));
         }
     }
 );

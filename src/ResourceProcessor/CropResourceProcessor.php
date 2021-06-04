@@ -19,8 +19,8 @@ final class CropResourceProcessor implements ResourceProcessor
         $this->textCropper = new TextCropper(self::CROP_START_MARKER, self::CROP_END_MARKER);
     }
 
-    public function process(LoadedResource $includedResource): void
+    public function process(LoadedResource $resource): void
     {
-        $includedResource->setContents($this->textCropper->crop($includedResource->contents()));
+        $resource->setContents($this->textCropper->crop($resource->contents()));
     }
 }

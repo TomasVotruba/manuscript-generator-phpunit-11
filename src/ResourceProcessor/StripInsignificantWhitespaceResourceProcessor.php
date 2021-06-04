@@ -13,8 +13,8 @@ final class StripInsignificantWhitespaceResourceProcessor implements ResourcePro
     ) {
     }
 
-    public function process(LoadedResource $includedResource): void
+    public function process(LoadedResource $resource): void
     {
-        $includedResource->setContents($this->stripper->strip($includedResource->contents()));
+        $resource->setContents($this->stripper->strip($resource->contents()));
     }
 }

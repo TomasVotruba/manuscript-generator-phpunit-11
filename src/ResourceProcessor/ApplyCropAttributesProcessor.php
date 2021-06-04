@@ -11,25 +11,25 @@ use ManuscriptGenerator\ResourceLoader\LoadedResource;
  */
 final class ApplyCropAttributesProcessor implements ResourceProcessor
 {
-    public function process(LoadedResource $includedResource): void
+    public function process(LoadedResource $resource): void
     {
-        $cropStart = $includedResource->getAttribute('crop-start');
-        $cropEnd = $includedResource->getAttribute('crop-end');
+        $cropStart = $resource->getAttribute('crop-start');
+        $cropEnd = $resource->getAttribute('crop-end');
 
         if ($cropStart === null && $cropEnd === null) {
             return;
         }
 
         $croppedContent = $this->selectLines(
-            $includedResource->contents(),
+            $resource->contents(),
             $cropStart === null ? null : (int) $cropStart,
             $cropEnd === null ? null : (int) $cropEnd,
         );
 
-        $includedResource->removeAttribute('crop-start');
-        $includedResource->removeAttribute('crop-end');
+        $resource->removeAttribute('crop-start');
+        $resource->removeAttribute('crop-end');
 
-        $includedResource->setContents($croppedContent);
+        $resource->setContents($croppedContent);
     }
 
     public static function selectLines(string $contents, ?int $firstLineIncluded, ?int $lastLineIncluded): string
