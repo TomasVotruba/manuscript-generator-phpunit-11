@@ -21,6 +21,7 @@ use ManuscriptGenerator\Markua\Processor\ProcessInlineResourcesNodeVisitor;
 use ManuscriptGenerator\ResourceLoader\DelegatingResourceLoader;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\CachedResourceLoader;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\DrawioResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\GeneratedResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpScriptOutputResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PHPUnit\PhpUnitResourceGenerator;
@@ -110,6 +111,7 @@ final class DevelopmentServiceContainer
                                 new RectorOutputResourceLoader(),
                                 new TableOfTokensResourceGenerator(),
                                 new PhpScriptOutputResourceGenerator(),
+                                new DrawioResourceGenerator(),
                             ],
                             $this->configuration->additionalResourceGenerators()
                         ),
