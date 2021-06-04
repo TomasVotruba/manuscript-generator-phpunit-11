@@ -7,6 +7,7 @@ namespace ManuscriptGenerator;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\FileOperations\FileOperations;
 use ManuscriptGenerator\Markua\Processor\MarkuaProcessor;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
@@ -16,7 +17,8 @@ final class ManuscriptGenerator
         private RuntimeConfiguration $configuration,
         private FileOperations $fileOperations,
         private MarkuaProcessor $markuaProcessor,
-        private EventDispatcherInterface $eventDispatcher
+        private EventDispatcherInterface $eventDispatcher,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -28,6 +30,11 @@ final class ManuscriptGenerator
         ] as $srcFileName => $targetFileName) {
             $srcFilePath = $this->configuration->manuscriptSrcDir() . '/' . $srcFileName;
             if (! is_file($srcFilePath)) {
+                $this->logger->warning('Skipping generation of {targetFileName} because {srcFilePath} does not exist', [
+                    'targetFileName' => $targetFileName,
+                    'srcFilePath' => $srcFilePath,
+                ]);
+
                 continue;
             }
 
@@ -43,6 +50,9 @@ final class ManuscriptGenerator
             $this->fileOperations->putContents($targetTxtFilePathname, $txtFileContents);
         }
 
+        $this->logger->info('Generated the manuscript files in {manuscriptTargetDir}', [
+            'manuscriptTargetDir' => $this->configuration->manuscriptTargetDir(),
+        ]);
         $this->eventDispatcher->dispatch(new ManuscriptWasGenerated($this->configuration->manuscriptTargetDir()));
     }
 }

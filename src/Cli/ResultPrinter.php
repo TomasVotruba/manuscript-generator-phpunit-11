@@ -79,8 +79,6 @@ final class ResultPrinter implements EventSubscriberInterface
 
     public function whenManuscriptWasGenerated(ManuscriptWasGenerated $event): void
     {
-        $this->output->writeln(sprintf('<info>done</info> %s', $this->relativePathname($event->manuscriptDir())));
-        $this->output->writeln('');
         $this->output->writeln(
             sprintf(
                 'Resources generated: %d, Resources still fresh: %d, Files created: %d, Files updated: %d',

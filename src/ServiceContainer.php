@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator;
 
+use LogicException;
 use ManuscriptGenerator\Cli\ResultPrinter;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\FileOperations\FileOperations;
@@ -33,6 +34,7 @@ use ManuscriptGenerator\ResourceProcessor\InsignificantWhitespaceStripper;
 use ManuscriptGenerator\ResourceProcessor\RemoveSuperfluousIndentationResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\StripInsignificantWhitespaceResourceProcessor;
 use SebastianBergmann\Diff\Differ;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -43,6 +45,8 @@ use Symplify\ConsoleColorDiff\Console\Output\ConsoleDiffer;
 final class ServiceContainer
 {
     private ?EventDispatcher $eventDispatcher = null;
+
+    private ?OutputInterface $output = null;
 
     public function __construct(
         private RuntimeConfiguration $configuration
@@ -55,12 +59,15 @@ final class ServiceContainer
             $this->configuration,
             $this->fileOperations(),
             new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaParser(), new MarkuaPrinter()),
-            $this->eventDispatcher()
+            $this->eventDispatcher(),
+            $this->logger()
         );
     }
 
     public function setOutput(OutputInterface $output): void
     {
+        $this->output = $output;
+
         $this->printResultsSubscriber()
             ->setOutput($output);
     }
@@ -158,5 +165,19 @@ final class ServiceContainer
         }
 
         return $nodeVisitors;
+    }
+
+    private function logger(): ConsoleLogger
+    {
+        return $this->logger ??= new ConsoleLogger($this->output());
+    }
+
+    private function output(): OutputInterface
+    {
+        if ($this->output === null) {
+            throw new LogicException('First call setOutput()');
+        }
+
+        return $this->output;
     }
 }
