@@ -20,7 +20,9 @@ final class FileOperations
             $oldContents = $this->filesystem->getContents($pathname);
             $this->filesystem->putContents($pathname, $contents);
 
-            $this->eventDispatcher->dispatch(new FileWasModified($pathname, $oldContents, $contents));
+            if ($oldContents !== $contents) {
+                $this->eventDispatcher->dispatch(new FileWasModified($pathname, $oldContents, $contents));
+            }
         } else {
             $this->filesystem->putContents($pathname, $contents);
 
