@@ -55,7 +55,7 @@ CODE_SAMPLE
     public function testInlineResourceWithNoFormat(): void
     {
         self::assertEquals(
-            new Document([new InlineResource("\$code\n", null)]),
+            new Document([new InlineResource('$code', null)]),
             $this->parser->parseDocument(<<<'CODE_SAMPLE'
 ```
 $code
@@ -69,7 +69,7 @@ CODE_SAMPLE
     {
         self::assertEquals(
             new Document(
-                [new InlineResource("\$code\n", 'php', new AttributeList([new Attribute('caption', 'Caption')]))]
+                [new InlineResource('$code', 'php', new AttributeList([new Attribute('caption', 'Caption')]))]
             ),
             $this->parser->parseDocument(<<<'CODE_SAMPLE'
 {caption: "Caption"}
@@ -87,6 +87,32 @@ CODE_SAMPLE
             new Document([new IncludedResource('source.php', '')]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 ![](source.php)
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testInlineResourceWithBacktick(): void
+    {
+        self::assertEquals(
+            new Document([new InlineResource('// Using ` in a comment')]),
+            $this->parser->parseDocument(<<<'CODE_SAMPLE'
+```
+// Using ` in a comment
+```
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testInlineResourceWithThreeBackticks(): void
+    {
+        self::assertEquals(
+            new Document([new InlineResource('// Using ``` in a comment')]),
+            $this->parser->parseDocument(<<<'CODE_SAMPLE'
+```
+// Using ``` in a comment
+```
 CODE_SAMPLE
             )
         );

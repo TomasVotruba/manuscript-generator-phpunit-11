@@ -57,7 +57,6 @@ Second line of paragraph 2
 
 ```php
 // inline source without attributes
-
 ```
 
 See also: [Blog](https://matthiasnoback.nl){slug: blog}

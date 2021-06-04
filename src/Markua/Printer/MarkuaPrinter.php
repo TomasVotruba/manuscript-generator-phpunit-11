@@ -27,7 +27,7 @@ final class MarkuaPrinter
 
         $this->printNode($document, $result);
 
-        return rtrim($result->asString()) . "\n";
+        return self::keepOnlyOneNewLineAtTheEnd($result->asString());
     }
 
     /**
@@ -88,11 +88,9 @@ final class MarkuaPrinter
         } elseif ($node instanceof InlineResource) {
             $result->startBlock();
             $this->printAttributeList($node->attributes, $result, true);
-            $contents = $node->contents;
-            if (! str_ends_with($contents, "\n")) {
-                $contents .= "\n";
-            }
-            $result->appendToCurrentBlock('```' . $node->format . "\n" . $contents . '```');
+            $result->appendToCurrentBlock(
+                '```' . $node->format . "\n" . self::keepOnlyOneNewLineAtTheEnd($node->contents) . '```'
+            );
         } else {
             throw new LogicException('Unknown node type: ' . $node::class);
         }
@@ -139,5 +137,10 @@ final class MarkuaPrinter
                 )
             )
         );
+    }
+
+    private static function keepOnlyOneNewLineAtTheEnd(string $original): string
+    {
+        return rtrim($original) . "\n";
     }
 }

@@ -332,12 +332,9 @@ final class SimpleMarkuaParser
             repeat(3, char('`')), // 1
             keepFirst(optional(atLeastOne(alphaChar())), newline())
                 ->label('format'), // 2
-            zeroOrMore(
-                choice(
-                    satisfy(fn (string $char) => ! in_array($char, ['`'], true)),
-                    newline()
-                        ->notFollowedBy(char('`'))
-                )
+            keepFirst(
+                zeroOrMore(choice(noneOf(["\n"]), char("\n") ->notFollowedBy(string('```')))),
+                newline()
             )->label('source'), // 3
             repeat(3, char('`')), // 4
             self::newLineOrEof() // 5
