@@ -5,3 +5,5 @@
 ![](php_script/script.php_script_output.txt)
 
 ![](example.buffered-output.txt)
+
+![](images/image.diagram.png)

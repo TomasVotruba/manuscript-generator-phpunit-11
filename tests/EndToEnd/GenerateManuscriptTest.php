@@ -43,6 +43,7 @@ final class GenerateManuscriptTest extends TestCase
                 __DIR__ . '/GeneratedResources/manuscript-src/resources/tokens/hello_world.table_of_tokens.md',
                 __DIR__ . '/GeneratedResources/manuscript-src/resources/php_script/script.php_script_output.txt',
                 __DIR__ . '/GeneratedResources/manuscript-src/resources/example.buffered-output.txt',
+                __DIR__ . '/GeneratedResources/manuscript-src/resources/images/image.diagram.png',
             ]
         );
         // Remove the entire generated manuscript dir

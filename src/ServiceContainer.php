@@ -13,6 +13,7 @@ use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeVisitor;
 use ManuscriptGenerator\Markua\Printer\MarkuaPrinter;
 use ManuscriptGenerator\Markua\Processor\AstBasedMarkuaProcessor;
+use ManuscriptGenerator\Markua\Processor\CopyIncludedResourceNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\Headlines\CapitalizeHeadlinesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\Headlines\HeadlineCapitalizer;
 use ManuscriptGenerator\Markua\Processor\InlineIncludedMarkdownFilesNodeVisitor;
@@ -150,6 +151,7 @@ final class ServiceContainer
                     new StripInsignificantWhitespaceResourceProcessor(new InsignificantWhitespaceStripper()),
                 ]
             ),
+            new CopyIncludedResourceNodeVisitor($this->configuration, $this->resourceLoader(), $this->fileOperations()),
             new CapitalizeHeadlinesNodeVisitor(
                 new HeadlineCapitalizer(),
                 $this->configuration->capitalizeHeadlines()

@@ -43,3 +43,5 @@ Hello, world!
 ```
 Echo whatever you want
 ```
+
+![](images/image.diagram.png)
