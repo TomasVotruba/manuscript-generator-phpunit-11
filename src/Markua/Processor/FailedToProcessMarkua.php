@@ -13,8 +13,7 @@ final class FailedToProcessMarkua extends RuntimeException
         string $filePathname,
         string $markua,
         ParserHasFailed $exception
-    ): self
-    {
+    ): self {
         return new self(
             sprintf(
                 'Could not parse Markua file %s. Parse error: %s. Full contents: %s',

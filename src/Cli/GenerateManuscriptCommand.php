@@ -6,9 +6,9 @@ namespace ManuscriptGenerator\Cli;
 
 use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
-use ManuscriptGenerator\DevelopmentServiceContainer;
 use ManuscriptGenerator\FileOperations\FileWasCreated;
 use ManuscriptGenerator\FileOperations\FileWasModified;
+use ManuscriptGenerator\ServiceContainer;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -54,7 +54,7 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
         $dryRun = $input->getOption('dry-run');
         assert(is_bool($dryRun));
 
-        $container = new DevelopmentServiceContainer(
+        $container = new ServiceContainer(
             new RuntimeConfiguration($this->loadBookProjectConfiguration($input), $dryRun)
         );
 

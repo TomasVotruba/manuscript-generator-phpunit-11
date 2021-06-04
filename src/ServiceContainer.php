@@ -40,7 +40,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symplify\ConsoleColorDiff\Console\Formatter\ColorConsoleDiffFormatter;
 use Symplify\ConsoleColorDiff\Console\Output\ConsoleDiffer;
 
-final class DevelopmentServiceContainer
+final class ServiceContainer
 {
     private ?EventDispatcher $eventDispatcher = null;
 
