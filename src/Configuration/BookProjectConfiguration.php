@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Configuration;
 
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
+use ManuscriptGenerator\ResourceProcessor\ResourceProcessor;
 
 final class BookProjectConfiguration
 {
@@ -12,6 +13,11 @@ final class BookProjectConfiguration
      * @var array<ResourceGenerator>
      */
     private array $resourceGenerators = [];
+
+    /**
+     * @var array<ResourceProcessor>
+     */
+    private array $resourceProcessors = [];
 
     public function __construct(
         private string $manuscriptSrcDir = 'manuscript-src',
@@ -67,6 +73,19 @@ final class BookProjectConfiguration
     public function resourceGenerators(): array
     {
         return $this->resourceGenerators;
+    }
+
+    public function addResourceProcessor(ResourceProcessor $resourceProcessor): void
+    {
+        $this->resourceProcessors[] = $resourceProcessor;
+    }
+
+    /**
+     * @return array<ResourceProcessor>
+     */
+    public function additionalResourceProcessors(): array
+    {
+        return $this->resourceProcessors;
     }
 
     public function setLinkRegistryConfiguration(LinkRegistryConfiguration $linkRegistryConfiguration): void

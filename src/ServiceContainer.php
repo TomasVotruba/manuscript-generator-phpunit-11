@@ -144,12 +144,15 @@ final class ServiceContainer
             new InlineIncludedMarkdownFilesNodeVisitor($this->resourceLoader(), $this->markuaParser()),
             new InlineIncludedResourcesNodeVisitor($this->resourceLoader(),),
             new ProcessInlineResourcesNodeVisitor(
-                [
-                    new CropResourceProcessor(),
-                    new ApplyCropAttributesProcessor(),
-                    new RemoveSuperfluousIndentationResourceProcessor(),
-                    new StripInsignificantWhitespaceResourceProcessor(new InsignificantWhitespaceStripper()),
-                ]
+                array_merge(
+                    $this->configuration->additionalResourceProcessors(),
+                    [
+                        new CropResourceProcessor(),
+                        new ApplyCropAttributesProcessor(),
+                        new RemoveSuperfluousIndentationResourceProcessor(),
+                        new StripInsignificantWhitespaceResourceProcessor(new InsignificantWhitespaceStripper()),
+                    ]
+                )
             ),
             new CopyIncludedResourceNodeVisitor($this->configuration, $this->resourceLoader(), $this->fileOperations()),
             new CapitalizeHeadlinesNodeVisitor(

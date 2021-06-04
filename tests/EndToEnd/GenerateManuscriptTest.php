@@ -81,6 +81,22 @@ final class GenerateManuscriptTest extends TestCase
         );
     }
 
+    public function testItUsesAdditionalResourceProcessors(): void
+    {
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->generatedManuscriptDir,
+                '--manuscript-src-dir' => __DIR__ . '/CustomResourceProcessor/manuscript-src',
+                '--config' => __DIR__ . '/CustomResourceProcessor/manuscript-src/book.php',
+            ]
+        );
+
+        self::assertDirectoryContentsEquals(
+            __DIR__ . '/CustomResourceProcessor/manuscript-expected',
+            $this->generatedManuscriptDir
+        );
+    }
+
     public function testItGeneratesResourcesOnlyIfTheyNeedToBeRefreshed(): void
     {
         $this->tester->execute(
