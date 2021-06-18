@@ -120,7 +120,7 @@ final class ServiceContainer
                             new RectorOutputResourceLoader(),
                             new TableOfTokensResourceGenerator(),
                             new PhpScriptOutputResourceGenerator(),
-                            new DrawioResourceGenerator(),
+                            new DrawioResourceGenerator($this->tmpDir()),
                         ]
                     ),
                     new FileResourceLoader(),
@@ -189,5 +189,10 @@ final class ServiceContainer
         }
 
         return $this->output;
+    }
+
+    private function tmpDir(): string
+    {
+        return $this->configuration->tmpDir();
     }
 }

@@ -10,6 +10,12 @@ use Symfony\Component\Process\Process;
 final class DrawioResourceGenerator implements ResourceGenerator
 {
     private const DRAWIO_PNG_SUFFIX = '.drawio.png';
+    private string $tmpDir;
+
+    public function __construct(string $tmpDir)
+    {
+        $this->tmpDir = $tmpDir;
+    }
 
     public function supportsResource(IncludedResource $resource): bool
     {
@@ -23,8 +29,12 @@ final class DrawioResourceGenerator implements ResourceGenerator
 
     public function generateResource(IncludedResource $resource): string
     {
-        $tmpFilePathname = tempnam(sys_get_temp_dir(), 'drawio');
-        assert(is_string($tmpFilePathname));
+        if (!is_dir($this->tmpDir)) {
+            // @TODO introduce WritableDir "VO" for this
+            mkdir($this->tmpDir, 0777, true);
+        }
+
+        $tmpFilePathname = $this->tmpDir . '/' . uniqid('drawio') . '.drawio.png';
 
         $process = new Process(
             [

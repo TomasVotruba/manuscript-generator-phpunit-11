@@ -60,4 +60,9 @@ final class RuntimeConfiguration
     {
         return $this->bookProjectConfiguration->additionalResourceProcessors();
     }
+
+    public function tmpDir(): string
+    {
+        return $this->bookProjectConfiguration->tmpDir();
+    }
 }

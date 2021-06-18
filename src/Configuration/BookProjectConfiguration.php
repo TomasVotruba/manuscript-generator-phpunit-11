@@ -22,6 +22,7 @@ final class BookProjectConfiguration
     public function __construct(
         private string $manuscriptSrcDir = 'manuscript-src',
         private string $manuscriptTargetDir = 'manuscript',
+        private string $tmpDir = 'var/tmp',
         private bool $capitalizeHeadlines = false,
         private ?LinkRegistryConfiguration $linkRegistryConfiguration = null
     ) {
@@ -103,5 +104,15 @@ final class BookProjectConfiguration
         assert($this->linkRegistryConfiguration !== null);
 
         return $this->linkRegistryConfiguration;
+    }
+
+    public function tmpDir(): string
+    {
+        return $this->tmpDir;
+    }
+
+    public function setTmpDir(string $tmpDir): void
+    {
+        $this->tmpDir = $tmpDir;
     }
 }
