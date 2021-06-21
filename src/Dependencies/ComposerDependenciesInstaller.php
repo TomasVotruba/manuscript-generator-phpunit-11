@@ -29,7 +29,7 @@ final class ComposerDependenciesInstaller
             $composer = new Process(
                 [
                     'composer', // @TODO make configurable
-                    'update',
+                    'install',
                 ],
                 $workingDir
             );
