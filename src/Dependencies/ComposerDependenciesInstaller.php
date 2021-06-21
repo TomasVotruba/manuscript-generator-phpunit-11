@@ -6,13 +6,15 @@ namespace ManuscriptGenerator\Dependencies;
 
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Process\Process;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Component\Finder\Finder;
 
 final class ComposerDependenciesInstaller implements DependenciesInstaller
 {
     public function __construct(
-        private RuntimeConfiguration $configuration
+        private RuntimeConfiguration $configuration,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -38,6 +40,8 @@ final class ComposerDependenciesInstaller implements DependenciesInstaller
 
         foreach ($composerJsonFileFinder as $composerJsonFile) {
             $workingDir = $composerJsonFile->getPath();
+            $this->logger->info('Running composer ' . $command . ' in ' . $workingDir);
+
             $composer = new Process(
                 [
                     'composer', // @TODO make configurable
