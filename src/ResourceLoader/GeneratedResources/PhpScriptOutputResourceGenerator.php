@@ -26,13 +26,13 @@ final class PhpScriptOutputResourceGenerator implements ResourceGenerator
     {
         $scriptFile = new SplFileInfo($this->sourcePathForResource($resource));
 
-        $process = new Process(['php', $scriptFile->getPathname()]);
+        $scriptFileName = $scriptFile->getBasename();
+        $workingDir = realpath($scriptFile->getPath());
+        assert(is_string($workingDir));
+
+        $process = new Process(['php', $scriptFileName], $workingDir);
         $result = $process->run();
 
-        // Maybe generalize this: strip working dir from file paths in output
-        $realPath = $scriptFile->getRealPath();
-        assert(is_string($realPath));
-
-        return str_replace(dirname($realPath) . '/', '', $result->standardAndErrorOutputCombined());
+        return $result->standardAndErrorOutputCombined();
     }
 }

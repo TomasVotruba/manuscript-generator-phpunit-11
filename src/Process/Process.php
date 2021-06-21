@@ -42,6 +42,7 @@ final class Process
         assert(is_int($exitCode));
 
         return new Result(
+            $this->workingDir,
             $process->getCommandLine(),
             $process->getOutput(),
             $process->getErrorOutput(),
