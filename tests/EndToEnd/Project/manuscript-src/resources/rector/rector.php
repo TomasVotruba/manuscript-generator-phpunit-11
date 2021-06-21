@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->parameters()
-        ->set(Option::PATHS, [__DIR__]);
+        ->set(Option::PATHS, [__DIR__ . '/src']);
     $containerConfigurator->services()
         ->set(RemoveUnusedPrivateMethodRector::class);
 };

@@ -60,7 +60,7 @@ interface EventDispatcherInterface extends PsrEventDispatcherInterface
 1 file with changes
 ===================
 
-1) Foo.php
+1) src/Foo.php
 
     ---------- begin diff ----------
 --- Original

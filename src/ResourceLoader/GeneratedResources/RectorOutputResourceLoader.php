@@ -27,7 +27,7 @@ final class RectorOutputResourceLoader implements ResourceGenerator
 
     private function getOutputOfRectorRun(string $workingDir): string
     {
-        $process = new Process([getcwd() . '/vendor/bin/rector', 'process', '--dry-run'], $workingDir);
+        $process = new Process(['vendor/bin/rector', 'process', '--dry-run'], $workingDir);
         $result = $process->run();
 
         return $result->standardOutput();
