@@ -23,13 +23,13 @@ use ManuscriptGenerator\Markua\Processor\LinkRegistry\CollectLinksForLinkRegistr
 use ManuscriptGenerator\Markua\Processor\ProcessInlineResourcesNodeVisitor;
 use ManuscriptGenerator\ResourceLoader\DelegatingResourceLoader;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\CopyFromVendorResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DrawioResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\GeneratedResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpScriptOutputResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PHPUnit\PhpUnitResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\RectorOutputResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\TableOfTokensResourceGenerator;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\VendorResourceGenerator;
 use ManuscriptGenerator\ResourceProcessor\ApplyCropAttributesProcessor;
 use ManuscriptGenerator\ResourceProcessor\CropResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\InsignificantWhitespaceStripper;
@@ -117,7 +117,7 @@ final class ServiceContainer
                     array_merge(
                         $this->configuration->additionalResourceGenerators(),
                         [
-                            new VendorResourceGenerator(),
+                            new CopyFromVendorResourceGenerator(),
                             new PhpUnitResourceGenerator(),
                             new RectorOutputResourceLoader(),
                             new TableOfTokensResourceGenerator(),

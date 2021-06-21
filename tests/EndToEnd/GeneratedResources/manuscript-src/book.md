@@ -7,3 +7,5 @@
 ![](example.buffered-output.txt)
 
 ![](images/image.diagram.png)
+
+![`EventDispatcherInterface`](copy-from-vendor/symfony/event-dispatcher-contracts/EventDispatcherInterface.php)

@@ -7,21 +7,23 @@ namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use function str_starts_with;
 
-final class VendorResourceGenerator implements ResourceGenerator
+final class CopyFromVendorResourceGenerator implements ResourceGenerator
 {
+    private const EXPECTED_PREFIX = 'copy-from-vendor/';
+
     public function supportsResource(IncludedResource $resource): bool
     {
-        return str_starts_with($resource->link, 'vendor/');
+        return str_starts_with($resource->link, self::EXPECTED_PREFIX);
     }
 
     public function sourcePathForResource(IncludedResource $resource): string
     {
-        return getcwd() . '/' . $resource->link;
+        // @TODO use project root dir instead of getcwd() here
+        return getcwd() . '/' . str_replace(self::EXPECTED_PREFIX, 'vendor/', $resource->link);
     }
 
     public function generateResource(IncludedResource $resource): string
     {
-        // @TODO use project root dir instead of getcwd here
         $sourceFilePathname = $this->sourcePathForResource($resource);
 
         if (! is_file($sourceFilePathname)) {
