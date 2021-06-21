@@ -1,4 +1,9 @@
 {
+    "autoload": {
+        "psr-4": {
+            "Foo\\": "src/Foo/"
+        }
+    },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
         "lean-book-tools/phpunit-cleaner-result-printer": "^0.1"
