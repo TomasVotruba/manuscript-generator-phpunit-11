@@ -11,7 +11,8 @@ final class RuntimeConfiguration
 {
     public function __construct(
         private BookProjectConfiguration $bookProjectConfiguration,
-        private bool $readOnlyFilesystem = false
+        private bool $readOnlyFilesystem = false,
+        private bool $updateDependencies = false
     ) {
     }
 
@@ -64,5 +65,10 @@ final class RuntimeConfiguration
     public function tmpDir(): string
     {
         return $this->bookProjectConfiguration->tmpDir();
+    }
+
+    public function updateDependencies(): bool
+    {
+        return $this->updateDependencies;
     }
 }

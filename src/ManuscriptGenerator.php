@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator;
 
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
-use ManuscriptGenerator\Dependencies\ComposerDependenciesInstaller;
+use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\FileOperations\FileOperations;
 use ManuscriptGenerator\Markua\Processor\MarkuaProcessor;
@@ -16,7 +16,7 @@ final class ManuscriptGenerator
 {
     public function __construct(
         private RuntimeConfiguration $configuration,
-        private ComposerDependenciesInstaller $dependenciesInstaller,
+        private DependenciesInstaller $dependenciesInstaller,
         private FileOperations $fileOperations,
         private MarkuaProcessor $markuaProcessor,
         private EventDispatcherInterface $eventDispatcher,
@@ -26,8 +26,13 @@ final class ManuscriptGenerator
 
     public function generateManuscript(): void
     {
-        $this->logger->info('Installing dependencies');
-        $this->dependenciesInstaller->install();
+        if ($this->configuration->updateDependencies()) {
+            $this->logger->info('Updating dependencies');
+            $this->dependenciesInstaller->update();
+        } else {
+            $this->logger->info('Installing dependencies');
+            $this->dependenciesInstaller->install();
+        }
 
         foreach ([
             'book.md' => 'Book.txt',

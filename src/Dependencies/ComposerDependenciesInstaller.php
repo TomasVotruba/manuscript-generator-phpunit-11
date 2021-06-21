@@ -9,7 +9,7 @@ use ManuscriptGenerator\Process\Process;
 use RuntimeException;
 use Symfony\Component\Finder\Finder;
 
-final class ComposerDependenciesInstaller
+final class ComposerDependenciesInstaller implements DependenciesInstaller
 {
     public function __construct(
         private RuntimeConfiguration $configuration
@@ -17,6 +17,18 @@ final class ComposerDependenciesInstaller
     }
 
     public function install(): void
+    {
+        $command = 'install';
+
+        $this->runComposer($command);
+    }
+
+    public function update(): void
+    {
+        $this->runComposer('update');
+    }
+
+    private function runComposer(string $command): void
     {
         $composerJsonFileFinder = Finder::create()
             ->files()
@@ -29,7 +41,7 @@ final class ComposerDependenciesInstaller
             $composer = new Process(
                 [
                     'composer', // @TODO make configurable
-                    'install',
+                    $command,
                 ],
                 $workingDir
             );

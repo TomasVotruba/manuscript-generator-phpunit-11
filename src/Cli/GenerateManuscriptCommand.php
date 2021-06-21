@@ -43,10 +43,36 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
     protected function configure(): void
     {
         $this->setName(self::COMMAND_NAME)
-            ->addOption('dry-run', null, InputOption::VALUE_NONE)
-            ->addOption('config', 'c', InputOption::VALUE_REQUIRED)
-            ->addOption('manuscript-dir', null, InputOption::VALUE_REQUIRED)
-            ->addOption('manuscript-src-dir', null, InputOption::VALUE_REQUIRED);
+            ->addOption(
+                'dry-run',
+                null,
+                InputOption::VALUE_NONE,
+                'Add this option to treat the filesystem as read-only'
+            )
+            ->addOption(
+                'update-dependencies',
+                null,
+                InputOption::VALUE_NONE,
+                'Add this option to update Composer dependencies for all subprojects in the manuscript source directory'
+            )
+            ->addOption(
+                'config',
+                'c',
+                InputOption::VALUE_REQUIRED,
+                'Provide the path to the book.php configuration file'
+            )
+            ->addOption(
+                'manuscript-dir',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The directory where the manuscript is stored (default for Leanpub: manuscript/)'
+            )
+            ->addOption(
+                'manuscript-src-dir',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The directory where the manuscript source files are stored (default: manuscript-src)'
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -54,8 +80,11 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
         $dryRun = $input->getOption('dry-run');
         assert(is_bool($dryRun));
 
+        $updateDependencies = $input->getOption('update-dependencies');
+        assert(is_bool($updateDependencies));
+
         $container = new ServiceContainer(
-            new RuntimeConfiguration($this->loadBookProjectConfiguration($input), $dryRun)
+            new RuntimeConfiguration($this->loadBookProjectConfiguration($input), $dryRun, $updateDependencies)
         );
 
         // For showing results while generating the manuscript:
