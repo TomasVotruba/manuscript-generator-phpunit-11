@@ -28,23 +28,26 @@ final class GenerateManuscriptTest extends TestCase
     {
         $filesystem = new Filesystem();
 
-        $generatedFiles = [
-            __DIR__ . '/Project/manuscript-src/resources/rector/rector-output.diff',
-            __DIR__ . '/Project/manuscript-src/resources/tests/phpunit-output.txt',
-            __DIR__ . '/Project/manuscript-src/resources/vendor',
-        ];
+        $manuscriptSrcFolders = Finder::create()->in(__DIR__)->directories()->name('manuscript-src');
+        foreach ($manuscriptSrcFolders as $manuscriptSrcFolder) {
+            foreach (Finder::create()->in($manuscriptSrcFolder->getPathname())->files()->name(
+                ['*output.*', 'composer.lock']
+            ) as $generatedFile) {
+                $filesystem->remove($generatedFile->getPathname());
+            }
 
-        $filesystem->remove($generatedFiles);
+            foreach (Finder::create()->in($manuscriptSrcFolder->getPathname())->depth(2)->directories()->name(
+                'vendor'
+            ) as $vendorDir) {
+                $filesystem->remove($vendorDir->getPathname());
+            }
+        }
 
         // Reset files for generated resources test
         $filesystem->remove(
             [
-                __DIR__ . '/GeneratedResources/manuscript-src/resources/tests/phpunit-output.txt',
                 __DIR__ . '/GeneratedResources/manuscript-src/resources/tokens/hello_world.table_of_tokens.md',
-                __DIR__ . '/GeneratedResources/manuscript-src/resources/php_script/script.php_script_output.txt',
-                __DIR__ . '/GeneratedResources/manuscript-src/resources/example.buffered-output.txt',
                 __DIR__ . '/GeneratedResources/manuscript-src/resources/images/image.diagram.png',
-                __DIR__ . '/CustomResourceProcessor/manuscript-src/resources/src/Chapter1/Topic1/Version1/Utils/Rector/show_name.php_script_output.txt',
             ]
         );
         // Remove the entire generated manuscript dir
@@ -80,6 +83,23 @@ final class GenerateManuscriptTest extends TestCase
             __DIR__ . '/GeneratedResources/manuscript-expected',
             $this->generatedManuscriptDir
         );
+    }
+
+    public function testItInstallsComposerDependencies(): void
+    {
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->generatedManuscriptDir,
+                '--manuscript-src-dir' => __DIR__ . '/ComposerDependencies/manuscript-src',
+            ]
+        );
+
+        self::assertDirectoryContentsEquals(
+            __DIR__ . '/ComposerDependencies/manuscript-expected',
+            $this->generatedManuscriptDir
+        );
+
+        self::assertDirectoryExists(__DIR__ . '/ComposerDependencies/manuscript-src/resources/tests/vendor/');
     }
 
     public function testItUsesAdditionalResourceProcessors(): void

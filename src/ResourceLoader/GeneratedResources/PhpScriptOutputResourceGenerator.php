@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
+use ManuscriptGenerator\Process\Process;
 use SplFileInfo;
-use Symfony\Component\Process\Process;
 
 final class PhpScriptOutputResourceGenerator implements ResourceGenerator
 {
@@ -26,16 +26,13 @@ final class PhpScriptOutputResourceGenerator implements ResourceGenerator
     {
         $scriptFile = new SplFileInfo($this->sourcePathForResource($resource));
 
-        $process = new Process(['php', $scriptFile]);
-        $output = '';
-        $process->run(function ($type, $buffer) use (&$output): void {
-            $output .= $buffer;
-        });
+        $process = new Process(['php', $scriptFile->getPathname()]);
+        $result = $process->run();
 
         // Maybe generalize this: strip working dir from file paths in output
         $realPath = $scriptFile->getRealPath();
         assert(is_string($realPath));
 
-        return str_replace(dirname($realPath) . '/', '', $output);
+        return str_replace(dirname($realPath) . '/', '', $result->standardAndErrorOutputCombined());
     }
 }

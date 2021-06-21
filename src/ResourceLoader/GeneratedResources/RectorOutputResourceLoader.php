@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
+use ManuscriptGenerator\Process\Process;
 use function str_ends_with;
-use Symfony\Component\Process\Process;
 
 final class RectorOutputResourceLoader implements ResourceGenerator
 {
@@ -28,8 +28,8 @@ final class RectorOutputResourceLoader implements ResourceGenerator
     private function getOutputOfRectorRun(string $workingDir): string
     {
         $process = new Process([getcwd() . '/vendor/bin/rector', 'process', '--dry-run'], $workingDir);
-        $process->run();
+        $result = $process->run();
 
-        return $process->getOutput();
+        return $result->standardOutput();
     }
 }

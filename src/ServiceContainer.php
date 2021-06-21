@@ -7,6 +7,7 @@ namespace ManuscriptGenerator;
 use LogicException;
 use ManuscriptGenerator\Cli\ResultPrinter;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
+use ManuscriptGenerator\Dependencies\ComposerDependenciesInstaller;
 use ManuscriptGenerator\FileOperations\FileOperations;
 use ManuscriptGenerator\FileOperations\Filesystem;
 use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
@@ -60,6 +61,7 @@ final class ServiceContainer
     {
         return new ManuscriptGenerator(
             $this->configuration,
+            new ComposerDependenciesInstaller($this->configuration),
             $this->fileOperations(),
             new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaParser(), new MarkuaPrinter()),
             $this->eventDispatcher(),

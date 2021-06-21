@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
-use Symfony\Component\Process\Process;
+use ManuscriptGenerator\Process\Process;
 
 final class DrawioResourceGenerator implements ResourceGenerator
 {
@@ -46,10 +46,10 @@ final class DrawioResourceGenerator implements ResourceGenerator
                 $this->sourcePathForResource($resource),
             ]
         );
-        $process->run();
+        $result = $process->run();
 
-        if (! $process->isSuccessful()) {
-            throw CouldNotGenerateResource::becauseAnExternalProcessWasUnsuccessful($process);
+        if (! $result->isSuccessful()) {
+            throw CouldNotGenerateResource::becauseAnExternalProcessWasUnsuccessful($result);
         }
 
         $generatedContents = (string) file_get_contents($tmpFilePathname);

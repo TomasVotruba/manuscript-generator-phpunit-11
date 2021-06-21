@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources\PHPUnit;
 
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
+use ManuscriptGenerator\Process\Process;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
 use function str_ends_with;
-use Symfony\Component\Process\Process;
 
 final class PhpUnitResourceGenerator implements ResourceGenerator
 {
@@ -29,11 +29,16 @@ final class PhpUnitResourceGenerator implements ResourceGenerator
     private function getOutputOfPhpUnitRun(string $workingDir): string
     {
         $process = new Process(
-            [getcwd() . '/vendor/bin/phpunit', '--printer', CleanerResultPrinter::class, '--do-not-cache-result'],
+            [
+                'vendor/bin/phpunit',
+                '--printer',
+                'LeanBookTools\\PHPUnit\\CleanerResultPrinter',
+                '--do-not-cache-result',
+            ],
             $workingDir
         );
-        $process->run();
+        $result = $process->run();
 
-        return $process->getOutput();
+        return $result->standardAndErrorOutputCombined();
     }
 }
