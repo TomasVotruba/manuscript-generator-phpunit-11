@@ -6,6 +6,7 @@ namespace ManuscriptGenerator\Test\EndToEnd;
 
 use ManuscriptGenerator\Cli\GenerateManuscriptCommand;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -92,6 +93,62 @@ final class GenerateManuscriptTest extends TestCase
             __DIR__ . '/ComposerDependencies/manuscript-expected',
             $this->manuscriptDir
         );
+    }
+
+    public function testItDoesNotInstallComposerDependenciesIfComposerLockHasNotChanged(): void
+    {
+        $this->filesystem->mirror(__DIR__ . '/ComposerDependencies/manuscript-src', $this->manuscriptSrcDir);
+
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+            ],
+            [
+                'verbosity' => OutputInterface::VERBOSITY_DEBUG,
+            ]
+        );
+
+        // The first time it runs composer install
+        self::assertStringContainsString('Running composer install', $this->tester->getDisplay());
+
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+            ],
+            [
+                'verbosity' => OutputInterface::VERBOSITY_DEBUG,
+            ]
+        );
+
+        // The second time it doesn't need to do it, since the vendor/ directory already exists
+        self::assertStringNotContainsString('Running composer install', $this->tester->getDisplay());
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+            ],
+            [
+                'verbosity' => OutputInterface::VERBOSITY_DEBUG,
+            ]
+        );
+
+        // Fake a change in composer.json:
+        touch($this->manuscriptSrcDir . '/resources/tests/composer.json', time() + 10);
+
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+            ],
+            [
+                'verbosity' => OutputInterface::VERBOSITY_DEBUG,
+            ]
+        );
+
+        // composer.json has changed, so now it will run composer update
+        self::assertStringContainsString('Running composer update', $this->tester->getDisplay());
     }
 
     public function testItUsesAdditionalResourceProcessors(): void
