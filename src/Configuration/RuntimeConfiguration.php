@@ -12,7 +12,8 @@ final class RuntimeConfiguration
     public function __construct(
         private BookProjectConfiguration $bookProjectConfiguration,
         private bool $readOnlyFilesystem = false,
-        private bool $updateDependencies = false
+        private bool $updateDependencies = false,
+        private bool $runTests = false
     ) {
     }
 
@@ -70,5 +71,10 @@ final class RuntimeConfiguration
     public function updateDependencies(): bool
     {
         return $this->updateDependencies;
+    }
+
+    public function runTests(): bool
+    {
+        return $this->runTests;
     }
 }

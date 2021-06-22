@@ -36,7 +36,9 @@ final class ManuscriptGenerator
             $this->dependenciesInstaller->install();
         }
 
-        $this->testRunner->run();
+        if ($this->configuration->runTests()) {
+            $this->testRunner->run();
+        }
 
         foreach ([
             'book.md' => 'Book.txt',

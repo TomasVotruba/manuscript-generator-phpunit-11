@@ -96,6 +96,24 @@ final class GenerateManuscriptTest extends TestCase
         );
     }
 
+    public function testItUpdatesComposerDependenciesIfRequested(): void
+    {
+        $this->filesystem->mirror(__DIR__ . '/ComposerDependencies/manuscript-src', $this->manuscriptSrcDir);
+
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+                '--update-dependencies' => true,
+            ],
+            [
+                'verbosity' => OutputInterface::VERBOSITY_DEBUG,
+            ]
+        );
+
+        self::assertStringContainsString('Running composer update', $this->tester->getDisplay());
+    }
+
     public function testItDoesNotInstallComposerDependenciesIfComposerLockHasNotChanged(): void
     {
         $this->filesystem->mirror(__DIR__ . '/ComposerDependencies/manuscript-src', $this->manuscriptSrcDir);
@@ -161,6 +179,7 @@ final class GenerateManuscriptTest extends TestCase
                 [
                     '--manuscript-dir' => $this->manuscriptDir,
                     '--manuscript-src-dir' => $this->manuscriptSrcDir,
+                    '--run-tests' => true,
                 ]
             );
             $this->fail('Expected an exception');
