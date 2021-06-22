@@ -9,6 +9,7 @@ use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\FileOperations\FileOperations;
 use ManuscriptGenerator\Markua\Processor\MarkuaProcessor;
+use ManuscriptGenerator\Testing\TestRunner;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -17,6 +18,7 @@ final class ManuscriptGenerator
     public function __construct(
         private RuntimeConfiguration $configuration,
         private DependenciesInstaller $dependenciesInstaller,
+        private TestRunner $testRunner,
         private FileOperations $fileOperations,
         private MarkuaProcessor $markuaProcessor,
         private EventDispatcherInterface $eventDispatcher,
@@ -33,6 +35,8 @@ final class ManuscriptGenerator
             $this->logger->info('Installing dependencies');
             $this->dependenciesInstaller->install();
         }
+
+        $this->testRunner->run();
 
         foreach ([
             'book.md' => 'Book.txt',

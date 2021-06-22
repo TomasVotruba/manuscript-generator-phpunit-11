@@ -37,6 +37,7 @@ use ManuscriptGenerator\ResourceProcessor\Psr4SrcNamespaceCollector;
 use ManuscriptGenerator\ResourceProcessor\RemoveSuperfluousIndentationResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\StripInsignificantWhitespaceResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\StripNamespaceResourceProcessor;
+use ManuscriptGenerator\Testing\PhpUnitTestRunner;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\NullOutput;
@@ -62,6 +63,7 @@ final class ServiceContainer
         return new ManuscriptGenerator(
             $this->configuration,
             new ComposerDependenciesInstaller($this->configuration, $this->logger()),
+            new PhpUnitTestRunner($this->configuration, $this->logger()),
             $this->fileOperations(),
             new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaParser(), new MarkuaPrinter()),
             $this->eventDispatcher(),
