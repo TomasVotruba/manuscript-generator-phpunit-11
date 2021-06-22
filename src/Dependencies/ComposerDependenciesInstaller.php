@@ -56,7 +56,7 @@ final class ComposerDependenciesInstaller implements DependenciesInstaller
                 && $composerLockFile->isFile()
                 && $vendorDir->isDir()
                 && $vendorDir->getMTime() >= $composerLockFile->getMTime()) {
-                $this->logger->info($composerLockFile->getPathname() . ' has not been modified, skipping install');
+                $this->logger->debug($composerLockFile->getPathname() . ' has not been modified, skipping install');
             } else {
                 $this->runComposer($composerJsonFile, $preferredCommand);
             }
@@ -76,6 +76,13 @@ final class ComposerDependenciesInstaller implements DependenciesInstaller
             $workingDir
         );
         $result = $composer->run();
+
+        /*
+         * composer.lock is touched seconds later than the latest change to composer.lock so if we want to use the mtime
+         * of the lock file and compare it to the vendor/ dir to determine if we need to re-install the dependencies, we
+         * have to touch vendor/ once more.
+         */
+        touch($composerJsonFile->getPath() . '/vendor');
 
         if (! $result->isSuccessful()) {
             throw new RuntimeException('Composer failed: ' . $result->standardAndErrorOutputCombined());
