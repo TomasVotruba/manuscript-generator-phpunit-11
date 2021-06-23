@@ -29,11 +29,9 @@ final class ManuscriptGenerator
     public function generateManuscript(): void
     {
         if ($this->configuration->updateDependencies()) {
-            $this->logger->info('Updating dependencies');
-            $this->dependenciesInstaller->update();
-        } else {
-            $this->logger->info('Installing dependencies');
-            $this->dependenciesInstaller->install();
+            // Only if the user wants to force-update dependencies should we do it at once for all subprojects
+            $this->logger->info('Updating all manuscript source dependencies');
+            $this->dependenciesInstaller->updateAll();
         }
 
         if ($this->configuration->runTests()) {

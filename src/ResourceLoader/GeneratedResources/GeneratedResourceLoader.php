@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
+use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\FileOperations\FileOperations;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\ResourceLoader\CouldNotLoadFile;
@@ -21,7 +22,8 @@ final class GeneratedResourceLoader implements ResourceLoader
         private array $resourceGenerators,
         private FileResourceLoader $fileResourceLoader,
         private FileOperations $fileOperations,
-        private EventDispatcherInterface $eventDispatcher
+        private EventDispatcherInterface $eventDispatcher,
+        private DependenciesInstaller $dependenciesInstaller
     ) {
     }
 
@@ -33,14 +35,23 @@ final class GeneratedResourceLoader implements ResourceLoader
             }
 
             $expectedPath = $includedResource->expectedFilePathname();
+            $sourcePath = $resourceGenerator->sourcePathForResource($includedResource);
             if (is_file($expectedPath)
-                && $this->isFresh($expectedPath, $resourceGenerator->sourcePathForResource($includedResource))
+                && $this->isFresh($expectedPath, $sourcePath)
             ) {
                 $this->eventDispatcher->dispatch(new GeneratedResourceWasStillFresh($includedResource->link));
 
                 // The file actually exists, so we can load it from disk
                 return $this->fileResourceLoader->load($includedResource);
             }
+
+            if (is_dir($sourcePath)) {
+                $directory = $sourcePath;
+            } else {
+                $directory = dirname($sourcePath);
+            }
+            $this->dependenciesInstaller->install($directory);
+
             $generatedResource = $resourceGenerator->generateResource($includedResource);
             $this->fileOperations->putContents($expectedPath, $generatedResource);
             $this->eventDispatcher->dispatch(new ResourceWasGenerated($includedResource->link));
@@ -60,7 +71,6 @@ final class GeneratedResourceLoader implements ResourceLoader
         foreach (
             [
                 $sourcePath, // the source path as provided by the resource generator
-                getcwd() . '/vendor', // the vendor directory, since it may influence the generated output
             ]
             as $filePathToCheck
         ) {
@@ -71,6 +81,17 @@ final class GeneratedResourceLoader implements ResourceLoader
             if ((int) filemtime($filePathToCheck) > $generatedFileLastModified) {
                 return false;
             }
+        }
+
+        // @TODO remove duplication
+        if (is_dir($sourcePath)) {
+            $directory = $sourcePath;
+        } else {
+            $directory = dirname($sourcePath);
+        }
+
+        if ($this->dependenciesInstaller->dependenciesHaveChangedSince($generatedFileLastModified, $directory)) {
+            return false;
         }
 
         return true;

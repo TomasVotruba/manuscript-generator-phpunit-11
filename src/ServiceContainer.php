@@ -62,7 +62,7 @@ final class ServiceContainer
     {
         return new ManuscriptGenerator(
             $this->configuration,
-            new ComposerDependenciesInstaller($this->configuration, $this->logger()),
+            $this->dependenciesInstaller(),
             new PhpUnitTestRunner($this->configuration, $this->logger()),
             $this->fileOperations(),
             new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaParser(), new MarkuaPrinter()),
@@ -129,7 +129,8 @@ final class ServiceContainer
                     ),
                     new FileResourceLoader(),
                     $this->fileOperations(),
-                    $this->eventDispatcher()
+                    $this->eventDispatcher(),
+                    $this->dependenciesInstaller()
                 ),
                 new FileResourceLoader(),
             ]
@@ -198,5 +199,10 @@ final class ServiceContainer
     private function tmpDir(): string
     {
         return $this->configuration->tmpDir();
+    }
+
+    private function dependenciesInstaller(): ComposerDependenciesInstaller
+    {
+        return new ComposerDependenciesInstaller($this->configuration, $this->logger());
     }
 }

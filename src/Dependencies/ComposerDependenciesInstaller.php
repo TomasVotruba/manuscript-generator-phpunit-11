@@ -23,19 +23,14 @@ final class ComposerDependenciesInstaller implements DependenciesInstaller
     ) {
     }
 
-    public function install(): void
+    public function install(string $directory): void
     {
         $command = self::INSTALL_COMMAND;
 
-        $this->runComposerForAllSubProjects($command);
+        $this->runComposerInDirectory($directory, $command);
     }
 
-    public function update(): void
-    {
-        $this->runComposerForAllSubProjects(self::UPDATE_COMMAND);
-    }
-
-    private function runComposerForAllSubProjects(string $preferredCommand): void
+    public function updateAll(): void
     {
         $composerJsonFileFinder = Finder::create()
             ->files()
@@ -44,22 +39,72 @@ final class ComposerDependenciesInstaller implements DependenciesInstaller
             ->name('composer.json');
 
         foreach ($composerJsonFileFinder as $composerJsonFile) {
-            $composerLockFile = new SplFileInfo($composerJsonFile->getPath() . '/composer.lock');
-            $vendorDir = new SplFileInfo($composerJsonFile->getPath() . '/vendor');
+            $this->runComposerInDirectory($composerJsonFile->getPath(), self::UPDATE_COMMAND);
+        }
+    }
 
-            if ($preferredCommand === self::INSTALL_COMMAND
-                && $composerLockFile->isFile()
-                && $composerLockFile->getMTime() < $composerJsonFile->getMTime()) {
-                $this->logger->debug($composerJsonFile->getPathname() . ' has been modified');
-                $this->runComposer($composerJsonFile, self::UPDATE_COMMAND);
-            } elseif ($preferredCommand === self::INSTALL_COMMAND
-                && $composerLockFile->isFile()
-                && $vendorDir->isDir()
-                && $vendorDir->getMTime() >= $composerLockFile->getMTime()) {
-                $this->logger->debug($composerLockFile->getPathname() . ' has not been modified, skipping install');
-            } else {
-                $this->runComposer($composerJsonFile, $preferredCommand);
-            }
+    public function dependenciesHaveChangedSince(int $timestamp, string $directory): bool
+    {
+        $composerJsonFile = new SplFileInfo($directory . '/composer.json');
+        $composerLockFile = new SplFileInfo($directory . '/composer.lock');
+        $vendorDir = new SplFileInfo($directory . '/vendor');
+
+        if (! $composerJsonFile->isFile()) {
+            // This directory doesn't have a composer.json file so the installer doesn't need to do anything
+            return false;
+        }
+
+        if (! $composerLockFile->isFile()) {
+            // composer.lock doesn't exist, so we definitely have to install dependencies
+            return true;
+        }
+
+        if ($composerLockFile->getMTime() > $timestamp) {
+            // composer.lock has changed since the provided timestamp so we have to re-install dependencies
+            return true;
+        }
+
+        if (! $vendorDir->isDir()) {
+            // dependencies have not even been installed
+            return true;
+        }
+
+        if ($composerJsonFile->getMTime() > $composerLockFile->getMTime()) {
+            // composer.json has been modified so we need to re-install dependencies
+            return true;
+        }
+
+        if ($composerLockFile->getMTime() > $vendorDir->getMTime()) {
+            // composer.lock has changed since the latest install, so we have to re-install dependencies
+            return true;
+        }
+
+        return false;
+    }
+
+    private function runComposerInDirectory(string $directory, string $preferredCommand): void
+    {
+        $composerJsonFile = new SplFileInfo($directory . '/composer.json');
+        if (! $composerJsonFile->isFile()) {
+            // Nothing to install
+            return;
+        }
+
+        $composerLockFile = new SplFileInfo($directory . '/composer.lock');
+        $vendorDir = new SplFileInfo($directory . '/vendor');
+
+        if ($preferredCommand === self::INSTALL_COMMAND
+            && $composerLockFile->isFile()
+            && $composerLockFile->getMTime() < $composerJsonFile->getMTime()) {
+            $this->logger->debug($composerJsonFile->getPathname() . ' has been modified');
+            $this->runComposer($composerJsonFile, self::UPDATE_COMMAND);
+        } elseif ($preferredCommand === self::INSTALL_COMMAND
+            && $composerLockFile->isFile()
+            && $vendorDir->isDir()
+            && $vendorDir->getMTime() >= $composerLockFile->getMTime()) {
+            $this->logger->debug($composerLockFile->getPathname() . ' has not been modified, skipping install');
+        } else {
+            $this->runComposer($composerJsonFile, $preferredCommand);
         }
     }
 

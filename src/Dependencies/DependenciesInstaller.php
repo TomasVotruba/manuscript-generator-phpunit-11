@@ -6,7 +6,9 @@ namespace ManuscriptGenerator\Dependencies;
 
 interface DependenciesInstaller
 {
-    public function install(): void;
+    public function install(string $directory): void;
 
-    public function update(): void;
+    public function updateAll(): void;
+
+    public function dependenciesHaveChangedSince(int $timestamp, string $directory): bool;
 }
