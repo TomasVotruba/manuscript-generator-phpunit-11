@@ -14,10 +14,10 @@ This file is called: show_name.php
 
 declare(strict_types=1);
 
-namespace Utils\Rector;
+namespace Chapter1\Topic1\Version1\Utils\Rector;
 
 /**
- * @see \Utils\Rector\ExampleTest
+ * @see \Chapter1\Topic1\Version1\Utils\Rector\ExampleTest
  */
 final class Example
 {
