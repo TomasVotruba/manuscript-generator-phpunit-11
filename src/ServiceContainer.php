@@ -63,7 +63,7 @@ final class ServiceContainer
         return new ManuscriptGenerator(
             $this->configuration,
             $this->dependenciesInstaller(),
-            new PhpUnitTestRunner($this->configuration, $this->logger()),
+            new PhpUnitTestRunner($this->configuration, $this->logger(), $this->dependenciesInstaller()),
             $this->fileOperations(),
             new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaParser(), new MarkuaPrinter()),
             $this->eventDispatcher(),

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Testing;
 
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
+use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\Process\Process;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Finder;
@@ -13,7 +14,8 @@ final class PhpUnitTestRunner implements TestRunner
 {
     public function __construct(
         private RuntimeConfiguration $configuration,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private DependenciesInstaller $dependenciesInstaller
     ) {
     }
 
@@ -31,6 +33,8 @@ final class PhpUnitTestRunner implements TestRunner
             $this->logger->debug('Running PHPUnit tests for {xmlFile}', [
                 'xmlFile' => $xmlFile->getPathname(),
             ]);
+
+            $this->dependenciesInstaller->install($xmlFile->getPath());
 
             $process = new Process([
                 'vendor/bin/phpunit',
