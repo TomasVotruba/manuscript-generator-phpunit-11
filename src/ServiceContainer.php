@@ -30,6 +30,7 @@ use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpScriptOutputResourc
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PHPUnit\PhpUnitResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\RectorOutputResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\TableOfTokensResourceGenerator;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\TitlePageResourceGenerator;
 use ManuscriptGenerator\ResourceProcessor\ApplyCropAttributesProcessor;
 use ManuscriptGenerator\ResourceProcessor\CropResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\InsignificantWhitespaceStripper;
@@ -123,6 +124,7 @@ final class ServiceContainer
                             new TableOfTokensResourceGenerator(),
                             new PhpScriptOutputResourceGenerator(),
                             new DrawioResourceGenerator($this->tmpDir()),
+                            new TitlePageResourceGenerator($this->tmpDir()),
                         ]
                     ),
                     new FileResourceLoader(),

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Process;
 
+use RuntimeException;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
 final class Process
@@ -49,5 +50,22 @@ final class Process
             $combinedOutput,
             $exitCode
         );
+    }
+
+    public function runSuccessfully(): Result
+    {
+        $result = $this->run();
+
+        if (! $result->isSuccessful()) {
+            throw new RuntimeException(
+                sprintf(
+                    "Process was not successful\nCommand line: %s\n\nOutput: \n\n%s",
+                    $result->command(),
+                    $result->standardAndErrorOutputCombined()
+                )
+            );
+        }
+
+        return $result;
     }
 }
