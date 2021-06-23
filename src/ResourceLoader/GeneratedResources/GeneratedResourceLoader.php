@@ -75,9 +75,9 @@ final class GeneratedResourceLoader implements ResourceLoader
             $this->logger->debug(
                 'Could not determine freshness of target path {targetPath}. Source file not found: {sourcePath}',
                 [
-                'targetPath' => $targetFilePath,
-                'sourcePath' => $sourcePath,
-            ]
+                    'targetPath' => $targetFilePath,
+                    'sourcePath' => $sourcePath,
+                ]
             );
             return true;
         }

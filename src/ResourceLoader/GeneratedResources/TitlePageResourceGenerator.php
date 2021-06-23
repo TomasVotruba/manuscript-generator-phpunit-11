@@ -10,7 +10,7 @@ use RuntimeException;
 
 final class TitlePageResourceGenerator implements ResourceGenerator
 {
-    private const GIMP_SOURCE_FILE = 'title_page.xcf';
+    private const GIMP_SOURCE_FILE_NAME = 'title_page.xcf';
 
     private const PNG_TARGET_FILE = 'title_page.png';
 
@@ -26,7 +26,7 @@ final class TitlePageResourceGenerator implements ResourceGenerator
 
     public function sourcePathForResource(IncludedResource $resource): string
     {
-        return dirname($resource->expectedFilePathname()) . '/images/cover/' . self::GIMP_SOURCE_FILE;
+        return dirname($resource->expectedFilePathname()) . '/images/cover/' . self::GIMP_SOURCE_FILE_NAME;
     }
 
     public function generateResource(IncludedResource $resource): string
@@ -41,7 +41,12 @@ final class TitlePageResourceGenerator implements ResourceGenerator
         $workingDir = dirname($resource->expectedFilePathname());
 
         // Convert xcf to png
-        $process = new Process(['xcf2png', self::GIMP_SOURCE_FILE, '-o', $tmpFilePathname], $workingDir);
+        $process = new Process([
+            'xcf2png',
+            $this->sourcePathForResource($resource),
+            '-o',
+            $tmpFilePathname,
+        ], $workingDir);
         $result = $process->run();
         if (! $result->isSuccessful()) {
             throw new RuntimeException(
