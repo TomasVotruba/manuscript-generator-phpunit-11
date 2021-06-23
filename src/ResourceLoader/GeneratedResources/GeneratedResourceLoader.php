@@ -73,9 +73,8 @@ final class GeneratedResourceLoader implements ResourceLoader
         if (is_dir($sourcePath)) {
             $newestFile = null;
 
-            foreach (Finder::create()->files()->in($sourcePath)->notName(
-                'vendor'
-            )->sortByModifiedTime()->reverseSorting() as $newestFile) {
+            foreach (Finder::create()->files()->in($sourcePath)->notName('vendor')->sortByModifiedTime()
+                ->reverseSorting() as $newestFile) {
                 break;
             }
 

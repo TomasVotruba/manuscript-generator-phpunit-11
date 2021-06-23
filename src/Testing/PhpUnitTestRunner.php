@@ -32,7 +32,12 @@ final class PhpUnitTestRunner implements TestRunner
                 'xmlFile' => $xmlFile->getPathname(),
             ]);
 
-            $process = new Process(['vendor/bin/phpunit', '-c', $phpunitCiXmlFilename], $xmlFile->getPath());
+            $process = new Process([
+                'vendor/bin/phpunit',
+                '-c',
+                $phpunitCiXmlFilename,
+                '--do-not-cache-result',
+            ], $xmlFile->getPath());
             $result = $process->run();
 
             if (! $result->isSuccessful()) {
