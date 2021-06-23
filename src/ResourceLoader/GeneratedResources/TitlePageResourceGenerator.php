@@ -38,15 +38,8 @@ final class TitlePageResourceGenerator implements ResourceGenerator
 
         $tmpFilePathname = $this->tmpDir . '/' . uniqid('title_page') . '.png';
 
-        $workingDir = dirname($resource->expectedFilePathname());
-
         // Convert xcf to png
-        $process = new Process([
-            'xcf2png',
-            $this->sourcePathForResource($resource),
-            '-o',
-            $tmpFilePathname,
-        ], $workingDir);
+        $process = new Process(['xcf2png', $this->sourcePathForResource($resource), '-o', $tmpFilePathname]);
         $result = $process->run();
         if (! $result->isSuccessful()) {
             throw new RuntimeException(
@@ -59,14 +52,7 @@ final class TitlePageResourceGenerator implements ResourceGenerator
         }
 
         // Resize png
-        $process = new Process([
-            'magick',
-            'convert',
-            $tmpFilePathname,
-            '-resize',
-            '1050x',
-            $tmpFilePathname,
-        ], $workingDir);
+        $process = new Process(['magick', 'convert', $tmpFilePathname, '-resize', '1050x', $tmpFilePathname]);
         $result = $process->run();
         if (! $result->isSuccessful()) {
             throw new RuntimeException(
