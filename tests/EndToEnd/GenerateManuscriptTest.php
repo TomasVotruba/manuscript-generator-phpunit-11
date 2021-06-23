@@ -232,9 +232,10 @@ final class GenerateManuscriptTest extends TestCase
         // Second time it won't
         self::assertStringNotContainsString('generated tests/phpunit-output.txt', $this->tester->getDisplay());
 
-        // Third time: the generated output is older than the folder it's in, so the test output will be generated again
-        $generatedPathFile = $this->manuscriptSrcDir . '/resources/tests/phpunit-output.txt';
-        touch($generatedPathFile, (int) filemtime($generatedPathFile) - 1000);
+        // Third time: the generated output is older than one of the files of the folder it's in, so the test output
+        // will be generated again
+        $fileInSubDirectory = $this->manuscriptSrcDir . '/resources/tests/test/NotTrueTest.php';
+        touch($fileInSubDirectory, (int) filemtime($fileInSubDirectory) + 1000);
 
         $this->tester->execute(
             [

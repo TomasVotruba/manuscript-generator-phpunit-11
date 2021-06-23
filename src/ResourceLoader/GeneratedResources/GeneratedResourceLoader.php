@@ -11,7 +11,9 @@ use ManuscriptGenerator\ResourceLoader\CouldNotLoadFile;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
 use ManuscriptGenerator\ResourceLoader\LoadedResource;
 use ManuscriptGenerator\ResourceLoader\ResourceLoader;
+use SplFileInfo;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Finder\Finder;
 
 final class GeneratedResourceLoader implements ResourceLoader
 {
@@ -67,6 +69,21 @@ final class GeneratedResourceLoader implements ResourceLoader
     private function isFresh(string $targetFilePath, string $sourcePath): bool
     {
         $generatedFileLastModified = (int) filemtime($targetFilePath);
+
+        if (is_dir($sourcePath)) {
+            $newestFile = null;
+
+            foreach (Finder::create()->files()->in($sourcePath)->notName(
+                'vendor'
+            )->sortByModifiedTime()->reverseSorting() as $newestFile) {
+                break;
+            }
+
+            if ($newestFile instanceof SplFileInfo && $newestFile->getMTime() > $generatedFileLastModified) {
+                // The directory of the source file contains a file that has been modified, so we need to regenerate the resource
+                return false;
+            }
+        }
 
         foreach (
             [
