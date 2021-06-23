@@ -23,7 +23,8 @@ final class NodeTraverserTest extends TestCase
             [
                 new Heading(1, 'Chapter 1', new AttributeList([new Attribute('id', 'chapter-1')])),
                 new Paragraph([new Span('Paragraph')]),
-            ]
+            ],
+            []
         );
 
         $spy = new NodeVisitorSpy();
@@ -60,9 +61,9 @@ final class NodeTraverserTest extends TestCase
             }]
         );
 
-        $result = $traverser->traverseDocument(new Document([new Heading(1, 'Chapter 1')]));
+        $result = $traverser->traverseDocument(new Document([new Heading(1, 'Chapter 1')], []));
 
-        self::assertEquals(new Document([new Heading(1, 'CHAPTER 1')]), $result);
+        self::assertEquals(new Document([new Heading(1, 'CHAPTER 1')], []), $result);
     }
 
     public function testReplaceExistingNodes(): void
@@ -80,9 +81,9 @@ final class NodeTraverserTest extends TestCase
             }]
         );
 
-        $result = $traverser->traverseDocument(new Document([new Heading(1, 'Chapter 1')]));
+        $result = $traverser->traverseDocument(new Document([new Heading(1, 'Chapter 1')], []));
 
-        self::assertEquals(new Document([new Paragraph([new Span('Chapter 1')])]), $result);
+        self::assertEquals(new Document([new Paragraph([new Span('Chapter 1')])], []), $result);
     }
 
     public function testReplaceExistingSubnodes(): void
@@ -103,11 +104,11 @@ final class NodeTraverserTest extends TestCase
         );
 
         $result = $traverser->traverseDocument(
-            new Document([new Heading(1, 'Chapter 1', new AttributeList([new Attribute('id', 'foo')]))])
+            new Document([new Heading(1, 'Chapter 1', new AttributeList([new Attribute('id', 'foo')]))], [])
         );
 
         self::assertEquals(
-            new Document([new Heading(1, 'Chapter 1', new AttributeList([new Attribute('id', 'bar')]))]),
+            new Document([new Heading(1, 'Chapter 1', new AttributeList([new Attribute('id', 'bar')]))], []),
             $result
         );
     }

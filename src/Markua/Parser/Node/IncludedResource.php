@@ -12,7 +12,7 @@ final class IncludedResource extends AbstractNode
 
     public function __construct(
         public string $link,
-        public ?string $caption,
+        public ?string $caption = null,
         ?AttributeList $attributes = null
     ) {
         $this->attributes = $attributes === null ? new AttributeList() : $attributes;

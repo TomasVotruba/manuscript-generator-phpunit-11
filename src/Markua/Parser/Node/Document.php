@@ -10,14 +10,16 @@ final class Document extends AbstractNode
 {
     /**
      * @param array<Node> $nodes
+     * @param array<Node> $virtualNodes
      */
     public function __construct(
-        public array $nodes
+        public array $nodes,
+        public array $virtualNodes
     ) {
     }
 
     public function subnodeNames(): array
     {
-        return ['nodes'];
+        return ['nodes', 'virtualNodes'];
     }
 }

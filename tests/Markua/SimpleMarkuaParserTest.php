@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Test\Markua;
 
+use ManuscriptGenerator\Markua\Parser\Node;
 use ManuscriptGenerator\Markua\Parser\Node\Aside;
 use ManuscriptGenerator\Markua\Parser\Node\Attribute;
 use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
@@ -32,7 +33,7 @@ final class SimpleMarkuaParserTest extends TestCase
     public function testIncludedResource(): void
     {
         self::assertEquals(
-            new Document([new IncludedResource('source.php', 'Label')]),
+            $this->documentWith([new IncludedResource('source.php', 'Label')]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 ![Label](source.php)
 CODE_SAMPLE
@@ -55,7 +56,7 @@ CODE_SAMPLE
     public function testInlineResourceWithNoFormat(): void
     {
         self::assertEquals(
-            new Document([new InlineResource('$code', null)]),
+            $this->documentWith([new InlineResource('$code', null)]),
             $this->parser->parseDocument(<<<'CODE_SAMPLE'
 ```
 $code
@@ -68,7 +69,7 @@ CODE_SAMPLE
     public function testInlineResourceWithAttributes(): void
     {
         self::assertEquals(
-            new Document(
+            $this->documentWith(
                 [new InlineResource('$code', 'php', new AttributeList([new Attribute('caption', 'Caption')]))]
             ),
             $this->parser->parseDocument(<<<'CODE_SAMPLE'
@@ -84,7 +85,7 @@ CODE_SAMPLE
     public function testIncludedResourceWithoutLabel(): void
     {
         self::assertEquals(
-            new Document([new IncludedResource('source.php', '')]),
+            $this->documentWith([new IncludedResource('source.php', '')]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 ![](source.php)
 CODE_SAMPLE
@@ -95,7 +96,7 @@ CODE_SAMPLE
     public function testInlineResourceWithBacktick(): void
     {
         self::assertEquals(
-            new Document([new InlineResource('// Using ` in a comment')]),
+            $this->documentWith([new InlineResource('// Using ` in a comment')]),
             $this->parser->parseDocument(<<<'CODE_SAMPLE'
 ```
 // Using ` in a comment
@@ -108,7 +109,7 @@ CODE_SAMPLE
     public function testInlineResourceWithThreeBackticks(): void
     {
         self::assertEquals(
-            new Document([new InlineResource('// Using ``` in a comment')]),
+            $this->documentWith([new InlineResource('// Using ``` in a comment')]),
             $this->parser->parseDocument(<<<'CODE_SAMPLE'
 ```
 // Using ``` in a comment
@@ -121,7 +122,7 @@ CODE_SAMPLE
     public function testAttributes(): void
     {
         self::assertEquals(
-            new Document(
+            $this->documentWith(
                 [new IncludedResource('source.php', '', new AttributeList([new Attribute('crop-start', '6')]))]
             ),
             $this->parser->parseDocument(<<<CODE_SAMPLE
@@ -135,7 +136,7 @@ CODE_SAMPLE
     public function testAttributesOptionalWhitespace(): void
     {
         self::assertEquals(
-            new Document(
+            $this->documentWith(
                 [new IncludedResource(
                     'source.php',
                     '',
@@ -153,7 +154,7 @@ CODE_SAMPLE
     public function testAttributesWithAndWithoutQuotes(): void
     {
         self::assertEquals(
-            new Document(
+            $this->documentWith(
                 [new IncludedResource(
                     'source.php',
                     '',
@@ -172,7 +173,7 @@ CODE_SAMPLE
     public function testIncludedResourceWithAttributes(): void
     {
         self::assertEquals(
-            new Document(
+            $this->documentWith(
                 [new IncludedResource('source.php', 'Caption', new AttributeList([new Attribute('crop-start', '6')]))]
             ),
             $this->parser->parseDocument(<<<CODE_SAMPLE
@@ -186,7 +187,7 @@ CODE_SAMPLE
     public function testHeading1(): void
     {
         self::assertEquals(
-            new Document([new Heading(1, 'Title')]),
+            $this->documentWith([new Heading(1, 'Title')]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 # Title
 CODE_SAMPLE
@@ -197,7 +198,7 @@ CODE_SAMPLE
     public function testHeadingWithSpace(): void
     {
         self::assertEquals(
-            new Document([new Heading(1, 'The title')]),
+            $this->documentWith([new Heading(1, 'The title')]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 # The title
 CODE_SAMPLE
@@ -208,7 +209,7 @@ CODE_SAMPLE
     public function testHeading2(): void
     {
         self::assertEquals(
-            new Document([new Heading(2, 'Title')]),
+            $this->documentWith([new Heading(2, 'Title')]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 ## Title
 CODE_SAMPLE
@@ -219,7 +220,7 @@ CODE_SAMPLE
     public function testHeadingWithAttributes(): void
     {
         self::assertEquals(
-            new Document([new Heading(2, 'Title', new AttributeList([new Attribute('id', 'title')]))]),
+            $this->documentWith([new Heading(2, 'Title', new AttributeList([new Attribute('id', 'title')]))]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 {id:title}
 ## Title
@@ -231,7 +232,7 @@ CODE_SAMPLE
     public function testIdAttributeShortcut(): void
     {
         self::assertEquals(
-            new Document([new Heading(1, 'Chapter 1', new AttributeList([new Attribute('id', 'chapter-1')]))]),
+            $this->documentWith([new Heading(1, 'Chapter 1', new AttributeList([new Attribute('id', 'chapter-1')]))]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 {#chapter-1}
 # Chapter 1
@@ -243,7 +244,7 @@ CODE_SAMPLE
     public function testDocument(): void
     {
         self::assertEquals(
-            new Document([new Heading(1, 'Title'), new IncludedResource('source.php', 'Caption')]),
+            $this->documentWith([new Heading(1, 'Title'), new IncludedResource('source.php', 'Caption')]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 # Title
 
@@ -256,7 +257,7 @@ CODE_SAMPLE
     public function testParagraph(): void
     {
         self::assertEquals(
-            new Document([new Heading(1, 'Title'), new Paragraph([new Span('Paragraph 1')])]),
+            $this->documentWith([new Heading(1, 'Title'), new Paragraph([new Span('Paragraph 1')])]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 # Title
 
@@ -269,7 +270,7 @@ CODE_SAMPLE
     public function testLastParagraphOfFileWithAdditionalNewline(): void
     {
         self::assertEquals(
-            new Document([new Paragraph([new Span('Paragraph 1')])]),
+            $this->documentWith([new Paragraph([new Span('Paragraph 1')])]),
             $this->parser->parseDocument("Paragraph 1\n")
         );
     }
@@ -277,7 +278,7 @@ CODE_SAMPLE
     public function testMultipleParagraphs(): void
     {
         self::assertEquals(
-            new Document(
+            $this->documentWith(
                 [
                     new Heading(1, 'Title'),
                     new Paragraph([new Span('Paragraph 1')]),
@@ -298,7 +299,7 @@ CODE_SAMPLE
     public function testMultilineParagraphs(): void
     {
         self::assertEquals(
-            new Document(
+            $this->documentWith(
                 [new Heading(1, 'Title'), new Paragraph([new Span("Paragraph 1\nLine 2 of the same paragraph")])]
             ),
             $this->parser->parseDocument(
@@ -315,7 +316,9 @@ CODE_SAMPLE
     public function testDirective(): void
     {
         self::assertEquals(
-            new Document([new Directive('frontmatter'), new Directive('mainmatter'), new Directive('backmatter')]),
+            $this->documentWith(
+                [new Directive('frontmatter'), new Directive('mainmatter'), new Directive('backmatter')]
+            ),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 {frontmatter}
 {mainmatter}
@@ -328,7 +331,7 @@ CODE_SAMPLE
     public function testLinkAtBeginningOfLine(): void
     {
         self::assertEquals(
-            new Document([new Paragraph([new Link('https://matthiasnoback.nl', 'Blog'), new Span(' (nice!)')])]),
+            $this->documentWith([new Paragraph([new Link('https://matthiasnoback.nl', 'Blog'), new Span(' (nice!)')])]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 [Blog](https://matthiasnoback.nl) (nice!)
 CODE_SAMPLE
@@ -339,7 +342,9 @@ CODE_SAMPLE
     public function testLinkAtEndLine(): void
     {
         self::assertEquals(
-            new Document([new Paragraph([new Span('See also: '), new Link('https://matthiasnoback.nl', 'Blog')])]),
+            $this->documentWith(
+                [new Paragraph([new Span('See also: '), new Link('https://matthiasnoback.nl', 'Blog')])]
+            ),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 See also: [Blog](https://matthiasnoback.nl)
 CODE_SAMPLE
@@ -350,7 +355,7 @@ CODE_SAMPLE
     public function testLinkWithOneCharacterBeforeEndOfLine(): void
     {
         self::assertEquals(
-            new Document([new Paragraph([new Link('https://matthiasnoback.nl', 'Blog'), new Span('.')])]),
+            $this->documentWith([new Paragraph([new Link('https://matthiasnoback.nl', 'Blog'), new Span('.')])]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 [Blog](https://matthiasnoback.nl).
 CODE_SAMPLE
@@ -361,7 +366,7 @@ CODE_SAMPLE
     public function testLinkWithAttributes(): void
     {
         self::assertEquals(
-            new Document(
+            $this->documentWith(
                 [new Paragraph(
                     [
                         new Span('See also: '),
@@ -382,7 +387,7 @@ CODE_SAMPLE
     public function testNotReallyALink(): void
     {
         self::assertEquals(
-            new Document([new Paragraph([new Span('Method [...] has no return type.')])]),
+            $this->documentWith([new Paragraph([new Span('Method [...] has no return type.')])]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 Method [...] has no return type.
 CODE_SAMPLE
@@ -393,7 +398,7 @@ CODE_SAMPLE
     public function testAside(): void
     {
         self::assertEquals(
-            new Document([new Aside([new Paragraph([new Span('Paragraph')])])]),
+            $this->documentWith([new Aside([new Paragraph([new Span('Paragraph')])])]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 {aside}
 Paragraph
@@ -406,7 +411,7 @@ CODE_SAMPLE
     public function testBlurb(): void
     {
         self::assertEquals(
-            new Document([new Blurb([new Paragraph([new Span('Paragraph')])])]),
+            $this->documentWith([new Blurb([new Paragraph([new Span('Paragraph')])])]),
             $this->parser->parseDocument(<<<CODE_SAMPLE
 {blurb}
 Paragraph
@@ -419,7 +424,7 @@ CODE_SAMPLE
     public function testBlurbWithAttributes(): void
     {
         self::assertEquals(
-            new Document(
+            $this->documentWith(
                 [
                     new Blurb(
                         [new Paragraph([new Span('Paragraph')])],
@@ -434,5 +439,13 @@ Paragraph
 CODE_SAMPLE
             )
         );
+    }
+
+    /**
+     * @param array<Node> $nodes
+     */
+    private function documentWith(array $nodes): Document
+    {
+        return new Document($nodes, [new IncludedResource('title_page.png')]);
     }
 }

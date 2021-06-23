@@ -11,6 +11,7 @@ use ManuscriptGenerator\ResourceLoader\CouldNotLoadFile;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
 use ManuscriptGenerator\ResourceLoader\LoadedResource;
 use ManuscriptGenerator\ResourceLoader\ResourceLoader;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -24,7 +25,8 @@ final class GeneratedResourceLoader implements ResourceLoader
         private FileResourceLoader $fileResourceLoader,
         private FileOperations $fileOperations,
         private EventDispatcherInterface $eventDispatcher,
-        private DependenciesInstaller $dependenciesInstaller
+        private DependenciesInstaller $dependenciesInstaller,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -68,6 +70,17 @@ final class GeneratedResourceLoader implements ResourceLoader
     private function isFresh(string $targetFilePath, string $sourcePath): bool
     {
         $generatedFileLastModified = (int) filemtime($targetFilePath);
+
+        if (! file_exists($sourcePath)) {
+            $this->logger->debug(
+                'Could not determine freshness of target path {targetPath}. Source file not found: {sourcePath}',
+                [
+                'targetPath' => $targetFilePath,
+                'sourcePath' => $sourcePath,
+            ]
+            );
+            return true;
+        }
 
         /*
          * If the source for this generator is a single file we also take other files in this directory into

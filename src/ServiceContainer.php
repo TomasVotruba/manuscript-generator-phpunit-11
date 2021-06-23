@@ -130,7 +130,8 @@ final class ServiceContainer
                     new FileResourceLoader(),
                     $this->fileOperations(),
                     $this->eventDispatcher(),
-                    $this->dependenciesInstaller()
+                    $this->dependenciesInstaller(),
+                    $this->logger()
                 ),
                 new FileResourceLoader(),
             ]
