@@ -11,9 +11,8 @@ use ManuscriptGenerator\ResourceLoader\CouldNotLoadFile;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
 use ManuscriptGenerator\ResourceLoader\LoadedResource;
 use ManuscriptGenerator\ResourceLoader\ResourceLoader;
-use SplFileInfo;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Finder\Finder;
 
 final class GeneratedResourceLoader implements ResourceLoader
 {
@@ -70,18 +69,9 @@ final class GeneratedResourceLoader implements ResourceLoader
     {
         $generatedFileLastModified = (int) filemtime($targetFilePath);
 
-        if (is_dir($sourcePath)) {
-            $newestFile = null;
-
-            foreach (Finder::create()->files()->in($sourcePath)->notName('vendor')->sortByModifiedTime()
-                ->reverseSorting() as $newestFile) {
-                break;
-            }
-
-            if ($newestFile instanceof SplFileInfo && $newestFile->getMTime() > $generatedFileLastModified) {
-                // The directory of the source file contains a file that has been modified, so we need to regenerate the resource
-                return false;
-            }
+        if (is_dir($sourcePath) && $this->sourceFileLastModified($sourcePath) > $generatedFileLastModified) {
+            // The directory of the source file contains a file that has been modified, so we need to regenerate the resource
+            return false;
         }
 
         foreach (
@@ -111,5 +101,56 @@ final class GeneratedResourceLoader implements ResourceLoader
         }
 
         return true;
+    }
+
+    private function sourceFileLastModified(string $directory): int
+    {
+        $files = $this->relevantFilesIn($directory);
+        if ($files === []) {
+            return 0;
+        }
+
+        $lastModifiedTimes = array_map(fn (string $pathname) => (int) filemtime($pathname), $files);
+        arsort($lastModifiedTimes);
+
+        return $lastModifiedTimes[array_key_first($lastModifiedTimes)];
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function relevantFilesIn(string $directory): array
+    {
+        $files = [];
+
+        $dh = opendir($directory);
+        if ($dh === false) {
+            throw new RuntimeException('Could not open directory ' . $directory . ' for reading');
+        }
+
+        while (($filename = readdir($dh)) !== false) {
+            if ($filename === '.') {
+                continue;
+            }
+            if ($filename === '..') {
+                continue;
+            }
+            // @TODO get from DependenciesInstaller
+            $ignoreFileNames = ['vendor'];
+            if (in_array($filename, $ignoreFileNames, true)) {
+                continue;
+            }
+
+            $pathname = $directory . '/' . $filename;
+            if (is_dir($pathname)) {
+                $files = array_merge($files, $this->relevantFilesIn($pathname));
+            } else {
+                $files[] = $pathname;
+            }
+        }
+
+        closedir($dh);
+
+        return $files;
     }
 }
