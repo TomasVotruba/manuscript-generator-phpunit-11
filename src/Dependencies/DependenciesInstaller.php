@@ -9,6 +9,4 @@ interface DependenciesInstaller
     public function install(string $directory): void;
 
     public function updateAll(): void;
-
-    public function dependenciesHaveChangedSince(int $timestamp, string $directory): bool;
 }

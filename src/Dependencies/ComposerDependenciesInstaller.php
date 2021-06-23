@@ -43,45 +43,6 @@ final class ComposerDependenciesInstaller implements DependenciesInstaller
         }
     }
 
-    public function dependenciesHaveChangedSince(int $timestamp, string $directory): bool
-    {
-        $composerJsonFile = new SplFileInfo($directory . '/composer.json');
-        $composerLockFile = new SplFileInfo($directory . '/composer.lock');
-        $vendorDir = new SplFileInfo($directory . '/vendor');
-
-        if (! $composerJsonFile->isFile()) {
-            // This directory doesn't have a composer.json file so the installer doesn't need to do anything
-            return false;
-        }
-
-        if (! $composerLockFile->isFile()) {
-            // composer.lock doesn't exist, so we definitely have to install dependencies
-            return true;
-        }
-
-        if ($composerLockFile->getMTime() > $timestamp) {
-            // composer.lock has changed since the provided timestamp so we have to re-install dependencies
-            return true;
-        }
-
-        if (! $vendorDir->isDir()) {
-            // dependencies have not even been installed
-            return true;
-        }
-
-        if ($composerJsonFile->getMTime() > $composerLockFile->getMTime()) {
-            // composer.json has been modified so we need to re-install dependencies
-            return true;
-        }
-
-        if ($composerLockFile->getMTime() > $vendorDir->getMTime()) {
-            // composer.lock has changed since the latest install, so we have to re-install dependencies
-            return true;
-        }
-
-        return false;
-    }
-
     private function runComposerInDirectory(string $directory, string $preferredCommand): void
     {
         $composerJsonFile = new SplFileInfo($directory . '/composer.json');

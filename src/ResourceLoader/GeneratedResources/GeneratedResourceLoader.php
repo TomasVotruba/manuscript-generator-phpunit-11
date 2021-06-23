@@ -69,38 +69,16 @@ final class GeneratedResourceLoader implements ResourceLoader
     {
         $generatedFileLastModified = (int) filemtime($targetFilePath);
 
-        if (is_dir($sourcePath) && $this->sourceFileLastModified($sourcePath) > $generatedFileLastModified) {
-            // The directory of the source file contains a file that has been modified, so we need to regenerate the resource
-            return false;
+        /*
+         * If the source for this generator is a single file we also take other files in this directory into
+         * consideration to determine the freshness
+         */
+        $sourceDir = $sourcePath;
+        if (is_file($sourceDir)) {
+            $sourceDir = dirname($sourcePath);
         }
 
-        foreach (
-            [
-                $sourcePath, // the source path as provided by the resource generator
-            ]
-            as $filePathToCheck
-        ) {
-            if (! file_exists($filePathToCheck)) {
-                continue;
-            }
-
-            if ((int) filemtime($filePathToCheck) > $generatedFileLastModified) {
-                return false;
-            }
-        }
-
-        // @TODO remove duplication
-        if (is_dir($sourcePath)) {
-            $directory = $sourcePath;
-        } else {
-            $directory = dirname($sourcePath);
-        }
-
-        if ($this->dependenciesInstaller->dependenciesHaveChangedSince($generatedFileLastModified, $directory)) {
-            return false;
-        }
-
-        return true;
+        return $this->sourceFileLastModified($sourceDir) <= $generatedFileLastModified;
     }
 
     private function sourceFileLastModified(string $directory): int
