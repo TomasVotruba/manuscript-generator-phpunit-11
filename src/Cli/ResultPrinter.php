@@ -74,6 +74,15 @@ final class ResultPrinter implements EventSubscriberInterface
         $this->countFilesUpdated++;
 
         $this->output->writeln(sprintf('<comment>updated</comment> %s', $this->relativePathname($event->filepath())));
+
+        $extension = pathinfo($event->filepath(), PATHINFO_EXTENSION);
+        assert(is_string($extension));
+
+        if (in_array($extension, ['jpg', 'png'], true)) {
+            // Don't show diff for binary content
+            return;
+        }
+
         $this->printDiff($event->oldContents(), $event->newContents());
     }
 
