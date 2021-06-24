@@ -66,7 +66,7 @@ final class ResultPrinter implements EventSubscriberInterface
         $this->countFilesCreated++;
 
         $this->output->writeln(sprintf('<comment>created</comment> %s', $this->relativePathname($event->filepath())));
-        $this->printDiff('', $event->contents());
+        $this->printDiff($event->filepath(), '', $event->contents());
     }
 
     public function whenFileWasModified(FileWasModified $event): void
@@ -75,15 +75,7 @@ final class ResultPrinter implements EventSubscriberInterface
 
         $this->output->writeln(sprintf('<comment>updated</comment> %s', $this->relativePathname($event->filepath())));
 
-        $extension = pathinfo($event->filepath(), PATHINFO_EXTENSION);
-        assert(is_string($extension));
-
-        if (in_array($extension, ['jpg', 'png'], true)) {
-            // Don't show diff for binary content
-            return;
-        }
-
-        $this->printDiff($event->oldContents(), $event->newContents());
+        $this->printDiff($event->filepath(), $event->oldContents(), $event->newContents());
     }
 
     public function whenManuscriptWasGenerated(ManuscriptWasGenerated $event): void
@@ -113,8 +105,16 @@ final class ResultPrinter implements EventSubscriberInterface
         return $filepath;
     }
 
-    private function printDiff(string $old, string $new): void
+    private function printDiff(string $filepath, string $old, string $new): void
     {
+        $extension = pathinfo($filepath, PATHINFO_EXTENSION);
+        assert(is_string($extension));
+
+        if (in_array($extension, ['jpg', 'png'], true)) {
+            // Don't show diff for binary content
+            return;
+        }
+
         $this->output->writeln($this->consoleDiffer->diff($old, $new));
     }
 
