@@ -28,7 +28,7 @@ final class WrapLongLinesResourceProcessor implements ResourceProcessor
                 continue;
             }
 
-            if (str_starts_with($line, 'use ')) {
+            if (str_contains($line, 'use ')) {
                 // Don't touch use statements
                 // @TODO how to generalize this?
                 $processed[] = $line;
