@@ -22,12 +22,6 @@ final class DelegatingLineFixer implements LineFixer
             $fixedLines = $lineFixer->fix($fixedLines, $maximumLineLength);
         }
 
-        foreach ($fixedLines as $line) {
-            if (strlen($line) > $maximumLineLength) {
-                throw new CouldNotFixLine('None of the line fixers was able to fix this line: ' . $line);
-            }
-        }
-
         return $fixedLines;
     }
 }

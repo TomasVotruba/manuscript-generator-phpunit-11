@@ -36,11 +36,11 @@ use ManuscriptGenerator\ResourceProcessor\ApplyCropAttributesProcessor;
 use ManuscriptGenerator\ResourceProcessor\CropResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\InsignificantWhitespaceStripper;
 use ManuscriptGenerator\ResourceProcessor\LineLength\DelegatingLineFixer;
+use ManuscriptGenerator\ResourceProcessor\LineLength\FixLongLinesResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\LineLength\PhpUseStatementLineFixer;
 use ManuscriptGenerator\ResourceProcessor\LineLength\RegularWordWrapLineFixer;
 use ManuscriptGenerator\ResourceProcessor\RemoveSuperfluousIndentationResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\StripInsignificantWhitespaceResourceProcessor;
-use ManuscriptGenerator\ResourceProcessor\WrapLongLinesResourceProcessor;
 use ManuscriptGenerator\Testing\PhpUnitTestRunner;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Logger\ConsoleLogger;
@@ -164,7 +164,7 @@ final class ServiceContainer
                         new CropResourceProcessor(),
                         new ApplyCropAttributesProcessor(),
                         new RemoveSuperfluousIndentationResourceProcessor(),
-                        new WrapLongLinesResourceProcessor(
+                        new FixLongLinesResourceProcessor(
                             $this->configuration,
                             new DelegatingLineFixer(
                                 [new PhpUseStatementLineFixer(), new RegularWordWrapLineFixer()]
