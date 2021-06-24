@@ -21,6 +21,7 @@ use ManuscriptGenerator\Markua\Processor\InlineIncludedMarkdownFilesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\InlineIncludedResourcesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\LinkRegistry\CollectLinksForLinkRegistryNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\ProcessInlineResourcesNodeVisitor;
+use ManuscriptGenerator\Markua\Processor\UseFilenameAsCaptionNodeVisitor;
 use ManuscriptGenerator\ResourceLoader\DelegatingResourceLoader;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\CopyFromVendorResourceGenerator;
@@ -149,8 +150,9 @@ final class ServiceContainer
     private function markuaNodeVisitors(): array
     {
         $nodeVisitors = [
+            new UseFilenameAsCaptionNodeVisitor(),
             new InlineIncludedMarkdownFilesNodeVisitor($this->resourceLoader(), $this->markuaParser()),
-            new InlineIncludedResourcesNodeVisitor($this->resourceLoader(),),
+            new InlineIncludedResourcesNodeVisitor($this->resourceLoader()),
             new ProcessInlineResourcesNodeVisitor(
                 array_merge(
                     $this->configuration->additionalResourceProcessors(),

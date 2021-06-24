@@ -25,6 +25,7 @@ final class IncludedResource extends AbstractNode
 
     public function expectedFilePathname(): string
     {
+        // @TODO fix this: the included manuscript file can be anywhere; use the manuscript-src dir!
         return $this->includedFromFile()
             ->directory() . '/resources/' . $this->link;
     }

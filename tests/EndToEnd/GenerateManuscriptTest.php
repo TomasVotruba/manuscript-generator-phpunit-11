@@ -188,6 +188,23 @@ final class GenerateManuscriptTest extends TestCase
         }
     }
 
+    public function testItGeneratesAutomaticCaptionsForIncludedSources(): void
+    {
+        $this->filesystem->mirror(__DIR__ . '/AutomaticCaptions/manuscript-src', $this->manuscriptSrcDir);
+
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+            ]
+        );
+
+        self::assertDirectoryContentsEquals(
+            __DIR__ . '/AutomaticCaptions/manuscript-expected',
+            $this->manuscriptDir
+        );
+    }
+
     public function testItUsesAdditionalResourceProcessors(): void
     {
         $this->filesystem->mirror(__DIR__ . '/CustomResourceProcessor/manuscript-src', $this->manuscriptSrcDir);
