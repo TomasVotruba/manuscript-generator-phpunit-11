@@ -26,7 +26,7 @@ final class FixLongLinesResourceProcessor implements ResourceProcessor
             if (strlen($fixedLine) > $maximumLineLength) {
                 throw new CouldNotFixLine(
                     sprintf(
-                        'None of the line fixers was reduce the line %d to the maximum length of %d. Full resource contents: %s',
+                        'None of the line fixers was able to reduce line %d to the maximum length of %d. Full resource contents:' . "\n" . '%s',
                         $lineIndex + 1,
                         $maximumLineLength,
                         implode("\n", $fixedLines)
