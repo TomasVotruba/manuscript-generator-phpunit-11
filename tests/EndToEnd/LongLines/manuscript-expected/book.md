@@ -14,3 +14,10 @@ LongInterfaceName
     }
 }
 ```
+
+{format: diff}
+```
+ use ANamespace\...\ToALineThatIsWayTooLong; // (abbreviated)
+-foo
++bar
+```
