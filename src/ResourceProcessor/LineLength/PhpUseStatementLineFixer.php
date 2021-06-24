@@ -11,7 +11,7 @@ final class PhpUseStatementLineFixer implements LineFixer
         $result = [];
 
         foreach ($lines as $line) {
-            if (strlen($line) > $maximumLineLength && str_starts_with($line, 'use ')) {
+            if (strlen($line) > $maximumLineLength && str_contains($line, 'use')) {
                 $isMatch = preg_match('/(\s*)use (?<namespace>.+);/', $line, $matches);
                 if ($isMatch === 1) {
                     $namespaceParts = explode('\\', $matches['namespace']);
