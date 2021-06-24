@@ -62,7 +62,8 @@ LICENSE
 
 namespace Symfony\Contracts\EventDispatcher;
 
-use Psr\EventDispatcher\EventDispatcherInterface as PsrEventDispatcherInterface;
+use Psr\...\EventDispatcherInterface as PsrEventDispatcherInterface; //
+(abbreviated)
 
 /**
  * Allows providing hooks on domain-specific lifecycles by dispatching

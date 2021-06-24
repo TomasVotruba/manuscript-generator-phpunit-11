@@ -78,7 +78,7 @@ final class RuntimeConfiguration
         return $this->runTests;
     }
 
-    public function maximumLineWidthForInlineResources(): int
+    public function maximumLineLengthForInlineResources(): int
     {
         return 72;
     }

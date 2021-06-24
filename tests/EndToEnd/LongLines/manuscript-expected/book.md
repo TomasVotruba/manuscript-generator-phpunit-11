@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-use ANamespace\With\Many\VeryLongParts\WhichTogetherAddUp\ToALineThatIsWayTooLong;
+use ANamespace\...\ToALineThatIsWayTooLong; // (abbreviated)
 
 final class LongClassName extends LongParentClassName implements
 LongInterfaceName

@@ -35,6 +35,9 @@ use ManuscriptGenerator\ResourceLoader\GeneratedResources\TitlePageResourceGener
 use ManuscriptGenerator\ResourceProcessor\ApplyCropAttributesProcessor;
 use ManuscriptGenerator\ResourceProcessor\CropResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\InsignificantWhitespaceStripper;
+use ManuscriptGenerator\ResourceProcessor\LineLength\DelegatingLineFixer;
+use ManuscriptGenerator\ResourceProcessor\LineLength\PhpUseStatementLineFixer;
+use ManuscriptGenerator\ResourceProcessor\LineLength\RegularWordWrapLineFixer;
 use ManuscriptGenerator\ResourceProcessor\RemoveSuperfluousIndentationResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\StripInsignificantWhitespaceResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\WrapLongLinesResourceProcessor;
@@ -161,7 +164,12 @@ final class ServiceContainer
                         new CropResourceProcessor(),
                         new ApplyCropAttributesProcessor(),
                         new RemoveSuperfluousIndentationResourceProcessor(),
-                        new WrapLongLinesResourceProcessor($this->configuration, $this->logger()),
+                        new WrapLongLinesResourceProcessor(
+                            $this->configuration,
+                            new DelegatingLineFixer(
+                                [new PhpUseStatementLineFixer(), new RegularWordWrapLineFixer()]
+                            )
+                        ),
                         new StripInsignificantWhitespaceResourceProcessor(new InsignificantWhitespaceStripper()),
                     ]
                 )
