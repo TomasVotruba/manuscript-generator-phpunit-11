@@ -37,6 +37,7 @@ use ManuscriptGenerator\ResourceProcessor\CropResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\InsignificantWhitespaceStripper;
 use ManuscriptGenerator\ResourceProcessor\RemoveSuperfluousIndentationResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\StripInsignificantWhitespaceResourceProcessor;
+use ManuscriptGenerator\ResourceProcessor\WrapLongLinesResourceProcessor;
 use ManuscriptGenerator\Testing\PhpUnitTestRunner;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Logger\ConsoleLogger;
@@ -160,6 +161,7 @@ final class ServiceContainer
                         new CropResourceProcessor(),
                         new ApplyCropAttributesProcessor(),
                         new RemoveSuperfluousIndentationResourceProcessor(),
+                        new WrapLongLinesResourceProcessor($this->configuration, $this->logger()),
                         new StripInsignificantWhitespaceResourceProcessor(new InsignificantWhitespaceStripper()),
                     ]
                 )

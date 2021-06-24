@@ -79,23 +79,6 @@ final class GenerateManuscriptTest extends TestCase
         );
     }
 
-    public function testItInstallsComposerDependencies(): void
-    {
-        $this->filesystem->mirror(__DIR__ . '/ComposerDependencies/manuscript-src', $this->manuscriptSrcDir);
-
-        $this->tester->execute(
-            [
-                '--manuscript-dir' => $this->manuscriptDir,
-                '--manuscript-src-dir' => $this->manuscriptSrcDir,
-            ]
-        );
-
-        self::assertDirectoryContentsEquals(
-            __DIR__ . '/ComposerDependencies/manuscript-expected',
-            $this->manuscriptDir
-        );
-    }
-
     public function testItUpdatesComposerDependenciesIfRequested(): void
     {
         $this->filesystem->mirror(__DIR__ . '/ComposerDependencies/manuscript-src', $this->manuscriptSrcDir);
@@ -188,9 +171,12 @@ final class GenerateManuscriptTest extends TestCase
         }
     }
 
-    public function testItGeneratesAutomaticCaptionsForIncludedSources(): void
+    /**
+     * @dataProvider manuscriptDirProvider
+     */
+    public function testItGeneratesTheExpectedManuscript(string $manuscriptSrcDir, string $manuscriptExpectedDir): void
     {
-        $this->filesystem->mirror(__DIR__ . '/AutomaticCaptions/manuscript-src', $this->manuscriptSrcDir);
+        $this->filesystem->mirror($manuscriptSrcDir, $this->manuscriptSrcDir);
 
         $this->tester->execute(
             [
@@ -199,10 +185,25 @@ final class GenerateManuscriptTest extends TestCase
             ]
         );
 
-        self::assertDirectoryContentsEquals(
-            __DIR__ . '/AutomaticCaptions/manuscript-expected',
-            $this->manuscriptDir
-        );
+        self::assertDirectoryContentsEquals($manuscriptExpectedDir, $this->manuscriptDir);
+    }
+
+    /**
+     * @return array<string, array{string,string}>
+     */
+    public function manuscriptDirProvider(): array
+    {
+        return [
+            'AutomaticCaptions' => [
+                __DIR__ . '/AutomaticCaptions/manuscript-src',
+                __DIR__ . '/AutomaticCaptions/manuscript-expected',
+            ],
+            'ComposerDependencies' => [
+                __DIR__ . '/ComposerDependencies/manuscript-src',
+                __DIR__ . '/ComposerDependencies/manuscript-expected',
+            ],
+            'LongLines' => [__DIR__ . '/LongLines/manuscript-src', __DIR__ . '/LongLines/manuscript-expected'],
+        ];
     }
 
     public function testItUsesAdditionalResourceProcessors(): void
