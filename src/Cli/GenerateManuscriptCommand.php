@@ -56,12 +56,6 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
                 'Add this option to update Composer dependencies for all subprojects in the manuscript source directory'
             )
             ->addOption(
-                'run-tests',
-                null,
-                InputOption::VALUE_NONE,
-                'Run the tests in the manuscript source directory before generating the manuscript'
-            )
-            ->addOption(
                 'config',
                 'c',
                 InputOption::VALUE_REQUIRED,
@@ -89,13 +83,8 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
         $updateDependencies = $input->getOption('update-dependencies');
         assert(is_bool($updateDependencies));
 
-        $runTests = $input->getOption('run-tests');
-        assert(is_bool($runTests));
-
         $container = new ServiceContainer(
-            new RuntimeConfiguration($this->loadBookProjectConfiguration(
-                $input
-            ), $dryRun, $updateDependencies, $runTests)
+            new RuntimeConfiguration($this->loadBookProjectConfiguration($input), $dryRun, $updateDependencies)
         );
 
         // For showing results while generating the manuscript:
