@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Test\EndToEnd;
 
 use ManuscriptGenerator\Cli\GenerateManuscriptCommand;
-use ManuscriptGenerator\Testing\TestFailed;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -151,24 +150,6 @@ final class GenerateManuscriptTest extends TestCase
 
         // composer.json has changed, so now it will run composer update
         self::assertStringContainsString('Running composer update', $this->tester->getDisplay());
-    }
-
-    public function testItRunsPhpUnitTestsBeforeGeneratingTheManuscript(): void
-    {
-        $this->filesystem->mirror(__DIR__ . '/ProjectWithFailingTest/manuscript-src', $this->manuscriptSrcDir);
-
-        try {
-            $this->tester->execute(
-                [
-                    '--manuscript-dir' => $this->manuscriptDir,
-                    '--manuscript-src-dir' => $this->manuscriptSrcDir,
-                    '--run-tests' => true,
-                ]
-            );
-            $this->fail('Expected an exception');
-        } catch (TestFailed) {
-            self::assertFileDoesNotExist($this->manuscriptDir . '/book.md');
-        }
     }
 
     /**
