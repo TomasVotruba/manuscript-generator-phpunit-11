@@ -38,3 +38,13 @@ final class Foo
     }
 }
 ```
+
+{format: php}
+```
+// first fragment
+```
+
+{format: php}
+```
+// second fragment
+```

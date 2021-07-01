@@ -35,6 +35,7 @@ use ManuscriptGenerator\ResourceLoader\GeneratedResources\TableOfTokensResourceG
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\TitlePageResourceGenerator;
 use ManuscriptGenerator\ResourceProcessor\ApplyCropAttributesProcessor;
 use ManuscriptGenerator\ResourceProcessor\CropResourceProcessor;
+use ManuscriptGenerator\ResourceProcessor\FragmentResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\InsignificantWhitespaceStripper;
 use ManuscriptGenerator\ResourceProcessor\LineLength\DelegatingLineFixer;
 use ManuscriptGenerator\ResourceProcessor\LineLength\FixLongLinesResourceProcessor;
@@ -161,6 +162,7 @@ final class ServiceContainer
                 array_merge(
                     $this->configuration->additionalResourceProcessors(),
                     [
+                        new FragmentResourceProcessor(),
                         new SkipPartOfResourceProcessor(),
                         new CropResourceProcessor(),
                         new ApplyCropAttributesProcessor(),
