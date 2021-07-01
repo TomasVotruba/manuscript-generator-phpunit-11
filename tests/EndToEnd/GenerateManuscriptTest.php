@@ -184,6 +184,10 @@ final class GenerateManuscriptTest extends TestCase
                 __DIR__ . '/ComposerDependencies/manuscript-expected',
             ],
             'LongLines' => [__DIR__ . '/LongLines/manuscript-src', __DIR__ . '/LongLines/manuscript-expected'],
+            'CroppingAndSkipping' => [
+                __DIR__ . '/CroppingAndSkipping/manuscript-src',
+                __DIR__ . '/CroppingAndSkipping/manuscript-expected',
+            ],
         ];
     }
 

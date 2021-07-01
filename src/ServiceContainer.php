@@ -40,6 +40,7 @@ use ManuscriptGenerator\ResourceProcessor\LineLength\FixLongLinesResourceProcess
 use ManuscriptGenerator\ResourceProcessor\LineLength\PhpUseStatementLineFixer;
 use ManuscriptGenerator\ResourceProcessor\LineLength\RegularWordWrapLineFixer;
 use ManuscriptGenerator\ResourceProcessor\RemoveSuperfluousIndentationResourceProcessor;
+use ManuscriptGenerator\ResourceProcessor\SkipPartOfResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\StripInsignificantWhitespaceResourceProcessor;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Logger\ConsoleLogger;
@@ -159,6 +160,7 @@ final class ServiceContainer
                 array_merge(
                     $this->configuration->additionalResourceProcessors(),
                     [
+                        new SkipPartOfResourceProcessor(),
                         new CropResourceProcessor(),
                         new ApplyCropAttributesProcessor(),
                         new RemoveSuperfluousIndentationResourceProcessor(),
