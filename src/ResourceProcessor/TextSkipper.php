@@ -32,9 +32,12 @@ final class TextSkipper
             throw new RuntimeException(sprintf('End marker not found (%s)', $this->endMarker));
         }
 
-        return substr($text, 0, $startPosition) . $this->replacement . substr(
+        $skipped = substr($text, 0, $startPosition) . $this->replacement . substr(
             $text,
             $endPosition + strlen($this->endMarker)
         );
+
+        // Run again until there are no more parts to skip
+        return $this->skipParts($skipped);
     }
 }

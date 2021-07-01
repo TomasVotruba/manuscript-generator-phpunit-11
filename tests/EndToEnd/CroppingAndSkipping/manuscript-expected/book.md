@@ -19,3 +19,22 @@ final class Foo
     }
 }
 ```
+
+{format: php}
+```
+final class Foo
+{
+    public function bar(): void
+    {
+        // first line
+
+        // ...
+
+        // second line
+
+        // ...
+
+        // last line
+    }
+}
+```
