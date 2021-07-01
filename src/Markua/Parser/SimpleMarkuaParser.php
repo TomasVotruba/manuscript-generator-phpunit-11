@@ -132,7 +132,7 @@ final class SimpleMarkuaParser
         return between(
             char('('),
             char(')'),
-            zeroOrMore(noneOf([' ', "\n", ')'])) // quite a simplification
+            atLeastOne(noneOf([' ', "\n", ')'])) // quite a simplification
         );
     }
 
