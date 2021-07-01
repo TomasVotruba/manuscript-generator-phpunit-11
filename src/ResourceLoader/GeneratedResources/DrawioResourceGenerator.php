@@ -57,4 +57,11 @@ final class DrawioResourceGenerator implements ResourceGenerator
 
         return $generatedContents;
     }
+
+    public function sourceLastModified(
+        IncludedResource $resource,
+        DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
+    ): int {
+        return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource));
+    }
 }

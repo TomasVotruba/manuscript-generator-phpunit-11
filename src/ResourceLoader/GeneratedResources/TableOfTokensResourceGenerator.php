@@ -32,6 +32,13 @@ final class TableOfTokensResourceGenerator implements ResourceGenerator
         return $this->printTokens($allTokens);
     }
 
+    public function sourceLastModified(
+        IncludedResource $resource,
+        DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
+    ): int {
+        return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource));
+    }
+
     /**
      * @param PhpToken[] $allTokens
      */

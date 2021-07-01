@@ -17,4 +17,9 @@ interface ResourceGenerator
     public function sourcePathForResource(IncludedResource $resource): string;
 
     public function generateResource(IncludedResource $resource): string;
+
+    public function sourceLastModified(
+        IncludedResource $resource,
+        DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
+    ): int;
 }

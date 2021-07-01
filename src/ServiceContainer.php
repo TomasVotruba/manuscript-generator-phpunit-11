@@ -25,6 +25,7 @@ use ManuscriptGenerator\Markua\Processor\UseFilenameAsCaptionNodeVisitor;
 use ManuscriptGenerator\ResourceLoader\DelegatingResourceLoader;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\CopyFromVendorResourceGenerator;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\DetermineLastModifiedTimestamp;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DrawioResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\GeneratedResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpScriptOutputResourceGenerator;
@@ -135,7 +136,7 @@ final class ServiceContainer
                     $this->fileOperations(),
                     $this->eventDispatcher(),
                     $this->dependenciesInstaller(),
-                    $this->logger()
+                    new DetermineLastModifiedTimestamp()
                 ),
                 new FileResourceLoader(),
             ]

@@ -25,6 +25,13 @@ final class RectorOutputResourceLoader implements ResourceGenerator
         return $this->getOutputOfRectorRun($this->sourcePathForResource($resource));
     }
 
+    public function sourceLastModified(
+        IncludedResource $resource,
+        DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
+    ): int {
+        return $determineLastModifiedTimestamp->ofDirectory($this->sourcePathForResource($resource));
+    }
+
     private function getOutputOfRectorRun(string $workingDir): string
     {
         $process = new Process(['vendor/bin/rector', 'process', '--dry-run'], $workingDir);

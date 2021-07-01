@@ -11,8 +11,6 @@ use ManuscriptGenerator\ResourceLoader\CouldNotLoadFile;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
 use ManuscriptGenerator\ResourceLoader\LoadedResource;
 use ManuscriptGenerator\ResourceLoader\ResourceLoader;
-use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 final class GeneratedResourceLoader implements ResourceLoader
@@ -26,7 +24,7 @@ final class GeneratedResourceLoader implements ResourceLoader
         private FileOperations $fileOperations,
         private EventDispatcherInterface $eventDispatcher,
         private DependenciesInstaller $dependenciesInstaller,
-        private LoggerInterface $logger
+        private DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ) {
     }
 
@@ -40,14 +38,18 @@ final class GeneratedResourceLoader implements ResourceLoader
             $expectedPath = $includedResource->expectedFilePathname();
             $sourcePath = $resourceGenerator->sourcePathForResource($includedResource);
             if (is_file($expectedPath)
-                && $this->isFresh($expectedPath, $sourcePath)
+                && $resourceGenerator->sourceLastModified($includedResource, $this->determineLastModifiedTimestamp)
+                <= ((int) filemtime($expectedPath))
             ) {
+                // @TODO directly call the logger
                 $this->eventDispatcher->dispatch(new GeneratedResourceWasStillFresh($includedResource->link));
 
                 // The file actually exists, so we can load it from disk
                 return $this->fileResourceLoader->load($includedResource);
             }
 
+            // @TODO remove duplication
+            // @TODO move to generator so it can determine itself if we need to do this
             if (is_dir($sourcePath)) {
                 $directory = $sourcePath;
             } else {
@@ -65,83 +67,5 @@ final class GeneratedResourceLoader implements ResourceLoader
         throw new CouldNotLoadFile(
             sprintf('None of the generators was able to generate resource "%s"', $includedResource->link)
         );
-    }
-
-    private function isFresh(string $targetFilePath, string $sourcePath): bool
-    {
-        $generatedFileLastModified = (int) filemtime($targetFilePath);
-
-        if (! file_exists($sourcePath)) {
-            $this->logger->debug(
-                'Could not determine freshness of target path {targetPath}. Source file not found: {sourcePath}',
-                [
-                    'targetPath' => $targetFilePath,
-                    'sourcePath' => $sourcePath,
-                ]
-            );
-            return true;
-        }
-
-        /*
-         * If the source for this generator is a single file we also take other files in this directory into
-         * consideration to determine the freshness
-         */
-        $sourceDir = $sourcePath;
-        if (is_file($sourceDir)) {
-            $sourceDir = dirname($sourcePath);
-        }
-
-        return $this->sourceFileLastModified($sourceDir) <= $generatedFileLastModified;
-    }
-
-    private function sourceFileLastModified(string $directory): int
-    {
-        $files = $this->relevantFilesIn($directory);
-        if ($files === []) {
-            return 0;
-        }
-
-        $lastModifiedTimes = array_map(fn (string $pathname) => (int) filemtime($pathname), $files);
-        arsort($lastModifiedTimes);
-
-        return $lastModifiedTimes[array_key_first($lastModifiedTimes)];
-    }
-
-    /**
-     * @return array<string>
-     */
-    private function relevantFilesIn(string $directory): array
-    {
-        $files = [];
-
-        $dh = opendir($directory);
-        if ($dh === false) {
-            throw new RuntimeException('Could not open directory ' . $directory . ' for reading');
-        }
-
-        while (($filename = readdir($dh)) !== false) {
-            if ($filename === '.') {
-                continue;
-            }
-            if ($filename === '..') {
-                continue;
-            }
-            // @TODO get from DependenciesInstaller
-            $ignoreFileNames = ['vendor'];
-            if (in_array($filename, $ignoreFileNames, true)) {
-                continue;
-            }
-
-            $pathname = $directory . '/' . $filename;
-            if (is_dir($pathname)) {
-                $files = array_merge($files, $this->relevantFilesIn($pathname));
-            } else {
-                $files[] = $pathname;
-            }
-        }
-
-        closedir($dh);
-
-        return $files;
     }
 }

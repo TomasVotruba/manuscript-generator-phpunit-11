@@ -32,4 +32,11 @@ final class CopyFromVendorResourceGenerator implements ResourceGenerator
 
         return (string) file_get_contents($sourceFilePathname);
     }
+
+    public function sourceLastModified(
+        IncludedResource $resource,
+        DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
+    ): int {
+        return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource));
+    }
 }

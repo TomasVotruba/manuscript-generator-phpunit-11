@@ -35,4 +35,11 @@ final class PhpScriptOutputResourceGenerator implements ResourceGenerator
 
         return $result->standardAndErrorOutputCombined();
     }
+
+    public function sourceLastModified(
+        IncludedResource $resource,
+        DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
+    ): int {
+        return $determineLastModifiedTimestamp->ofDirectory(dirname($this->sourcePathForResource($resource)));
+    }
 }

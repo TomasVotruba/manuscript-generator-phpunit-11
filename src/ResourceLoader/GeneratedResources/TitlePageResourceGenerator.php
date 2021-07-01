@@ -69,4 +69,11 @@ final class TitlePageResourceGenerator implements ResourceGenerator
 
         return $output;
     }
+
+    public function sourceLastModified(
+        IncludedResource $resource,
+        DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
+    ): int {
+        return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource));
+    }
 }

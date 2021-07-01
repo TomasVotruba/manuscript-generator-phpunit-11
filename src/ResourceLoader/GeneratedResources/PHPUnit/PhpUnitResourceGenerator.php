@@ -6,6 +6,7 @@ namespace ManuscriptGenerator\ResourceLoader\GeneratedResources\PHPUnit;
 
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\DetermineLastModifiedTimestamp;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
 use function str_ends_with;
 
@@ -24,6 +25,13 @@ final class PhpUnitResourceGenerator implements ResourceGenerator
     public function generateResource(IncludedResource $resource): string
     {
         return $this->getOutputOfPhpUnitRun($this->sourcePathForResource($resource));
+    }
+
+    public function sourceLastModified(
+        IncludedResource $resource,
+        DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
+    ): int {
+        return $determineLastModifiedTimestamp->ofDirectory($this->sourcePathForResource($resource));
     }
 
     private function getOutputOfPhpUnitRun(string $workingDir): string
