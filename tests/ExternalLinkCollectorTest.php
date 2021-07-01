@@ -55,13 +55,22 @@ final class ExternalLinkCollectorTest extends TestCase
         );
     }
 
-    public function testAddFailsIfSlugExists(): void
+    public function testAddIsIdempotent(): void
+    {
+        $collector = new ExternalLinkCollector([]);
+        $collector->add('/blog', 'https://matthiasnoback.nl');
+        $collector->add('/blog', 'https://matthiasnoback.nl');
+
+        self::assertSame(1, preg_match_all('/blog/', $collector->asString(), $matches));
+    }
+
+    public function testAddFailsIfSlugExistsForADifferentUrl(): void
     {
         $collector = new ExternalLinkCollector([]);
         $collector->add('/blog', 'https://matthiasnoback.nl');
 
         $this->expectException(CouldNotAddExternalLink::class);
 
-        $collector->add('/blog', 'https://matthiasnoback.nl');
+        $collector->add('/blog', 'https://blog.com');
     }
 }

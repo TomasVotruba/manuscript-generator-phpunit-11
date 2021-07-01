@@ -42,7 +42,12 @@ final class ExternalLinkCollector
     {
         foreach ($this->externalLinks as $link) {
             if ($link->slug() === $slug) {
-                throw CouldNotAddExternalLink::becauseTheSlugIsAlreadyInUse($slug, $url);
+                if ($link->url() !== $url) {
+                    throw CouldNotAddExternalLink::becauseTheSlugIsAlreadyInUse($slug, $url, $link->url());
+                }
+
+                // We already have this link
+                return;
             }
         }
 
