@@ -7,6 +7,11 @@ public function bar(): void
 
 {format: php}
 ```
+// the inline example starts here
+```
+
+{format: php}
+```
 final class Foo
 {
     public function bar(): void
