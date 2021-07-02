@@ -7,6 +7,7 @@ namespace ManuscriptGenerator\Markua\Parser;
 use ManuscriptGenerator\Markua\Parser\Node\Aside;
 use ManuscriptGenerator\Markua\Parser\Node\Attribute;
 use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
+use ManuscriptGenerator\Markua\Parser\Node\Blockquote;
 use ManuscriptGenerator\Markua\Parser\Node\Blurb;
 use ManuscriptGenerator\Markua\Parser\Node\Directive;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
@@ -54,6 +55,7 @@ final class SimpleMarkuaParser
             collect(
                 any(
                     self::aside(),
+                    self::blockquote(),
                     self::blurb(),
                     self::directive(),
                     self::heading(),
@@ -87,6 +89,25 @@ final class SimpleMarkuaParser
         )
             ->label('aside')
             ->map(fn (array $subnodes) => new Aside($subnodes));
+    }
+
+    /**
+     * @return Parser<Blockquote>
+     */
+    public static function blockquote(): Parser
+    {
+        return keepFirst(
+            between(
+                keepFirst(string('{blockquote}'), eol()),
+                string('{/blockquote}'),
+                zeroOrMore(
+                    choice(noneOf(['{']), char('{') ->notFollowedBy(string('/blockquote')))
+                )->map(fn (string $contents) => self::parseBlock($contents))
+            ),
+            self::newLineOrEof()
+        )
+            ->label('aside')
+            ->map(fn (array $subnodes) => new Blockquote($subnodes));
     }
 
     /**

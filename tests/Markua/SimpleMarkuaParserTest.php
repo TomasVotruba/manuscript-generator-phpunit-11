@@ -8,6 +8,7 @@ use ManuscriptGenerator\Markua\Parser\Node;
 use ManuscriptGenerator\Markua\Parser\Node\Aside;
 use ManuscriptGenerator\Markua\Parser\Node\Attribute;
 use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
+use ManuscriptGenerator\Markua\Parser\Node\Blockquote;
 use ManuscriptGenerator\Markua\Parser\Node\Blurb;
 use ManuscriptGenerator\Markua\Parser\Node\Directive;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
@@ -403,6 +404,19 @@ CODE_SAMPLE
 {aside}
 Paragraph
 {/aside}
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testBlockquote(): void
+    {
+        self::assertEquals(
+            $this->documentWith([new Blockquote([new Paragraph([new Span('Paragraph')])])]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+{blockquote}
+Paragraph
+{/blockquote}
 CODE_SAMPLE
             )
         );

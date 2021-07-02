@@ -69,6 +69,10 @@ This chapter covers:
 Test
 {/blurb}
 
+{blockquote}
+A quote
+{/blockquote}
+
 CODE_SAMPLE
         ];
     }

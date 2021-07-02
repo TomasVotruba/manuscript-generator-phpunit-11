@@ -9,6 +9,7 @@ use ManuscriptGenerator\Markua\Parser\Node;
 use ManuscriptGenerator\Markua\Parser\Node\Aside;
 use ManuscriptGenerator\Markua\Parser\Node\Attribute;
 use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
+use ManuscriptGenerator\Markua\Parser\Node\Blockquote;
 use ManuscriptGenerator\Markua\Parser\Node\Blurb;
 use ManuscriptGenerator\Markua\Parser\Node\Directive;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
@@ -71,6 +72,11 @@ final class MarkuaPrinter
             $result->appendLineToBlock('}');
             $result->appendLineToBlock(rtrim($this->printNodes($node->subnodes)));
             $result->appendToCurrentBlock('{/blurb}');
+        } elseif ($node instanceof Blockquote) {
+            $result->startBlock();
+            $result->appendLineToBlock('{blockquote}');
+            $result->appendLineToBlock(rtrim($this->printNodes($node->subnodes)));
+            $result->appendToCurrentBlock('{/blockquote}');
         } elseif ($node instanceof Paragraph) {
             $result->startBlock();
             foreach ($node->parts as $part) {
