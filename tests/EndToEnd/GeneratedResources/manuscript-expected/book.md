@@ -91,7 +91,6 @@ object;
 {format: diff}
 ```
 
-
 1 file with changes
 ===================
 

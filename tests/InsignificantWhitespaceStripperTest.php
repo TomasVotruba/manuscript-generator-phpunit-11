@@ -27,14 +27,15 @@ final class InsignificantWhitespaceStripperTest extends TestCase
     }
 
     /**
-     * @return Generator<array{string,string}>
+     * @return Generator<string,array{string,string}>
      */
     public function stringsProvider(): Iterator
     {
-        yield ["test    \n", "test\n"];
-        yield ["test \n", "test\n"];
-        yield ["test\n", "test\n"];
-        yield ["test\n\n", "test\n"];
-        yield ["test\ntest\n", "test\ntest\n"];
+        yield 'remove spaces before the newline' => ["test    \n", "test\n"];
+        yield 'remove one space before the newline' => ["test \n", "test\n"];
+        yield 'keep the newline' => ["test\n", "test\n"];
+        yield 'keep only one newline at the end' => ["test\n\n", "test\n"];
+        yield 'add a newline at the end' => ['test', "test\n"];
+        yield 'remove spaces from an otherwise empty line' => ["test\n \ntest\n", "test\n\ntest\n"];
     }
 }

@@ -10,7 +10,7 @@ final class InsignificantWhitespaceStripper
     {
         $output = $input;
 
-        $output = preg_replace("/([\s]+)\n$/", "$2\n", $output);
+        $output = preg_replace("/([ \t]+)\n/", "$2\n", $output);
         assert(is_string($output));
 
         // strip trailing newlines but keep one
