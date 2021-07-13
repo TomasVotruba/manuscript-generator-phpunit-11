@@ -152,6 +152,41 @@ final class GenerateManuscriptTest extends TestCase
         self::assertStringContainsString('Running composer update', $this->tester->getDisplay());
     }
 
+    public function testItRemovesNoLongerUsedImages(): void
+    {
+        // The first version of the src dir has a reference to image.png
+        $this->filesystem->mirror(__DIR__ . '/CleanUpUnusedFiles/manuscript-src-1', $this->manuscriptSrcDir);
+
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+            ],
+            [
+                'verbosity' => OutputInterface::VERBOSITY_DEBUG,
+            ]
+        );
+        self::assertFileExists($this->manuscriptDir . '/resources/image.png');
+
+        // The second version of the src dir has no reference to image.png anymore
+        $this->filesystem->mirror(__DIR__ . '/CleanUpUnusedFiles/manuscript-src-2', $this->manuscriptSrcDir);
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+            ],
+            [
+                'verbosity' => OutputInterface::VERBOSITY_DEBUG,
+            ]
+        );
+        self::assertFileDoesNotExist($this->manuscriptDir . '/resources/image.png');
+
+        self::assertDirectoryContentsEquals(
+            __DIR__ . '/CleanUpUnusedFiles/manuscript-expected',
+            $this->manuscriptDir
+        );
+    }
+
     /**
      * @dataProvider manuscriptDirProvider
      */
