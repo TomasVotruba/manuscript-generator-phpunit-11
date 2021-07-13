@@ -26,14 +26,14 @@ final class ListSubprojectsTest extends TestCase
         self::assertEquals(
             [
                 [
-                    'directory' => 'manuscript-src/resources/subproject2',
-                    'runPhpUnit' => false,
-                    'runRector' => true,
-                ],
-                [
                     'directory' => 'manuscript-src/resources/subproject1',
                     'runPhpUnit' => true,
                     'runRector' => false,
+                ],
+                [
+                    'directory' => 'manuscript-src/resources/subproject2',
+                    'runPhpUnit' => false,
+                    'runRector' => true,
                 ],
                 /*
                  * subproject3 should be ignored because it has a composer.json file, but doesn't require a PHPUnit or

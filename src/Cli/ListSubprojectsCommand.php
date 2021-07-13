@@ -32,7 +32,8 @@ final class ListSubprojectsCommand extends Command
             ->depth('> 1')
             ->files()
             ->name('composer.json')
-            ->notPath('vendor');
+            ->notPath('vendor')
+            ->sortByName();
 
         $subprojects = [];
 
