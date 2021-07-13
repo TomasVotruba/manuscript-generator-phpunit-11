@@ -12,8 +12,7 @@ final class CliApplication extends Application
     {
         parent::__construct('Manuscript Generator', '1.0');
 
-        $command = new GenerateManuscriptCommand();
-        $this->add($command);
-        $this->setDefaultCommand(GenerateManuscriptCommand::COMMAND_NAME, true);
+        $this->addCommands([new GenerateManuscriptCommand(), new ListSubprojectsCommand()]);
+        $this->setDefaultCommand(GenerateManuscriptCommand::COMMAND_NAME);
     }
 }
