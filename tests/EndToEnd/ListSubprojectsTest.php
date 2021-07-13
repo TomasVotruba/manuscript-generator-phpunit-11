@@ -35,11 +35,10 @@ final class ListSubprojectsTest extends TestCase
                     'runPhpUnit' => true,
                     'runRector' => false,
                 ],
-                [
-                    'directory' => 'manuscript-src/resources/subproject3',
-                    'runRector' => false,
-                    'runPhpUnit' => false,
-                ],
+                /*
+                 * subproject3 should be ignored because it has a composer.json file, but doesn't require a PHPUnit or
+                 * Rector run because it has no `.ci.` file for these tools.
+                 */
             ],
             json_decode($this->tester->getDisplay(), true)
         );

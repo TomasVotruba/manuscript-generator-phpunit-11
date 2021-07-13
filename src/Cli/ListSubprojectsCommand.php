@@ -38,10 +38,18 @@ final class ListSubprojectsCommand extends Command
 
         foreach ($subprojectMarkerFiles as $subprojectMarkerFile) {
             $directory = $subprojectMarkerFile->getRelativePath();
+
+            $runPhpUnit = is_file($subprojectMarkerFile->getPath() . '/phpunit.ci.xml');
+            $runRector = is_file($subprojectMarkerFile->getPath() . '/rector.ci.php');
+
+            if (! $runPhpUnit && ! $runRector) {
+                continue;
+            }
+
             $subprojects[] = [
                 'directory' => $directory,
-                'runPhpUnit' => is_file($subprojectMarkerFile->getPath() . '/phpunit.ci.xml'),
-                'runRector' => is_file($subprojectMarkerFile->getPath() . '/rector.ci.php'),
+                'runPhpUnit' => $runPhpUnit,
+                'runRector' => $runRector,
             ];
         }
 
