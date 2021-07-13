@@ -37,5 +37,8 @@ final class InsignificantWhitespaceStripperTest extends TestCase
         yield 'keep only one newline at the end' => ["test\n\n", "test\n"];
         yield 'add a newline at the end' => ['test', "test\n"];
         yield 'remove spaces from an otherwise empty line' => ["test\n \ntest\n", "test\n\ntest\n"];
+        yield 'remove newlines from the start' => ["\n\ntest\n", "test\n"];
+        yield 'remove empty newlines from the start' => ["\n \n \ntest\n", "test\n"];
+        yield 'remove one newline from the start' => ["\ntest\n", "test\n"];
     }
 }
