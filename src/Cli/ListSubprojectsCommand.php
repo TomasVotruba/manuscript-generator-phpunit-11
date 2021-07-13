@@ -54,7 +54,7 @@ final class ListSubprojectsCommand extends Command
             ];
         }
 
-        $jsonEncoded = json_encode($subprojects, JSON_PRETTY_PRINT);
+        $jsonEncoded = json_encode($subprojects);
         assert(is_string($jsonEncoded));
         $output->write($jsonEncoded);
 
