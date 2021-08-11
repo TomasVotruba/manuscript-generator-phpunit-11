@@ -95,14 +95,14 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
             ->generateManuscript();
         if (! $dryRun) {
             // --dry-run will fail CI if the filesystem was touched
-            return 0;
+            return self::SUCCESS;
         }
         if (! $this->filesystemWasTouched) {
             // --dry-run will fail CI if the filesystem was touched
-            return 0;
+            return self::SUCCESS;
         }
         // --dry-run will fail CI if the filesystem was touched
-        return 1;
+        return self::FAILURE;
     }
 
     private function loadBookProjectConfiguration(InputInterface $input): BookProjectConfiguration
