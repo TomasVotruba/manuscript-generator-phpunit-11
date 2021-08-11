@@ -29,6 +29,7 @@
     "bin": ["bin/generate-manuscript"],
     "scripts": {
         "check-cs": "vendor/bin/ecs check --ansi",
-        "fix-cs": "vendor/bin/ecs check --fix --ansi"
+        "fix-cs": "vendor/bin/ecs check --fix --ansi",
+        "phpstan": "vendor/bin/phpstan"
     }
 }
