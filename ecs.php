@@ -36,7 +36,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         [
             // Because it makes no sense ;) (well, I just need assertEquals())
             PhpUnitStrictFixer::class,
-            __DIR__ . '/tests/EndToEnd/LongLines/manuscript-src/resources/file.php',
+            // fixture files
+            '*/tests/*/resources/*',
         ]
     );
 };
