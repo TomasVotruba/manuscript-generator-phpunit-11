@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Test\EndToEnd;
 
 use ManuscriptGenerator\Cli\ListSubprojectsCommand;
+use Nette\Utils\Json;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -40,7 +41,7 @@ final class ListSubprojectsTest extends TestCase
                  * Rector run because it has no `.ci.` file for these tools.
                  */
             ],
-            json_decode($this->tester->getDisplay(), true)
+            Json::decode($this->tester->getDisplay(), Json::FORCE_ARRAY)
         );
     }
 }

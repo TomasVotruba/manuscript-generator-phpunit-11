@@ -96,8 +96,6 @@ object;
 1) src/Foo.php
 
     ---------- begin diff ----------
---- Original
-+++ New
 @@ @@
 
  final class Foo
