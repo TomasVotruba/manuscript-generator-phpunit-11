@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitStrictFixer;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
@@ -40,7 +41,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             '*/tests/*/resources/*',
 
             // some WTF in new php_code_sniffer
-            \PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff::class . '.FoundInWhileCondition',
+            AssignmentInConditionSniff::class . '.FoundInWhileCondition',
         ]
     );
 };

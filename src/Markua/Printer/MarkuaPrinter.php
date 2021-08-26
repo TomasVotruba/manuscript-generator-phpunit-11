@@ -136,7 +136,7 @@ final class MarkuaPrinter
             implode(
                 ', ',
                 array_map(
-                    fn (Attribute $attribute) => $attribute->key . ': ' . $this->printAttributeValue(
+                    fn (Attribute $attribute): string => $attribute->key . ': ' . $this->printAttributeValue(
                         $attribute->value
                     ),
                     $attributes->attributes
