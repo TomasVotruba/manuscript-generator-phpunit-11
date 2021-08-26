@@ -38,6 +38,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             PhpUnitStrictFixer::class,
             // fixture files
             '*/tests/*/resources/*',
+
+            // some WTF in new php_code_sniffer
+            \PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff::class . '.FoundInWhileCondition',
         ]
     );
 };
