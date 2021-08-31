@@ -154,6 +154,8 @@ final class GenerateManuscriptTest extends TestCase
 
     public function testItRemovesNoLongerUsedImages(): void
     {
+        $this->markTestIncomplete('To be implemented');
+
         // The first version of the src dir has a reference to image.png
         $this->filesystem->mirror(__DIR__ . '/CleanUpUnusedFiles/manuscript-src-1', $this->manuscriptSrcDir);
 

@@ -93,7 +93,7 @@ object;
 1 file with changes
 ===================
 
-1) src/Foo.php
+1) src/Foo.php:3
 
     ---------- begin diff ----------
 @@ @@
