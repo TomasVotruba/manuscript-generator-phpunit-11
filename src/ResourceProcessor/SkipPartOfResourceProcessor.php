@@ -12,10 +12,6 @@ final class SkipPartOfResourceProcessor implements ResourceProcessor
 
     private const SKIP_END_MARKER = '// skip-end';
 
-    public function __construct()
-    {
-    }
-
     public function process(LoadedResource $resource): void
     {
         $replacement = $resource->getAttribute('skipReplacement') ?? '// ...';

@@ -28,7 +28,7 @@ final class DetermineLastModifiedTimestamp
             return 0;
         }
 
-        $lastModifiedTimes = array_map(fn (string $pathname) => (int) filemtime($pathname), $files);
+        $lastModifiedTimes = array_map(fn (string $pathname): int => (int) filemtime($pathname), $files);
         arsort($lastModifiedTimes);
 
         return $lastModifiedTimes[array_key_first($lastModifiedTimes)];

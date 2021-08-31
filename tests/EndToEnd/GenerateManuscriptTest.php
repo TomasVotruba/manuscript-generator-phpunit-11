@@ -317,8 +317,8 @@ final class GenerateManuscriptTest extends TestCase
 
         // The files are the same in both places
         self::assertSame(
-            array_map(fn (SplFileInfo $fileInfo) => $fileInfo->getRelativePathname(), $expectedFiles),
-            array_map(fn (SplFileInfo $fileInfo) => $fileInfo->getRelativePathname(), $actualFiles),
+            array_map(fn (SplFileInfo $fileInfo): string => $fileInfo->getRelativePathname(), $expectedFiles),
+            array_map(fn (SplFileInfo $fileInfo): string => $fileInfo->getRelativePathname(), $actualFiles),
         );
 
         foreach ($expectedFiles as $expectedFile) {

@@ -66,7 +66,7 @@ final class SimpleMarkuaParser
             )
         )
             ->thenEof()
-            ->map(fn (?array $nodes) => new Document($nodes ?? [], [new IncludedResource('title_page.png')]));
+            ->map(fn (?array $nodes): Document => new Document($nodes ?? [], [new IncludedResource('title_page.png')]));
 
         return $parser->tryString($markua)
             ->output();
@@ -83,12 +83,12 @@ final class SimpleMarkuaParser
                 string('{/aside}'),
                 zeroOrMore(
                     choice(noneOf(['{']), char('{') ->notFollowedBy(string('/aside')))
-                )->map(fn (string $contents) => self::parseBlock($contents))
+                )->map(fn (string $contents): array => self::parseBlock($contents))
             ),
             self::newLineOrEof()
         )
             ->label('aside')
-            ->map(fn (array $subnodes) => new Aside($subnodes));
+            ->map(fn (array $subnodes): Aside => new Aside($subnodes));
     }
 
     /**
@@ -102,12 +102,12 @@ final class SimpleMarkuaParser
                 string('{/blockquote}'),
                 zeroOrMore(
                     choice(noneOf(['{']), char('{') ->notFollowedBy(string('/blockquote')))
-                )->map(fn (string $contents) => self::parseBlock($contents))
+                )->map(fn (string $contents): array => self::parseBlock($contents))
             ),
             self::newLineOrEof()
         )
             ->label('aside')
-            ->map(fn (array $subnodes) => new Blockquote($subnodes));
+            ->map(fn (array $subnodes): Blockquote => new Blockquote($subnodes));
     }
 
     /**
@@ -123,12 +123,12 @@ final class SimpleMarkuaParser
                 zeroOrMore( // 3
                     choice(noneOf(['{']), char('{') ->notFollowedBy(string('/blurb}')))
                 )
-                    ->map(fn (string $chars) => self::parseBlock($chars)),
+                    ->map(fn (string $chars): array => self::parseBlock($chars)),
                 string('{/blurb}')
             ),
             self::newLineOrEof()
         )->label('blurb')
-            ->map(fn (array $parts) => new Blurb($parts[3], $parts[1]));
+            ->map(fn (array $parts): Blurb => new Blurb($parts[3], $parts[1]));
     }
 
     /**
@@ -167,7 +167,7 @@ final class SimpleMarkuaParser
             char(']'),
             zeroOrMore(
                 choice(
-                    satisfy(fn (string $char) => ! in_array($char, [']', '\\'], true)),
+                    satisfy(fn (string $char): bool => ! in_array($char, [']', '\\'], true)),
                     char('\\')
                         ->followedBy(char(']'))
                 )
@@ -187,7 +187,7 @@ final class SimpleMarkuaParser
                 string('backmatter'),
             ))->label('directive'),
             self::newLineOrEof()
-        )->map(fn (string $name) => new Directive($name));
+        )->map(fn (string $name): Directive => new Directive($name));
     }
 
     /**
@@ -203,7 +203,7 @@ final class SimpleMarkuaParser
                             self::textBetweenSquareBrackets()->label('linkText'), // 0
                                 self::uriBetweenBrackets()->label('target'), // 1
                                 optional(self::attributeList()) // 2
-                        )->map(fn (array $parts) => new Link($parts[1], $parts[0], $parts[2])),
+                        )->map(fn (array $parts): Link => new Link($parts[1], $parts[0], $parts[2])),
                         choice(
                             noneOf(['`', '!', '{', '[', "\n"])
                                 ->and(
@@ -218,14 +218,14 @@ final class SimpleMarkuaParser
                             char('[')
                                 ->notFollowedBy(zeroOrMore(noneOf([']']))->followedBy(char(']')->then(char('('))))
                         )
-                            ->map(fn (?string $text) => new Span((string) $text))
+                            ->map(fn (?string $text): Span => new Span((string) $text))
                             ->label('span'),
                     )
                 )
             ),
             self::newLineOrEof()
         )
-            ->map(fn ($parts) => new Paragraph(self::simplifyNodes($parts)))
+            ->map(fn ($parts): Paragraph => new Paragraph(self::simplifyNodes($parts)))
             ->label('paragraph');
     }
 
@@ -259,7 +259,7 @@ final class SimpleMarkuaParser
                 self::token(char(':')),
                 choice(self::token(self::stringLiteral()), self::token(self::constant()))
             )->label('attribute'),
-            fn (array $o) => new Attribute($o[0], $o[2])
+            fn (array $o): Attribute => new Attribute($o[0], $o[2])
         );
     }
 
@@ -276,7 +276,7 @@ final class SimpleMarkuaParser
                     choice(
                         satisfy(fn (string $char): bool => ! in_array($char, ['"', '\\'], true)),
                         char('\\')
-                            ->followedBy(choice(char('"')->map(fn ($_) => '"'),))
+                            ->followedBy(choice(char('"')->map(fn ($_): string => '"'),))
                     )
                 )
             )->map(fn ($o): string => (string) $o) // because the empty json string returns null
@@ -291,9 +291,9 @@ final class SimpleMarkuaParser
         return collect(
             optional(keepFirst(either(self::attributeList(), self::idAttributeList()), self::newLineOrEof())),
             keepFirst(atLeastOne(char('#')), skipSpace1()),
-            atLeastOne(satisfy(fn (string $char) => ! in_array($char, ["\n"], true))),
+            atLeastOne(satisfy(fn (string $char): bool => ! in_array($char, ["\n"], true))),
             self::newLineOrEof()
-        )->map(fn (array $output) => new Heading(strlen($output[1]), $output[2], $output[0]));
+        )->map(fn (array $output): Heading => new Heading(strlen($output[1]), $output[2], $output[0]));
     }
 
     /**
@@ -328,7 +328,7 @@ final class SimpleMarkuaParser
      */
     private static function space(): Parser
     {
-        return takeWhile(fn (string $char) => $char === ' ')
+        return takeWhile(fn (string $char): bool => $char === ' ')
             ->voidLeft('')
             ->label('whitespace');
     }
@@ -344,7 +344,9 @@ final class SimpleMarkuaParser
                 ->then(self::textBetweenSquareBrackets())->label('caption'), // 1
             self::uriBetweenBrackets()->label('link'), // 2
             self::newLineOrEof() // 3
-        )->map(fn (array $collected) => new IncludedResource($collected[2], $collected[1], $collected[0]));
+        )->map(
+            fn (array $collected): IncludedResource => new IncludedResource($collected[2], $collected[1], $collected[0])
+        );
     }
 
     /**
@@ -363,7 +365,9 @@ final class SimpleMarkuaParser
             )->label('source'), // 3
             repeat(3, char('`')), // 4
             self::newLineOrEof() // 5
-        )->map(fn (array $collected) => new InlineResource($collected[3], $collected[2], $collected[0]));
+        )->map(
+            fn (array $collected): InlineResource => new InlineResource($collected[3], $collected[2], $collected[0])
+        );
     }
 
     /**
@@ -380,7 +384,7 @@ final class SimpleMarkuaParser
     private static function attributes(): Parser
     {
         return sepBy(self::token(char(',')), self::attribute())
-            ->map(fn (array $attributes) => new AttributeList($attributes));
+            ->map(fn (array $attributes): AttributeList => new AttributeList($attributes));
     }
 
     /**
@@ -394,6 +398,6 @@ final class SimpleMarkuaParser
             char('#')
                 ->then(atLeastOne(choice(alphaNumChar(), char('_'), char('-'))))
         )->label('idAttribute')
-            ->map(fn (string $id) => new AttributeList([new Attribute('id', $id)]));
+            ->map(fn (string $id): AttributeList => new AttributeList([new Attribute('id', $id)]));
     }
 }
