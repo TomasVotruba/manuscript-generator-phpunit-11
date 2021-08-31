@@ -177,7 +177,7 @@ final class ServiceContainer
                     ]
                 )
             ),
-            new CopyIncludedResourceNodeVisitor($this->configuration, $this->resourceLoader(), $this->fileOperations()),
+            new CopyIncludedResourceNodeVisitor($this->resourceLoader()),
             new CapitalizeHeadlinesNodeVisitor(
                 new HeadlineCapitalizer(),
                 $this->configuration->capitalizeHeadlines()

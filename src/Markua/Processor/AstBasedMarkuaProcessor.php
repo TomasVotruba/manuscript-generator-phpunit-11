@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Markua\Processor;
 
 use ManuscriptGenerator\FileOperations\ExistingFile;
+use ManuscriptGenerator\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
 use ManuscriptGenerator\Markua\Parser\Visitor\AddFileAttributeNodeVisitor;
+use ManuscriptGenerator\Markua\Parser\Visitor\AddManuscriptFilesNodeVisitor;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeTraverser;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeVisitor;
 use ManuscriptGenerator\Markua\Printer\MarkuaPrinter;
@@ -24,7 +26,7 @@ final class AstBasedMarkuaProcessor implements MarkuaProcessor
     ) {
     }
 
-    public function process(ExistingFile $markuaFile, string $markua): string
+    public function process(ExistingFile $markuaFile, string $markua, ManuscriptFiles $manuscriptFiles): string
     {
         try {
             $document = $this->parser->parseDocument($markua);
@@ -33,7 +35,10 @@ final class AstBasedMarkuaProcessor implements MarkuaProcessor
         }
 
         $nodeTraverser = new NodeTraverser(
-            array_merge([new AddFileAttributeNodeVisitor($markuaFile)], $this->nodeVisitors)
+            array_merge([
+                new AddFileAttributeNodeVisitor($markuaFile),
+                new AddManuscriptFilesNodeVisitor($manuscriptFiles),
+            ], $this->nodeVisitors)
         );
 
         $result = $nodeTraverser->traverseDocument($document);

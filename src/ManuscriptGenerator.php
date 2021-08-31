@@ -32,6 +32,8 @@ final class ManuscriptGenerator
             $this->dependenciesInstaller->updateAll();
         }
 
+        $manuscriptFiles = new ManuscriptFiles();
+
         foreach ([
             'book.md' => 'Book.txt',
             'subset.md' => 'Subset.txt',
@@ -48,15 +50,15 @@ final class ManuscriptGenerator
 
             $srcFilePath = ExistingFile::fromPathname($srcFilePath);
 
-            $processedContents = $this->markuaProcessor->process($srcFilePath, $srcFilePath->contents());
+            $processedContents = $this->markuaProcessor->process($srcFilePath, $srcFilePath->contents(), $manuscriptFiles);
 
-            $targetFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $srcFileName;
-            $this->fileOperations->putContents($targetFilePathname, $processedContents);
+            $manuscriptFiles->addFile($srcFileName, $processedContents);
 
-            $targetTxtFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $targetFileName;
             $txtFileContents = $srcFileName . "\n";
-            $this->fileOperations->putContents($targetTxtFilePathname, $txtFileContents);
+            $manuscriptFiles->addFile($targetFileName, $txtFileContents);
         }
+
+        $manuscriptFiles->dumpTo($this->configuration->manuscriptTargetDir());
 
         $this->logger->info('Generated the manuscript files in {manuscriptTargetDir}', [
             'manuscriptTargetDir' => $this->configuration->manuscriptTargetDir(),
