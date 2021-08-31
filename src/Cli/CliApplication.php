@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Cli;
 
 use Symfony\Component\Console\Application;
+use Symfony\Component\Filesystem\Filesystem;
 
 final class CliApplication extends Application
 {
@@ -12,7 +13,10 @@ final class CliApplication extends Application
     {
         parent::__construct('Manuscript Generator', '1.0');
 
-        $this->addCommands([new GenerateManuscriptCommand(), new ListSubprojectsCommand()]);
+        $filesystem = new Filesystem();
+        $initCommand = new InitCommand($filesystem);
+
+        $this->addCommands([new GenerateManuscriptCommand(), new ListSubprojectsCommand(), $initCommand]);
         $this->setDefaultCommand(GenerateManuscriptCommand::COMMAND_NAME);
     }
 }

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitStrictFixer;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
@@ -36,7 +37,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         [
             // Because it makes no sense ;) (well, I just need assertEquals())
             PhpUnitStrictFixer::class,
-            __DIR__ . '/tests/EndToEnd/LongLines/manuscript-src/resources/file.php',
+            // fixture files
+            '*/tests/*/resources/*',
+
+            // some WTF in new php_code_sniffer
+            AssignmentInConditionSniff::class . '.FoundInWhileCondition',
         ]
     );
 };

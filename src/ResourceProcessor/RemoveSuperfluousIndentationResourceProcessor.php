@@ -22,7 +22,7 @@ final class RemoveSuperfluousIndentationResourceProcessor implements ResourcePro
             return;
         }
 
-        $indentationLevels = array_map(fn (string $indentation) => strlen($indentation), $matches[2]);
+        $indentationLevels = array_map(fn (string $indentation): int => strlen($indentation), $matches[2]);
 
         $minimumLevel = array_reduce(
             $indentationLevels,

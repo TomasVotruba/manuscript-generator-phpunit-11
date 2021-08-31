@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Cli;
 
+use Nette\Utils\Json;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -54,10 +55,9 @@ final class ListSubprojectsCommand extends Command
             ];
         }
 
-        $jsonEncoded = json_encode($subprojects);
-        assert(is_string($jsonEncoded));
+        $jsonEncoded = Json::encode($subprojects);
         $output->write($jsonEncoded);
 
-        return 0;
+        return self::SUCCESS;
     }
 }
