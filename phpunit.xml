@@ -11,6 +11,7 @@
     <groups>
         <exclude>
             <group>shouldFail</group>
+            <group>wip</group>
         </exclude>
     </groups>
 </phpunit>

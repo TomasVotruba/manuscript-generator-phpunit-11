@@ -152,10 +152,11 @@ final class GenerateManuscriptTest extends TestCase
         self::assertStringContainsString('Running composer update', $this->tester->getDisplay());
     }
 
+    /**
+     * @group wip
+     */
     public function testItRemovesNoLongerUsedImages(): void
     {
-        $this->markTestIncomplete('To be implemented');
-
         // The first version of the src dir has a reference to image.png
         $this->filesystem->mirror(__DIR__ . '/CleanUpUnusedFiles/manuscript-src-1', $this->manuscriptSrcDir);
 
