@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace ManuscriptGenerator;
@@ -25,8 +26,8 @@ final class ManuscriptFiles
         $filesystem->mkdir($targetDir);
 
         foreach ($this->files as $relativePathname => $contents) {
-            $filePath = $targetDir . dirname($relativePathname);
-            if (!is_dir($filePath)) {
+            $filePath = $targetDir . '/' . dirname($relativePathname);
+            if (! is_dir($filePath)) {
                 $filesystem->mkdir($filePath);
             }
 

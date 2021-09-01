@@ -58,6 +58,7 @@ final class GeneratedResourceLoader implements ResourceLoader
             $this->dependenciesInstaller->install($directory);
 
             $generatedResource = $resourceGenerator->generateResource($includedResource);
+            // @TODO introduce a caching mechanism instead? Not sure yet
             $this->fileOperations->putContents($expectedPath, $generatedResource);
             $this->eventDispatcher->dispatch(new ResourceWasGenerated($includedResource->link));
             // If we run in dry-mode, the file may still not exist, so we should not attempt to load it from disk

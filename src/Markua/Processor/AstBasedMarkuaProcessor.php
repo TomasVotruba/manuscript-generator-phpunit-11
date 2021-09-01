@@ -7,11 +7,11 @@ namespace ManuscriptGenerator\Markua\Processor;
 use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
-use ManuscriptGenerator\Markua\Parser\Visitor\AddFileAttributeNodeVisitor;
-use ManuscriptGenerator\Markua\Parser\Visitor\AddManuscriptFilesNodeVisitor;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeTraverser;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeVisitor;
 use ManuscriptGenerator\Markua\Printer\MarkuaPrinter;
+use ManuscriptGenerator\Markua\Processor\Meta\AddFileAttributeNodeVisitor;
+use ManuscriptGenerator\Markua\Processor\Meta\AddManuscriptFilesNodeVisitor;
 use Parsica\Parsica\ParserHasFailed;
 
 final class AstBasedMarkuaProcessor implements MarkuaProcessor

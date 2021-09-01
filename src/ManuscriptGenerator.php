@@ -50,7 +50,11 @@ final class ManuscriptGenerator
 
             $srcFilePath = ExistingFile::fromPathname($srcFilePath);
 
-            $processedContents = $this->markuaProcessor->process($srcFilePath, $srcFilePath->contents(), $manuscriptFiles);
+            $processedContents = $this->markuaProcessor->process(
+                $srcFilePath,
+                $srcFilePath->contents(),
+                $manuscriptFiles
+            );
 
             $manuscriptFiles->addFile($srcFileName, $processedContents);
 
