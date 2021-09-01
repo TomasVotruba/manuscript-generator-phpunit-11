@@ -46,7 +46,6 @@ use ManuscriptGenerator\ResourceProcessor\SkipPartOfResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\StripInsignificantWhitespaceResourceProcessor;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Logger\ConsoleLogger;
-use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -77,9 +76,6 @@ final class ServiceContainer
     public function setOutput(OutputInterface $output): void
     {
         $this->output = $output;
-
-        $this->printResultsSubscriber()
-            ->setOutput($output);
     }
 
     public function addEventSubscriber(EventSubscriberInterface $eventSubscriber): void
@@ -92,7 +88,6 @@ final class ServiceContainer
     {
         if ($this->eventDispatcher === null) {
             $this->eventDispatcher = new EventDispatcher();
-            $this->eventDispatcher->addSubscriber($this->printResultsSubscriber());
         }
 
         return $this->eventDispatcher;
@@ -106,10 +101,9 @@ final class ServiceContainer
         );
     }
 
-    private function printResultsSubscriber(): ResultPrinter
+    public function resultPrinter(): ResultPrinter
     {
-        return $this->printResults ??= new ResultPrinter(
-            new NullOutput(),
+        return new ResultPrinter(
             new ConsoleDiffer(new Differ(), new ColorConsoleDiffFormatter())
         );
     }
@@ -193,7 +187,7 @@ final class ServiceContainer
         return $nodeVisitors;
     }
 
-    private function logger(): ConsoleLogger
+    public function logger(): ConsoleLogger
     {
         return $this->logger ??= new ConsoleLogger($this->output());
     }

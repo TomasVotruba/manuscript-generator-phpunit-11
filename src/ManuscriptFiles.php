@@ -56,20 +56,34 @@ final class ManuscriptFiles
         }
     }
 
-    public function hasChangesComparedTo(self $other): bool
+    public function diff(self $other): ManuscriptDiff
     {
         ksort($this->files);
         ksort($other->files);
-        if (array_keys($this->files) !== array_keys($other->files)) {
-            return true;
-        }
 
-        foreach ($this->files as $file => $contents) {
-            if ($contents !== $other->files[$file]) {
-                return true;
-            }
-        }
+        $fileNamesLeft = array_keys($this->files);
+        $fileNamesRight = array_keys($other->files);
 
-        return false;
+        $newFiles = array_map(
+            fn (string $fileName) => new File($fileName, $fileNamesLeft[$fileName]),
+            array_diff($fileNamesLeft, $fileNamesRight)
+        );
+
+        $modifiedFiles = array_map(
+            fn (string $fileName) => new ModifiedFile($fileName, $fileNamesLeft[$fileName], $fileNamesRight[$fileName]),
+            array_intersect($fileNamesLeft, $fileNamesRight)
+        );
+
+        $unusedFiles = array_map(
+            fn (string $fileName) => new File($fileName, $fileNamesLeft[$fileName]),
+            array_diff($fileNamesRight, $fileNamesLeft)
+        );
+
+
+        return new ManuscriptDiff(
+            $newFiles,
+            $modifiedFiles,
+            $unusedFiles
+        );
     }
 }

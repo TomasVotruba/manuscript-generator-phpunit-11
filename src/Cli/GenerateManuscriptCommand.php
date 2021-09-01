@@ -76,14 +76,18 @@ final class GenerateManuscriptCommand extends Command
         $manuscriptFiles = $container->manuscriptGenerator()
             ->generateManuscript();
 
-        if ($dryRun && $manuscriptFiles->hasChangesComparedTo(
-            ManuscriptFiles::fromDir($configuration->manuscriptTargetDir())
-        )) {
+        $diff = $manuscriptFiles->diff(ManuscriptFiles::fromDir($configuration->manuscriptTargetDir()));
+
+        if ($dryRun && $diff->hasDifferences()) {
             // --dry-run will fail CI if the filesystem was touched
             return self::FAILURE;
         }
 
         $manuscriptFiles->dumpTo($configuration->manuscriptTargetDir());
+
+        $container->logger()->info('Generated the manuscript files in {manuscriptTargetDir}', [
+            'manuscriptTargetDir' => $configuration->manuscriptTargetDir(),
+        ]);
 
         return self::SUCCESS;
     }
