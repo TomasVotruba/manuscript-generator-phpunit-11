@@ -7,24 +7,20 @@ namespace ManuscriptGenerator;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\FileOperations\ExistingFile;
-use ManuscriptGenerator\FileOperations\FileOperations;
 use ManuscriptGenerator\Markua\Processor\MarkuaProcessor;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 final class ManuscriptGenerator
 {
     public function __construct(
         private RuntimeConfiguration $configuration,
         private DependenciesInstaller $dependenciesInstaller,
-        private FileOperations $fileOperations,
         private MarkuaProcessor $markuaProcessor,
-        private EventDispatcherInterface $eventDispatcher,
         private LoggerInterface $logger
     ) {
     }
 
-    public function generateManuscript(): void
+    public function generateManuscript(): ManuscriptFiles
     {
         if ($this->configuration->updateDependencies()) {
             // Only if the user wants to force-update dependencies should we do it at once for all subprojects
@@ -32,7 +28,7 @@ final class ManuscriptGenerator
             $this->dependenciesInstaller->updateAll();
         }
 
-        $manuscriptFiles = new ManuscriptFiles();
+        $manuscriptFiles = ManuscriptFiles::createEmpty();
 
         foreach ([
             'book.md' => 'Book.txt',
@@ -62,11 +58,6 @@ final class ManuscriptGenerator
             $manuscriptFiles->addFile($targetFileName, $txtFileContents);
         }
 
-        $manuscriptFiles->dumpTo($this->configuration->manuscriptTargetDir());
-
-        $this->logger->info('Generated the manuscript files in {manuscriptTargetDir}', [
-            'manuscriptTargetDir' => $this->configuration->manuscriptTargetDir(),
-        ]);
-        $this->eventDispatcher->dispatch(new ManuscriptWasGenerated($this->configuration->manuscriptTargetDir()));
+        return $manuscriptFiles;
     }
 }

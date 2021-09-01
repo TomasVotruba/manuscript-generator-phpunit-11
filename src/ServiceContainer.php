@@ -69,9 +69,7 @@ final class ServiceContainer
         return new ManuscriptGenerator(
             $this->configuration,
             $this->dependenciesInstaller(),
-            $this->fileOperations(),
             new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaParser(), new MarkuaPrinter()),
-            $this->eventDispatcher(),
             $this->logger()
         );
     }
