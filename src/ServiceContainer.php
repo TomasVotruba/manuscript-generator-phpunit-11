@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator;
 
-use LogicException;
 use ManuscriptGenerator\Cli\ResultPrinter;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Dependencies\ComposerDependenciesInstaller;
-use ManuscriptGenerator\FileOperations\FileOperations;
 use ManuscriptGenerator\FileOperations\Filesystem;
 use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeVisitor;
@@ -46,21 +44,15 @@ use ManuscriptGenerator\ResourceProcessor\SkipPartOfResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\StripInsignificantWhitespaceResourceProcessor;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Logger\ConsoleLogger;
-use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symplify\ConsoleColorDiff\Console\Formatter\ColorConsoleDiffFormatter;
 use Symplify\ConsoleColorDiff\Console\Output\ConsoleDiffer;
 
 final class ServiceContainer
 {
-    private ?EventDispatcher $eventDispatcher = null;
-
-    private ?OutputInterface $output = null;
-
     public function __construct(
-        private RuntimeConfiguration $configuration
+        private RuntimeConfiguration $configuration,
+        private OutputInterface $output
     ) {
     }
 
@@ -69,51 +61,25 @@ final class ServiceContainer
         return new ManuscriptGenerator(
             $this->configuration,
             $this->dependenciesInstaller(),
-            $this->fileOperations(),
             new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaParser(), new MarkuaPrinter()),
-            $this->eventDispatcher(),
-            $this->logger()
+            $this->logger(),
+            $this->resultPrinter()
         );
     }
 
-    public function setOutput(OutputInterface $output): void
+    private function logger(): ConsoleLogger
     {
-        $this->output = $output;
-
-        $this->printResultsSubscriber()
-            ->setOutput($output);
+        return new ConsoleLogger($this->output);
     }
 
-    public function addEventSubscriber(EventSubscriberInterface $eventSubscriber): void
+    private function resultPrinter(): ResultPrinter
     {
-        $this->eventDispatcher()
-            ->addSubscriber($eventSubscriber);
+        return new ResultPrinter(new ConsoleDiffer(new Differ(), new ColorConsoleDiffFormatter()));
     }
 
-    private function eventDispatcher(): EventDispatcher
+    private function filesystem(): Filesystem
     {
-        if ($this->eventDispatcher === null) {
-            $this->eventDispatcher = new EventDispatcher();
-            $this->eventDispatcher->addSubscriber($this->printResultsSubscriber());
-        }
-
-        return $this->eventDispatcher;
-    }
-
-    private function fileOperations(): FileOperations
-    {
-        return new FileOperations(
-            new Filesystem($this->configuration->readOnlyFilesystem()),
-            $this->eventDispatcher()
-        );
-    }
-
-    private function printResultsSubscriber(): ResultPrinter
-    {
-        return $this->printResults ??= new ResultPrinter(
-            new NullOutput(),
-            new ConsoleDiffer(new Differ(), new ColorConsoleDiffFormatter())
-        );
+        return new Filesystem($this->configuration->readOnlyFilesystem());
     }
 
     private function resourceLoader(): DelegatingResourceLoader
@@ -134,10 +100,10 @@ final class ServiceContainer
                         ]
                     ),
                     new FileResourceLoader(),
-                    $this->fileOperations(),
-                    $this->eventDispatcher(),
+                    $this->filesystem(),
                     $this->dependenciesInstaller(),
-                    new DetermineLastModifiedTimestamp()
+                    new DetermineLastModifiedTimestamp(),
+                    $this->logger()
                 ),
                 new FileResourceLoader(),
             ]
@@ -177,7 +143,7 @@ final class ServiceContainer
                     ]
                 )
             ),
-            new CopyIncludedResourceNodeVisitor($this->configuration, $this->resourceLoader(), $this->fileOperations()),
+            new CopyIncludedResourceNodeVisitor($this->resourceLoader()),
             new CapitalizeHeadlinesNodeVisitor(
                 new HeadlineCapitalizer(),
                 $this->configuration->capitalizeHeadlines()
@@ -186,27 +152,13 @@ final class ServiceContainer
 
         if ($this->configuration->isLinkRegistryEnabled()) {
             $nodeVisitors[] = new CollectLinksForLinkRegistryNodeVisitor(
-                $this->fileOperations(),
+                $this->filesystem(),
                 $this->configuration->linkRegistryConfiguration(),
                 $this->configuration
             );
         }
 
         return $nodeVisitors;
-    }
-
-    private function logger(): ConsoleLogger
-    {
-        return $this->logger ??= new ConsoleLogger($this->output());
-    }
-
-    private function output(): OutputInterface
-    {
-        if ($this->output === null) {
-            throw new LogicException('First call setOutput()');
-        }
-
-        return $this->output;
     }
 
     private function tmpDir(): string

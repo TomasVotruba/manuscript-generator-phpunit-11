@@ -4,33 +4,36 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator;
 
+use ManuscriptGenerator\Cli\ResultPrinter;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\FileOperations\ExistingFile;
-use ManuscriptGenerator\FileOperations\FileOperations;
+use ManuscriptGenerator\ManuscriptFiles\ManuscriptDiff;
+use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Processor\MarkuaProcessor;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 final class ManuscriptGenerator
 {
     public function __construct(
         private RuntimeConfiguration $configuration,
         private DependenciesInstaller $dependenciesInstaller,
-        private FileOperations $fileOperations,
         private MarkuaProcessor $markuaProcessor,
-        private EventDispatcherInterface $eventDispatcher,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private ResultPrinter $resultPrinter
     ) {
     }
 
-    public function generateManuscript(): void
+    public function generateManuscript(): ManuscriptFiles
     {
         if ($this->configuration->updateDependencies()) {
             // Only if the user wants to force-update dependencies should we do it at once for all subprojects
             $this->logger->info('Updating all manuscript source dependencies');
             $this->dependenciesInstaller->updateAll();
         }
+
+        $manuscriptFiles = ManuscriptFiles::createEmpty();
 
         foreach ([
             'book.md' => 'Book.txt',
@@ -48,19 +51,37 @@ final class ManuscriptGenerator
 
             $srcFilePath = ExistingFile::fromPathname($srcFilePath);
 
-            $processedContents = $this->markuaProcessor->process($srcFilePath, $srcFilePath->contents());
+            $processedContents = $this->markuaProcessor->process(
+                $srcFilePath,
+                $srcFilePath->contents(),
+                $manuscriptFiles
+            );
 
-            $targetFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $srcFileName;
-            $this->fileOperations->putContents($targetFilePathname, $processedContents);
+            $manuscriptFiles->addFile($srcFileName, $processedContents);
 
-            $targetTxtFilePathname = $this->configuration->manuscriptTargetDir() . '/' . $targetFileName;
             $txtFileContents = $srcFileName . "\n";
-            $this->fileOperations->putContents($targetTxtFilePathname, $txtFileContents);
+            $manuscriptFiles->addFile($targetFileName, $txtFileContents);
         }
+
+        return $manuscriptFiles;
+    }
+
+    public function diffWithExistingManuscriptDir(ManuscriptFiles $manuscriptFiles): ManuscriptDiff
+    {
+        return $manuscriptFiles->diff(ManuscriptFiles::fromDir($this->configuration->manuscriptTargetDir()));
+    }
+
+    public function printDiff(ManuscriptDiff $diff, OutputInterface $output): void
+    {
+        $this->resultPrinter->printManuscriptDiff($diff, $output);
+    }
+
+    public function dumpManuscriptFiles(ManuscriptFiles $manuscriptFiles): void
+    {
+        $manuscriptFiles->dumpTo($this->configuration->manuscriptTargetDir());
 
         $this->logger->info('Generated the manuscript files in {manuscriptTargetDir}', [
             'manuscriptTargetDir' => $this->configuration->manuscriptTargetDir(),
         ]);
-        $this->eventDispatcher->dispatch(new ManuscriptWasGenerated($this->configuration->manuscriptTargetDir()));
     }
 }

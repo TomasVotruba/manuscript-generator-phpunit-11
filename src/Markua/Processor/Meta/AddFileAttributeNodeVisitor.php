@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace ManuscriptGenerator\Markua\Parser\Visitor;
+namespace ManuscriptGenerator\Markua\Processor\Meta;
 
 use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\Markua\Parser\Node;
+use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
 
 final class AddFileAttributeNodeVisitor extends AbstractNodeVisitor
 {
@@ -16,7 +17,7 @@ final class AddFileAttributeNodeVisitor extends AbstractNodeVisitor
 
     public function enterNode(Node $node): ?Node
     {
-        $node->setAttribute('file', $this->file);
+        $node->setAttribute(MetaAttributes::FILE, $this->file);
 
         return $node;
     }

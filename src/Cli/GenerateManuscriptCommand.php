@@ -6,39 +6,18 @@ namespace ManuscriptGenerator\Cli;
 
 use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
-use ManuscriptGenerator\FileOperations\FileWasCreated;
-use ManuscriptGenerator\FileOperations\FileWasModified;
 use ManuscriptGenerator\ServiceContainer;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final class GenerateManuscriptCommand extends Command implements EventSubscriberInterface
+final class GenerateManuscriptCommand extends Command
 {
     public const DEFAULT_CONFIG_FILE = 'book.php';
 
     public const COMMAND_NAME = 'generate-manuscript';
-
-    private bool $filesystemWasTouched = false;
-
-    /**
-     * @return array<class-string, string>
-     */
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            FileWasCreated::class => 'filesystemWasTouched',
-            FileWasModified::class => 'filesystemWasTouched',
-        ];
-    }
-
-    public function filesystemWasTouched(): void
-    {
-        $this->filesystemWasTouched = true;
-    }
 
     protected function configure(): void
     {
@@ -83,26 +62,29 @@ final class GenerateManuscriptCommand extends Command implements EventSubscriber
         $updateDependencies = $input->getOption('update-dependencies');
         assert(is_bool($updateDependencies));
 
-        $container = new ServiceContainer(
-            new RuntimeConfiguration($this->loadBookProjectConfiguration($input), $dryRun, $updateDependencies)
+        $configuration = new RuntimeConfiguration(
+            $this->loadBookProjectConfiguration($input),
+            $dryRun,
+            $updateDependencies
         );
+        $container = new ServiceContainer($configuration, $output);
 
-        // For showing results while generating the manuscript:
-        $container->setOutput($output);
-        $container->addEventSubscriber($this);
+        $manuscriptGenerator = $container->manuscriptGenerator();
 
-        $container->manuscriptGenerator()
-            ->generateManuscript();
-        if (! $dryRun) {
+        $manuscriptFiles = $manuscriptGenerator->generateManuscript();
+
+        $diff = $manuscriptGenerator->diffWithExistingManuscriptDir($manuscriptFiles);
+
+        if ($dryRun && $diff->hasDifferences()) {
             // --dry-run will fail CI if the filesystem was touched
-            return self::SUCCESS;
+            return self::FAILURE;
         }
-        if (! $this->filesystemWasTouched) {
-            // --dry-run will fail CI if the filesystem was touched
-            return self::SUCCESS;
-        }
-        // --dry-run will fail CI if the filesystem was touched
-        return self::FAILURE;
+
+        $manuscriptGenerator->printDiff($diff, $output);
+
+        $manuscriptGenerator->dumpManuscriptFiles($manuscriptFiles);
+
+        return self::SUCCESS;
     }
 
     private function loadBookProjectConfiguration(InputInterface $input): BookProjectConfiguration

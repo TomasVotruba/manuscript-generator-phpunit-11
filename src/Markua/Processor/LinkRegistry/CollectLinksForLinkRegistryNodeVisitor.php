@@ -4,20 +4,23 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Markua\Processor\LinkRegistry;
 
+use Assert\Assertion;
 use ManuscriptGenerator\Configuration\LinkRegistryConfiguration;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
-use ManuscriptGenerator\FileOperations\FileOperations;
+use ManuscriptGenerator\FileOperations\Filesystem;
+use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Parser\Node;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
 use ManuscriptGenerator\Markua\Parser\Node\Link;
 use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
+use ManuscriptGenerator\Markua\Processor\Meta\MetaAttributes;
 
 final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
 {
     private ExternalLinkCollector $linkCollector;
 
     public function __construct(
-        private FileOperations $fileOperations,
+        private Filesystem $filesystem,
         private LinkRegistryConfiguration $linkRegistryConfiguration,
         private RuntimeConfiguration $configuration
     ) {
@@ -25,9 +28,9 @@ final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
 
     public function beforeTraversing(Document $document): void
     {
-        if (is_file($this->linkFilePathname())) {
+        if (is_file($this->linksFilePathnameInSrc())) {
             $this->linkCollector = ExternalLinkCollector::loadFromString(
-                (string) file_get_contents($this->linkFilePathname())
+                (string) file_get_contents($this->linksFilePathnameInSrc())
             );
         } else {
             $this->linkCollector = new ExternalLinkCollector();
@@ -60,11 +63,21 @@ final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
 
     public function afterTraversing(Document $document): void
     {
-        $this->fileOperations->putContents($this->linkFilePathname(), $this->linkCollector->asString());
+        /** @var ManuscriptFiles $manuscriptFiles */
+        $manuscriptFiles = $document->getAttribute(MetaAttributes::MANUSCRIPT_FILES);
+        Assertion::isInstanceOf($manuscriptFiles, ManuscriptFiles::class);
+
+        $linksFileContents = $this->linkCollector->asString();
+
+        // Save a copy in manuscript-src, so we can load it the next time
+        $this->filesystem->putContents($this->linksFilePathnameInSrc(), $linksFileContents);
+
+        // Copy the file to manuscript, because it's a file that needs to be published in some way
+        $manuscriptFiles->addFile($this->linkRegistryConfiguration->linksFile(), $linksFileContents);
     }
 
-    private function linkFilePathname(): string
+    private function linksFilePathnameInSrc(): string
     {
-        return $this->configuration->manuscriptTargetDir() . '/' . $this->linkRegistryConfiguration->linksFile();
+        return $this->configuration->manuscriptSrcDir() . '/' . $this->linkRegistryConfiguration->linksFile();
     }
 }

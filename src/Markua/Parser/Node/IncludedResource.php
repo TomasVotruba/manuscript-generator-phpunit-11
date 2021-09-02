@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Markua\Parser\Node;
 
+use Assert\Assertion;
 use ManuscriptGenerator\FileOperations\ExistingFile;
+use ManuscriptGenerator\Markua\Processor\Meta\MetaAttributes;
 
 final class IncludedResource extends AbstractNode
 {
@@ -32,8 +34,9 @@ final class IncludedResource extends AbstractNode
 
     public function includedFromFile(): ExistingFile
     {
-        $includedFromFile = $this->getAttribute('file');
-        assert($includedFromFile instanceof ExistingFile);
+        /** @var ExistingFile $includedFromFile */
+        $includedFromFile = $this->getAttribute(MetaAttributes::FILE);
+        Assertion::isInstanceOf($includedFromFile, ExistingFile::class);
 
         return $includedFromFile;
     }

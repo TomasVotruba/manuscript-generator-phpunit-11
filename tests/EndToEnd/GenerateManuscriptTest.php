@@ -152,9 +152,6 @@ final class GenerateManuscriptTest extends TestCase
         self::assertStringContainsString('Running composer update', $this->tester->getDisplay());
     }
 
-    /**
-     * @group wip
-     */
     public function testItRemovesNoLongerUsedImages(): void
     {
         // The first version of the src dir has a reference to image.png
@@ -172,6 +169,7 @@ final class GenerateManuscriptTest extends TestCase
         self::assertFileExists($this->manuscriptDir . '/resources/image.png');
 
         // The second version of the src dir has no reference to image.png anymore
+        $this->filesystem->remove($this->manuscriptSrcDir);
         $this->filesystem->mirror(__DIR__ . '/CleanUpUnusedFiles/manuscript-src-2', $this->manuscriptSrcDir);
         $this->tester->execute(
             [
@@ -256,11 +254,14 @@ final class GenerateManuscriptTest extends TestCase
                 '--manuscript-dir' => $this->manuscriptDir,
                 '--manuscript-src-dir' => $this->manuscriptSrcDir,
                 '--config' => $this->manuscriptSrcDir . '/book.php',
+            ],
+            [
+                'verbosity' => OutputInterface::VERBOSITY_DEBUG,
             ]
         );
 
         // First time: phpunit-output.txt will be generated
-        self::assertStringContainsString('generated tests/phpunit-output.txt', $this->tester->getDisplay());
+        self::assertStringContainsString('Generated resource tests/phpunit-output.txt', $this->tester->getDisplay());
 
         $this->tester->execute(
             [
@@ -271,7 +272,7 @@ final class GenerateManuscriptTest extends TestCase
         );
 
         // Second time it won't
-        self::assertStringNotContainsString('generated tests/phpunit-output.txt', $this->tester->getDisplay());
+        self::assertStringNotContainsString('Generated resource tests/phpunit-output.txt', $this->tester->getDisplay());
 
         clearstatcache();
         // Third time: the generated output is older than one of the files of the folder it's in, so the test output
@@ -290,9 +291,12 @@ final class GenerateManuscriptTest extends TestCase
             ]
         );
 
-        self::assertStringContainsString('generated tests/phpunit-output.txt', $this->tester->getDisplay());
+        self::assertStringContainsString('Generated resource tests/phpunit-output.txt', $this->tester->getDisplay());
     }
 
+    /**
+     * @group wip
+     */
     public function testItFailsWhenUsingDryRunAndFilesWereModified(): void
     {
         $this->filesystem->mirror(__DIR__ . '/Project/manuscript-src', $this->manuscriptSrcDir);
@@ -329,7 +333,7 @@ final class GenerateManuscriptTest extends TestCase
 
         $existingLinks = '/example https://example.com';
 
-        file_put_contents($this->manuscriptDir . '/links.txt', $existingLinks);
+        file_put_contents($this->manuscriptSrcDir . '/links.txt', $existingLinks);
 
         $this->tester->execute(
             [

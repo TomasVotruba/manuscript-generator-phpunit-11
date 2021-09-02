@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace ManuscriptGenerator\FileOperations;
+namespace ManuscriptGenerator\ManuscriptFiles;
 
-final class FileWasModified
+final class ModifiedFile implements File
 {
     public function __construct(
-        private string $filepath,
+        private string $filePathname,
         private string $oldContents,
         private string $newContents
     ) {
     }
 
-    public function filepath(): string
+    public function filePathname(): string
     {
-        return $this->filepath;
+        return $this->filePathname;
     }
 
     public function oldContents(): string

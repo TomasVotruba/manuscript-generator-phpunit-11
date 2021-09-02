@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Markua\Processor;
 
-use ManuscriptGenerator\Configuration\RuntimeConfiguration;
-use ManuscriptGenerator\FileOperations\FileOperations;
+use Assert\Assertion;
+use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Parser\Node;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
+use ManuscriptGenerator\Markua\Processor\Meta\MetaAttributes;
 use ManuscriptGenerator\ResourceLoader\ResourceLoader;
 
 final class CopyIncludedResourceNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
-        private RuntimeConfiguration $configuration,
-        private ResourceLoader $resourceLoader,
-        private FileOperations $fileOperations
+        private ResourceLoader $resourceLoader
     ) {
     }
 
@@ -27,10 +26,10 @@ final class CopyIncludedResourceNodeVisitor extends AbstractNodeVisitor
         }
 
         $loadedResource = $this->resourceLoader->load($node);
-        $this->fileOperations->putContents(
-            $this->configuration->manuscriptTargetDir() . '/resources/' . $node->link,
-            $loadedResource->contents()
-        );
+        $manuscriptFiles = $node->getAttribute(MetaAttributes::MANUSCRIPT_FILES);
+        Assertion::isInstanceOf($manuscriptFiles, ManuscriptFiles::class);
+
+        $manuscriptFiles->addFile('resources/' . $node->link, $loadedResource->contents());
 
         return null;
     }
