@@ -70,8 +70,11 @@ final class ManuscriptFiles
         );
 
         $modifiedFiles = array_map(
-            fn (string $fileName) => new ModifiedFile($fileName, $this->files[$fileName], $other->files[$fileName]),
-            array_intersect($fileNamesLeft, $fileNamesRight)
+            fn (string $fileName) => new ModifiedFile($fileName, $other->files[$fileName], $this->files[$fileName]),
+            array_filter(
+                array_intersect($fileNamesLeft, $fileNamesRight),
+                fn (string $fileName) => $this->files[$fileName] !== $other->files[$fileName]
+            )
         );
 
         $unusedFiles = array_map(
@@ -79,6 +82,6 @@ final class ManuscriptFiles
             array_diff($fileNamesRight, $fileNamesLeft)
         );
 
-        return new ManuscriptDiff($newFiles, $modifiedFiles, $unusedFiles);
+        return new ManuscriptDiff(array_values($newFiles), array_values($modifiedFiles), array_values($unusedFiles));
     }
 }

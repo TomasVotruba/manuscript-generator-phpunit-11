@@ -8,8 +8,8 @@ final class ModifiedFile implements File
 {
     public function __construct(
         private string $filePathname,
-        private string $newContents,
-        private string $oldContents
+        private string $oldContents,
+        private string $newContents
     ) {
     }
 
@@ -18,13 +18,13 @@ final class ModifiedFile implements File
         return $this->filePathname;
     }
 
-    public function newContents(): string
-    {
-        return $this->newContents;
-    }
-
     public function oldContents(): string
     {
         return $this->oldContents;
+    }
+
+    public function newContents(): string
+    {
+        return $this->newContents;
     }
 }
