@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Cli;
 
 use Assert\Assertion;
-use ManuscriptGenerator\ManuscriptDiff;
+use ManuscriptGenerator\ManuscriptFiles\File;
+use ManuscriptGenerator\ManuscriptFiles\ManuscriptDiff;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symplify\ConsoleColorDiff\Console\Output\ConsoleDiffer;
 
@@ -20,28 +21,23 @@ final class ResultPrinter
     {
         foreach ($diff->newFiles() as $newFile) {
             $output->writeln(sprintf('<comment>new file</comment> %s', $newFile->filePathname()));
-            $this->printDiff($output, $newFile->filePathname(), '', $newFile->contents());
+            $this->printDiff($output, $newFile);
         }
 
         foreach ($diff->modifiedFiles() as $modifiedFile) {
             $output->writeln(sprintf('<comment>modified</comment> %s', $modifiedFile->filePathname()));
-            $this->printDiff(
-                $output,
-                $modifiedFile->filePathname(),
-                $modifiedFile->oldContents(),
-                $modifiedFile->newContents()
-            );
+            $this->printDiff($output, $modifiedFile);
         }
 
         foreach ($diff->unusedFiles() as $unusedFile) {
             $output->writeln(sprintf('<comment>unused</comment> %s', $unusedFile->filePathname()));
-            $this->printDiff($output, $unusedFile->filePathname(), $unusedFile->contents(), '');
+            $this->printDiff($output, $unusedFile);
         }
     }
 
-    private function printDiff(OutputInterface $output, string $filepath, string $old, string $new): void
+    private function printDiff(OutputInterface $output, File $file): void
     {
-        $extension = pathinfo($filepath, PATHINFO_EXTENSION);
+        $extension = pathinfo($file->filePathname(), PATHINFO_EXTENSION);
         Assertion::string($extension);
 
         if (in_array($extension, ['jpg', 'png'], true)) {
@@ -49,6 +45,6 @@ final class ResultPrinter
             return;
         }
 
-        $output->writeln($this->consoleDiffer->diff($old, $new));
+        $output->writeln($this->consoleDiffer->diff($file->oldContents(), $file->newContents()));
     }
 }

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ManuscriptGenerator;
+namespace ManuscriptGenerator\ManuscriptFiles;
 
-final class File
+final class NewFile implements File
 {
     public function __construct(
         private string $filePathname,
@@ -17,7 +17,12 @@ final class File
         return $this->filePathname;
     }
 
-    public function contents(): string
+    public function oldContents(): string
+    {
+        return '';
+    }
+
+    public function newContents(): string
     {
         return $this->contents;
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ManuscriptGenerator;
+namespace ManuscriptGenerator\ManuscriptFiles;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -65,7 +65,7 @@ final class ManuscriptFiles
         $fileNamesRight = array_keys($other->files);
 
         $newFiles = array_map(
-            fn (string $fileName) => new File($fileName, $this->files[$fileName]),
+            fn (string $fileName) => new NewFile($fileName, $this->files[$fileName]),
             array_diff($fileNamesLeft, $fileNamesRight)
         );
 
@@ -75,7 +75,7 @@ final class ManuscriptFiles
         );
 
         $unusedFiles = array_map(
-            fn (string $fileName) => new File($fileName, $other->files[$fileName]),
+            fn (string $fileName) => new UnusedFile($fileName, $other->files[$fileName]),
             array_diff($fileNamesRight, $fileNamesLeft)
         );
 

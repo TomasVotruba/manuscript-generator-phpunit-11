@@ -8,6 +8,8 @@ use ManuscriptGenerator\Cli\ResultPrinter;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\FileOperations\ExistingFile;
+use ManuscriptGenerator\ManuscriptFiles\ManuscriptDiff;
+use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Processor\MarkuaProcessor;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Output\OutputInterface;

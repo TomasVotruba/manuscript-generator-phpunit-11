@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Markua\Processor;
 
 use ManuscriptGenerator\FileOperations\ExistingFile;
-use ManuscriptGenerator\ManuscriptFiles;
+use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeTraverser;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeVisitor;

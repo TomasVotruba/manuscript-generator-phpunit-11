@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace ManuscriptGenerator;
+namespace ManuscriptGenerator\ManuscriptFiles;
 
 final class ManuscriptDiff
 {
     /**
-     * @param array<File> $newFiles
+     * @param array<NewFile> $newFiles
      * @param array<ModifiedFile> $modifiedFiles
-     * @param array<File> $unusedFiles
+     * @param array<UnusedFile> $unusedFiles
      */
     public function __construct(
         private array $newFiles,
@@ -19,7 +19,7 @@ final class ManuscriptDiff
     }
 
     /**
-     * @return array<File>
+     * @return array<NewFile>
      */
     public function newFiles(): array
     {
@@ -35,7 +35,7 @@ final class ManuscriptDiff
     }
 
     /**
-     * @return array<File>
+     * @return array<UnusedFile>
      */
     public function unusedFiles(): array
     {

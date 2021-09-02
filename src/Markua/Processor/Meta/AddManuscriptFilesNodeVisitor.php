@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Markua\Processor\Meta;
 
-use ManuscriptGenerator\ManuscriptFiles;
+use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Parser\Node;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
 use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;

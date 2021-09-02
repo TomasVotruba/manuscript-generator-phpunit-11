@@ -8,7 +8,7 @@ use Assert\Assertion;
 use ManuscriptGenerator\Configuration\LinkRegistryConfiguration;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\FileOperations\Filesystem;
-use ManuscriptGenerator\ManuscriptFiles;
+use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Parser\Node;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
 use ManuscriptGenerator\Markua\Parser\Node\Link;

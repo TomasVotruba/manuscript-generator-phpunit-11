@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ManuscriptGenerator;
+namespace ManuscriptGenerator\ManuscriptFiles;
 
-final class ModifiedFile
+final class ModifiedFile implements File
 {
     public function __construct(
         private string $filePathname,

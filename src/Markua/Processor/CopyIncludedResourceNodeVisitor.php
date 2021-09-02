@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Markua\Processor;
 
 use Assert\Assertion;
-use ManuscriptGenerator\ManuscriptFiles;
+use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Parser\Node;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
