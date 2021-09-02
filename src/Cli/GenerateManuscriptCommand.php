@@ -75,12 +75,12 @@ final class GenerateManuscriptCommand extends Command
 
         $diff = $manuscriptGenerator->diffWithExistingManuscriptDir($manuscriptFiles);
 
+        $manuscriptGenerator->printDiff($diff, $output);
+
         if ($dryRun && $diff->hasDifferences()) {
             // --dry-run will fail CI if the filesystem was touched
             return self::FAILURE;
         }
-
-        $manuscriptGenerator->printDiff($diff, $output);
 
         $manuscriptGenerator->dumpManuscriptFiles($manuscriptFiles);
 

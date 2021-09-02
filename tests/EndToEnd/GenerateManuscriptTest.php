@@ -294,9 +294,6 @@ final class GenerateManuscriptTest extends TestCase
         self::assertStringContainsString('Generated resource tests/phpunit-output.txt', $this->tester->getDisplay());
     }
 
-    /**
-     * @group wip
-     */
     public function testItFailsWhenUsingDryRunAndFilesWereModified(): void
     {
         $this->filesystem->mirror(__DIR__ . '/Project/manuscript-src', $this->manuscriptSrcDir);
@@ -310,6 +307,29 @@ final class GenerateManuscriptTest extends TestCase
         );
 
         self::assertSame(1, $this->tester->getStatusCode());
+    }
+
+    public function testItSucceedsWhenUsingDryRunAndNothingChanged(): void
+    {
+        $this->filesystem->mirror(__DIR__ . '/Project/manuscript-src', $this->manuscriptSrcDir);
+
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+            ]
+        );
+
+        // run again
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+                '--dry-run' => true,
+            ]
+        );
+
+        self::assertSame(0, $this->tester->getStatusCode());
     }
 
     public function testItReplacesExternalLinksWithLinksToTheLinkRegistry(): void
