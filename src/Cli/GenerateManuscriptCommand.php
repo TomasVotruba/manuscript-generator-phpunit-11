@@ -6,7 +6,6 @@ namespace ManuscriptGenerator\Cli;
 
 use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
-use ManuscriptGenerator\ManuscriptFiles;
 use ManuscriptGenerator\ServiceContainer;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
@@ -73,21 +72,20 @@ final class GenerateManuscriptCommand extends Command
         // For showing results while generating the manuscript:
         $container->setOutput($output);
 
-        $manuscriptFiles = $container->manuscriptGenerator()
-            ->generateManuscript();
+        $manuscriptGenerator = $container->manuscriptGenerator();
 
-        $diff = $manuscriptFiles->diff(ManuscriptFiles::fromDir($configuration->manuscriptTargetDir()));
+        $manuscriptFiles = $manuscriptGenerator->generateManuscript();
+
+        $diff = $manuscriptGenerator->diffWithExistingManuscriptDir($manuscriptFiles);
 
         if ($dryRun && $diff->hasDifferences()) {
             // --dry-run will fail CI if the filesystem was touched
             return self::FAILURE;
         }
 
-        $manuscriptFiles->dumpTo($configuration->manuscriptTargetDir());
+        $manuscriptGenerator->printDiff($diff, $output);
 
-        $container->logger()->info('Generated the manuscript files in {manuscriptTargetDir}', [
-            'manuscriptTargetDir' => $configuration->manuscriptTargetDir(),
-        ]);
+        $manuscriptGenerator->dumpManuscriptFiles($manuscriptFiles);
 
         return self::SUCCESS;
     }

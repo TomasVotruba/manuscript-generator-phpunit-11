@@ -254,11 +254,14 @@ final class GenerateManuscriptTest extends TestCase
                 '--manuscript-dir' => $this->manuscriptDir,
                 '--manuscript-src-dir' => $this->manuscriptSrcDir,
                 '--config' => $this->manuscriptSrcDir . '/book.php',
+            ],
+            [
+                'verbosity' => OutputInterface::VERBOSITY_DEBUG,
             ]
         );
 
         // First time: phpunit-output.txt will be generated
-        self::assertStringContainsString('generated tests/phpunit-output.txt', $this->tester->getDisplay());
+        self::assertStringContainsString('Generated resource tests/phpunit-output.txt', $this->tester->getDisplay());
 
         $this->tester->execute(
             [
@@ -269,7 +272,7 @@ final class GenerateManuscriptTest extends TestCase
         );
 
         // Second time it won't
-        self::assertStringNotContainsString('generated tests/phpunit-output.txt', $this->tester->getDisplay());
+        self::assertStringNotContainsString('Generated resource tests/phpunit-output.txt', $this->tester->getDisplay());
 
         clearstatcache();
         // Third time: the generated output is older than one of the files of the folder it's in, so the test output
@@ -288,7 +291,7 @@ final class GenerateManuscriptTest extends TestCase
             ]
         );
 
-        self::assertStringContainsString('generated tests/phpunit-output.txt', $this->tester->getDisplay());
+        self::assertStringContainsString('Generated resource tests/phpunit-output.txt', $this->tester->getDisplay());
     }
 
     /**

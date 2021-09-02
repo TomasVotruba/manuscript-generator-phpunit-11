@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace ManuscriptGenerator;
@@ -17,16 +18,25 @@ final class ManuscriptDiff
     ) {
     }
 
+    /**
+     * @return array<File>
+     */
     public function newFiles(): array
     {
         return $this->newFiles;
     }
 
+    /**
+     * @return array<ModifiedFile>
+     */
     public function modifiedFiles(): array
     {
         return $this->modifiedFiles;
     }
 
+    /**
+     * @return array<File>
+     */
     public function unusedFiles(): array
     {
         return $this->unusedFiles;

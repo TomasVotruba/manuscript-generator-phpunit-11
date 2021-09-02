@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator;
 
+use ManuscriptGenerator\Cli\ResultPrinter;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\Markua\Processor\MarkuaProcessor;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 final class ManuscriptGenerator
 {
@@ -16,7 +18,8 @@ final class ManuscriptGenerator
         private RuntimeConfiguration $configuration,
         private DependenciesInstaller $dependenciesInstaller,
         private MarkuaProcessor $markuaProcessor,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private ResultPrinter $resultPrinter
     ) {
     }
 
@@ -59,5 +62,24 @@ final class ManuscriptGenerator
         }
 
         return $manuscriptFiles;
+    }
+
+    public function diffWithExistingManuscriptDir(ManuscriptFiles $manuscriptFiles): ManuscriptDiff
+    {
+        return $manuscriptFiles->diff(ManuscriptFiles::fromDir($this->configuration->manuscriptTargetDir()));
+    }
+
+    public function printDiff(ManuscriptDiff $diff, OutputInterface $output): void
+    {
+        $this->resultPrinter->printManuscriptDiff($diff, $output);
+    }
+
+    public function dumpManuscriptFiles(ManuscriptFiles $manuscriptFiles): void
+    {
+        $manuscriptFiles->dumpTo($this->configuration->manuscriptTargetDir());
+
+        $this->logger->info('Generated the manuscript files in {manuscriptTargetDir}', [
+            'manuscriptTargetDir' => $this->configuration->manuscriptTargetDir(),
+        ]);
     }
 }

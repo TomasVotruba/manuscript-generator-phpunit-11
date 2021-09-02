@@ -8,7 +8,6 @@ use LogicException;
 use ManuscriptGenerator\Cli\ResultPrinter;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Dependencies\ComposerDependenciesInstaller;
-use ManuscriptGenerator\FileOperations\FileOperations;
 use ManuscriptGenerator\FileOperations\Filesystem;
 use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeVisitor;
@@ -69,7 +68,8 @@ final class ServiceContainer
             $this->configuration,
             $this->dependenciesInstaller(),
             new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaParser(), new MarkuaPrinter()),
-            $this->logger()
+            $this->logger(),
+            $this->resultPrinter()
         );
     }
 
@@ -84,6 +84,16 @@ final class ServiceContainer
             ->addSubscriber($eventSubscriber);
     }
 
+    public function logger(): ConsoleLogger
+    {
+        return $this->logger ??= new ConsoleLogger($this->output());
+    }
+
+    private function resultPrinter(): ResultPrinter
+    {
+        return new ResultPrinter(new ConsoleDiffer(new Differ(), new ColorConsoleDiffFormatter()));
+    }
+
     private function eventDispatcher(): EventDispatcher
     {
         if ($this->eventDispatcher === null) {
@@ -93,19 +103,9 @@ final class ServiceContainer
         return $this->eventDispatcher;
     }
 
-    private function fileOperations(): FileOperations
+    private function filesystem(): Filesystem
     {
-        return new FileOperations(
-            new Filesystem($this->configuration->readOnlyFilesystem()),
-            $this->eventDispatcher()
-        );
-    }
-
-    public function resultPrinter(): ResultPrinter
-    {
-        return new ResultPrinter(
-            new ConsoleDiffer(new Differ(), new ColorConsoleDiffFormatter())
-        );
+        return new Filesystem($this->configuration->readOnlyFilesystem());
     }
 
     private function resourceLoader(): DelegatingResourceLoader
@@ -126,10 +126,10 @@ final class ServiceContainer
                         ]
                     ),
                     new FileResourceLoader(),
-                    $this->fileOperations(),
-                    $this->eventDispatcher(),
+                    $this->filesystem(),
                     $this->dependenciesInstaller(),
-                    new DetermineLastModifiedTimestamp()
+                    new DetermineLastModifiedTimestamp(),
+                    $this->logger()
                 ),
                 new FileResourceLoader(),
             ]
@@ -178,18 +178,13 @@ final class ServiceContainer
 
         if ($this->configuration->isLinkRegistryEnabled()) {
             $nodeVisitors[] = new CollectLinksForLinkRegistryNodeVisitor(
-                $this->fileOperations(),
+                $this->filesystem(),
                 $this->configuration->linkRegistryConfiguration(),
                 $this->configuration
             );
         }
 
         return $nodeVisitors;
-    }
-
-    public function logger(): ConsoleLogger
-    {
-        return $this->logger ??= new ConsoleLogger($this->output());
     }
 
     private function output(): OutputInterface

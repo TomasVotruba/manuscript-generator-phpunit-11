@@ -7,7 +7,7 @@ namespace ManuscriptGenerator\Markua\Processor\LinkRegistry;
 use Assert\Assertion;
 use ManuscriptGenerator\Configuration\LinkRegistryConfiguration;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
-use ManuscriptGenerator\FileOperations\FileOperations;
+use ManuscriptGenerator\FileOperations\Filesystem;
 use ManuscriptGenerator\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Parser\Node;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
@@ -20,7 +20,7 @@ final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
     private ExternalLinkCollector $linkCollector;
 
     public function __construct(
-        private FileOperations $fileOperations,
+        private Filesystem $filesystem,
         private LinkRegistryConfiguration $linkRegistryConfiguration,
         private RuntimeConfiguration $configuration
     ) {
@@ -70,7 +70,7 @@ final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
         $linksFileContents = $this->linkCollector->asString();
 
         // Save a copy in manuscript-src, so we can load it the next time
-        $this->fileOperations->putContents($this->linksFilePathnameInSrc(), $linksFileContents);
+        $this->filesystem->putContents($this->linksFilePathnameInSrc(), $linksFileContents);
 
         // Copy the file to manuscript, because it's a file that needs to be published in some way
         $manuscriptFiles->addFile($this->linkRegistryConfiguration->linksFile(), $linksFileContents);

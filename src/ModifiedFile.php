@@ -1,12 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace ManuscriptGenerator;
 
 final class ModifiedFile
 {
-    public function __construct(private string $filePathname, private string $newContents, private string $oldContents)
-    {
+    public function __construct(
+        private string $filePathname,
+        private string $newContents,
+        private string $oldContents
+    ) {
     }
 
     public function filePathname(): string
