@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator;
 
-use LogicException;
 use ManuscriptGenerator\Cli\ResultPrinter;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Dependencies\ComposerDependenciesInstaller;
@@ -51,10 +50,9 @@ use Symplify\ConsoleColorDiff\Console\Output\ConsoleDiffer;
 
 final class ServiceContainer
 {
-    private ?OutputInterface $output = null;
-
     public function __construct(
-        private RuntimeConfiguration $configuration
+        private RuntimeConfiguration $configuration,
+        private OutputInterface $output
     ) {
     }
 
@@ -69,14 +67,9 @@ final class ServiceContainer
         );
     }
 
-    public function setOutput(OutputInterface $output): void
+    private function logger(): ConsoleLogger
     {
-        $this->output = $output;
-    }
-
-    public function logger(): ConsoleLogger
-    {
-        return $this->logger ??= new ConsoleLogger($this->output());
+        return $this->logger ??= new ConsoleLogger($this->output);
     }
 
     private function resultPrinter(): ResultPrinter
@@ -166,15 +159,6 @@ final class ServiceContainer
         }
 
         return $nodeVisitors;
-    }
-
-    private function output(): OutputInterface
-    {
-        if ($this->output === null) {
-            throw new LogicException('First call setOutput()');
-        }
-
-        return $this->output;
     }
 
     private function tmpDir(): string

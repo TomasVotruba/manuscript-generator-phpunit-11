@@ -67,10 +67,7 @@ final class GenerateManuscriptCommand extends Command
             $dryRun,
             $updateDependencies
         );
-        $container = new ServiceContainer($configuration);
-
-        // For showing results while generating the manuscript:
-        $container->setOutput($output);
+        $container = new ServiceContainer($configuration, $output);
 
         $manuscriptGenerator = $container->manuscriptGenerator();
 
