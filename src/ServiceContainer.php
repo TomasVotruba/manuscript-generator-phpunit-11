@@ -46,15 +46,11 @@ use ManuscriptGenerator\ResourceProcessor\StripInsignificantWhitespaceResourcePr
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symplify\ConsoleColorDiff\Console\Formatter\ColorConsoleDiffFormatter;
 use Symplify\ConsoleColorDiff\Console\Output\ConsoleDiffer;
 
 final class ServiceContainer
 {
-    private ?EventDispatcher $eventDispatcher = null;
-
     private ?OutputInterface $output = null;
 
     public function __construct(
@@ -78,12 +74,6 @@ final class ServiceContainer
         $this->output = $output;
     }
 
-    public function addEventSubscriber(EventSubscriberInterface $eventSubscriber): void
-    {
-        $this->eventDispatcher()
-            ->addSubscriber($eventSubscriber);
-    }
-
     public function logger(): ConsoleLogger
     {
         return $this->logger ??= new ConsoleLogger($this->output());
@@ -92,15 +82,6 @@ final class ServiceContainer
     private function resultPrinter(): ResultPrinter
     {
         return new ResultPrinter(new ConsoleDiffer(new Differ(), new ColorConsoleDiffFormatter()));
-    }
-
-    private function eventDispatcher(): EventDispatcher
-    {
-        if ($this->eventDispatcher === null) {
-            $this->eventDispatcher = new EventDispatcher();
-        }
-
-        return $this->eventDispatcher;
     }
 
     private function filesystem(): Filesystem
