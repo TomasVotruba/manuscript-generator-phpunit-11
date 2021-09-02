@@ -69,7 +69,7 @@ final class ServiceContainer
 
     private function logger(): ConsoleLogger
     {
-        return $this->logger ??= new ConsoleLogger($this->output);
+        return new ConsoleLogger($this->output);
     }
 
     private function resultPrinter(): ResultPrinter

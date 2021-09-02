@@ -27,6 +27,7 @@ final class Filesystem
     public function putContents(string $pathname, string $contents): void
     {
         if ($this->readOnly) {
+            // @TODO consider throwing an exception here, since it will also make the generate manuscript command fail
             return;
         }
 
