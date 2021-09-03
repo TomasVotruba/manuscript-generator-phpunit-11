@@ -460,6 +460,6 @@ CODE_SAMPLE
      */
     private function documentWith(array $nodes): Document
     {
-        return new Document($nodes, [new IncludedResource('title_page.png')]);
+        return new Document($nodes, []);
     }
 }

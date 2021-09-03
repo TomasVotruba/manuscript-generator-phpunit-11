@@ -18,6 +18,7 @@ use ManuscriptGenerator\Markua\Processor\Headlines\HeadlineCapitalizer;
 use ManuscriptGenerator\Markua\Processor\InlineIncludedMarkdownFilesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\InlineIncludedResourcesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\LinkRegistry\CollectLinksForLinkRegistryNodeVisitor;
+use ManuscriptGenerator\Markua\Processor\MarkuaLoader;
 use ManuscriptGenerator\Markua\Processor\ProcessInlineResourcesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\UseFilenameAsCaptionNodeVisitor;
 use ManuscriptGenerator\ResourceLoader\DelegatingResourceLoader;
@@ -61,7 +62,7 @@ final class ServiceContainer
         return new ManuscriptGenerator(
             $this->configuration,
             $this->dependenciesInstaller(),
-            new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaParser(), new MarkuaPrinter()),
+            new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaLoader(), new MarkuaPrinter()),
             $this->logger(),
             $this->resultPrinter()
         );
@@ -122,7 +123,7 @@ final class ServiceContainer
     {
         $nodeVisitors = [
             new UseFilenameAsCaptionNodeVisitor(),
-            new InlineIncludedMarkdownFilesNodeVisitor($this->resourceLoader(), $this->markuaParser()),
+            new InlineIncludedMarkdownFilesNodeVisitor($this->resourceLoader(), $this->markuaLoader()),
             new InlineIncludedResourcesNodeVisitor($this->resourceLoader()),
             new ProcessInlineResourcesNodeVisitor(
                 array_merge(
@@ -169,5 +170,10 @@ final class ServiceContainer
     private function dependenciesInstaller(): ComposerDependenciesInstaller
     {
         return new ComposerDependenciesInstaller($this->configuration, $this->logger());
+    }
+
+    private function markuaLoader(): MarkuaLoader
+    {
+        return new MarkuaLoader($this->markuaParser());
     }
 }

@@ -66,7 +66,7 @@ final class SimpleMarkuaParser
             )
         )
             ->thenEof()
-            ->map(fn (?array $nodes): Document => new Document($nodes ?? [], [new IncludedResource('title_page.png')]));
+            ->map(fn (?array $nodes): Document => new Document($nodes ?? [], []));
 
         return $parser->tryString($markua)
             ->output();

@@ -10,7 +10,7 @@ use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 interface MarkuaProcessor
 {
     /**
-     * @throws FailedToProcessMarkua
+     * @throws FailedToLoadMarkuaFile
      */
-    public function process(ExistingFile $markuaFile, string $markua, ManuscriptFiles $manuscriptFiles): string;
+    public function process(ExistingFile $markuaFile, ManuscriptFiles $manuscriptFiles): string;
 }

@@ -32,6 +32,16 @@ final class IncludedResource extends AbstractNode
             ->directory() . '/resources/' . $this->link;
     }
 
+    public function includedFile(): ExistingFile
+    {
+        // @TODO for BC, remove later
+        if (file_exists($this->expectedFilePathname())) {
+            return ExistingFile::fromPathname($this->expectedFilePathname());
+        }
+
+        return ExistingFile::fromPathname($this->includedFromFile()->directory() . '/' . $this->link);
+    }
+
     public function includedFromFile(): ExistingFile
     {
         /** @var ExistingFile $includedFromFile */

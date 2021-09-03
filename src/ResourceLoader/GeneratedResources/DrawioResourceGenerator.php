@@ -18,7 +18,7 @@ final class DrawioResourceGenerator implements ResourceGenerator
 
     public function supportsResource(IncludedResource $resource): bool
     {
-        return str_ends_with($resource->expectedFilePathname(), self::DRAWIO_PNG_SUFFIX);
+        return str_ends_with($resource->link, self::DRAWIO_PNG_SUFFIX);
     }
 
     public function sourcePathForResource(IncludedResource $resource): string
