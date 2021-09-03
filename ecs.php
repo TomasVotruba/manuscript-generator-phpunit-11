@@ -38,7 +38,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             // Because it makes no sense ;) (well, I just need assertEquals())
             PhpUnitStrictFixer::class,
             // fixture files
-            '*/tests/*/resources/*',
+            '*/tests/EndToEnd/*/*',
 
             // some WTF in new php_code_sniffer
             AssignmentInConditionSniff::class . '.FoundInWhileCondition',

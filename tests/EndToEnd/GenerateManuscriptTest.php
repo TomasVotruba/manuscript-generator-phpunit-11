@@ -136,7 +136,7 @@ final class GenerateManuscriptTest extends TestCase
         );
 
         // Fake a change in composer.json:
-        touch($this->manuscriptSrcDir . '/resources/tests/composer.json', time() + 10);
+        touch($this->manuscriptSrcDir . '/tests/composer.json', time() + 10);
 
         $this->tester->execute(
             [
@@ -281,7 +281,7 @@ final class GenerateManuscriptTest extends TestCase
         clearstatcache();
         // Third time: the generated output is older than one of the files of the folder it's in, so the test output
         // will be generated again
-        $fileInSubDirectory = $this->manuscriptSrcDir . '/resources/tests/test/NotTrueTest.php';
+        $fileInSubDirectory = $this->manuscriptSrcDir . '/tests/test/NotTrueTest.php';
         touch($fileInSubDirectory, (int) filemtime($fileInSubDirectory) + 1000);
 
         $this->tester->execute(

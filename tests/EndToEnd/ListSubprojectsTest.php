@@ -27,12 +27,12 @@ final class ListSubprojectsTest extends TestCase
         self::assertEquals(
             [
                 [
-                    'directory' => 'manuscript-src/resources/subproject1',
+                    'directory' => 'manuscript-src/subproject1',
                     'runPhpUnit' => true,
                     'runRector' => false,
                 ],
                 [
-                    'directory' => 'manuscript-src/resources/subproject2',
+                    'directory' => 'manuscript-src/subproject2',
                     'runPhpUnit' => false,
                     'runRector' => true,
                 ],

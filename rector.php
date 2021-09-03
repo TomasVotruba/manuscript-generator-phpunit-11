@@ -31,7 +31,7 @@ return static function (
 
     $parameters->set(Option::SKIP, [
         AddArrayReturnDocTypeRector::class,
-        '*/resources/*',
+        '*/tests/EndToEnd/*/*',
     ]);
 
     $services = $containerConfigurator->services();

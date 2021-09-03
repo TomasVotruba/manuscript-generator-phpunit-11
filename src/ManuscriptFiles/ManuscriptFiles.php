@@ -65,20 +65,24 @@ final class ManuscriptFiles
         $fileNamesRight = array_keys($other->files);
 
         $newFiles = array_map(
-            fn (string $fileName) => new NewFile($fileName, $this->files[$fileName]),
+            fn (string $fileName): NewFile => new NewFile($fileName, $this->files[$fileName]),
             array_diff($fileNamesLeft, $fileNamesRight)
         );
 
         $modifiedFiles = array_map(
-            fn (string $fileName) => new ModifiedFile($fileName, $other->files[$fileName], $this->files[$fileName]),
+            fn (string $fileName): ModifiedFile => new ModifiedFile(
+                $fileName,
+                $other->files[$fileName],
+                $this->files[$fileName]
+            ),
             array_filter(
                 array_intersect($fileNamesLeft, $fileNamesRight),
-                fn (string $fileName) => $this->files[$fileName] !== $other->files[$fileName]
+                fn (string $fileName): bool => $this->files[$fileName] !== $other->files[$fileName]
             )
         );
 
         $unusedFiles = array_map(
-            fn (string $fileName) => new UnusedFile($fileName, $other->files[$fileName]),
+            fn (string $fileName): UnusedFile => new UnusedFile($fileName, $other->files[$fileName]),
             array_diff($fileNamesRight, $fileNamesLeft)
         );
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Markua\Processor;
 
+use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\Markua\Parser\Node;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
@@ -30,10 +31,11 @@ final class InlineIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor
         }
 
         if (str_ends_with($node->link, 'md') || str_ends_with($node->link, 'markdown')) {
-            if (is_file($node->includedFromFile()->directory() . '/' . $node->link)) {
-                return $this->markuaLoader->load($node->includedFile());
+            if (is_file($node->expectedFilePathname())) {
+                return $this->markuaLoader->load(ExistingFile::fromPathname($node->expectedFilePathname()));
             }
 
+            // The included file inherits the file attribute of the current node
             return $this->markuaLoader->loadString(
                 $this->resourceLoader->load($node)
                     ->contents(),
