@@ -5,8 +5,8 @@ declare(strict_types=1);
 use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\AbstractOutputBufferResourceGenerator;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\CacheableResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DetermineLastModifiedTimestamp;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\Source;
 
 $configuration = BookProjectConfiguration::usingDefaults();
@@ -33,7 +33,7 @@ $configuration->addResourceGenerator(
 );
 
 $configuration->addResourceGenerator(
-    new class() implements CacheableResourceGenerator {
+    new class() implements ResourceGenerator {
         public function name(): string
         {
             return 'diagram';

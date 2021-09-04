@@ -8,7 +8,7 @@ use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 use RuntimeException;
 
-final class TitlePageResourceGenerator implements CacheableResourceGenerator
+final class TitlePageResourceGenerator implements ResourceGenerator
 {
     private const GIMP_SOURCE_FILE_NAME = 'title_page.xcf';
 

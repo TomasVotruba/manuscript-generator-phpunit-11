@@ -8,7 +8,7 @@ use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 
-final class PhpUnitResourceGenerator implements CacheableResourceGenerator
+final class PhpUnitResourceGenerator implements ResourceGenerator
 {
     public function __construct(
         private DependenciesInstaller $dependenciesInstaller

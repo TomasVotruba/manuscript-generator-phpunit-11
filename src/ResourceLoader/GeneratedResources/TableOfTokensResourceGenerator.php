@@ -9,7 +9,7 @@ use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use PhpToken;
 
-final class TableOfTokensResourceGenerator implements CacheableResourceGenerator
+final class TableOfTokensResourceGenerator implements ResourceGenerator
 {
     public const FILE_SUFFIX = '.table_of_tokens.md';
 

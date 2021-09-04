@@ -28,15 +28,14 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
         $resourceGenerator = $this->getResourceGeneratorFor($resource);
         $expectedPath = $resource->expectedFilePathname();
 
-        if ($resourceGenerator instanceof CacheableResourceGenerator) {
-            if (is_file($expectedPath)
-                && $resourceGenerator->sourceLastModified($resource, $this->determineLastModifiedTimestamp)
-                <= ((int) filemtime($expectedPath))
-            ) {
-                $this->logger->debug('Generated resource {link} was still fresh', [
-                    'link' => $resource->link,
-                ]);
-            }
+        if (is_file($expectedPath)
+            && $resourceGenerator->sourceLastModified($resource, $this->determineLastModifiedTimestamp)
+            <= ((int) filemtime($expectedPath))
+        ) {
+            $this->logger->debug('Generated resource {link} was still fresh', [
+                'link' => $resource->link,
+            ]);
+            return;
         }
 
         // @TODO deal with null

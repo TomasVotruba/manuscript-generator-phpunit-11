@@ -6,7 +6,7 @@ namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 
-final class CopyFromVendorResourceGenerator implements CacheableResourceGenerator
+final class CopyFromVendorResourceGenerator implements ResourceGenerator
 {
     private const EXPECTED_PREFIX = 'copy-from-vendor/';
 

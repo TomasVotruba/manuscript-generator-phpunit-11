@@ -7,7 +7,7 @@ namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 
-final class DrawioResourceGenerator implements CacheableResourceGenerator
+final class DrawioResourceGenerator implements ResourceGenerator
 {
     private const DRAWIO_PNG_SUFFIX = '.drawio.png';
 
