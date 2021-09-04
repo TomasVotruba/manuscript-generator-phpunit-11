@@ -49,8 +49,6 @@ final class GeneratedResourceLoader implements ResourceLoader
                 return $this->fileResourceLoader->load($includedResource);
             }
 
-            // @TODO remove duplication
-            // @TODO move to generator so it can determine itself if we need to do this
             if (is_dir($sourcePath)) {
                 $directory = $sourcePath;
             } else {

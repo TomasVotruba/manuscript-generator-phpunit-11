@@ -74,13 +74,7 @@ final class ComposerDependenciesInstaller implements DependenciesInstaller
         $workingDir = $composerJsonFile->getPath();
         $this->logger->info('Running composer ' . $command . ' in ' . $workingDir);
 
-        $composer = new Process(
-            [
-                'composer', // @TODO make configurable
-                $command,
-            ],
-            $workingDir
-        );
+        $composer = new Process(['composer', $command], $workingDir);
         $result = $composer->run();
 
         /*

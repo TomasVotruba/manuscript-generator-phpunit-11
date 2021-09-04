@@ -18,7 +18,6 @@ final class CopyFromVendorResourceGenerator implements ResourceGenerator
 
     public function sourcePathForResource(IncludedResource $resource): string
     {
-        // @TODO use project root dir instead of getcwd() here
         return getcwd() . '/' . str_replace(self::EXPECTED_PREFIX, 'vendor/', $resource->link);
     }
 

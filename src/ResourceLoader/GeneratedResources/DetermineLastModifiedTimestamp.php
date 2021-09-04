@@ -53,7 +53,7 @@ final class DetermineLastModifiedTimestamp
             if ($filename === '..') {
                 continue;
             }
-            // @TODO get from DependenciesInstaller
+
             $ignoreFileNames = ['vendor'];
             if (in_array($filename, $ignoreFileNames, true)) {
                 continue;
