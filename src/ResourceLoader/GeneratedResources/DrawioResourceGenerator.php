@@ -9,8 +9,6 @@ use ManuscriptGenerator\Process\Process;
 
 final class DrawioResourceGenerator implements ResourceGenerator
 {
-    private const DRAWIO_PNG_SUFFIX = '.drawio.png';
-
     public function __construct(
         private string $tmpDir
     ) {
@@ -19,11 +17,6 @@ final class DrawioResourceGenerator implements ResourceGenerator
     public function name(): string
     {
         return 'drawio';
-    }
-
-    public function sourcePathForResource(IncludedResource $resource): string
-    {
-        return str_replace(self::DRAWIO_PNG_SUFFIX, '.drawio', $resource->expectedFilePathname());
     }
 
     public function generateResource(IncludedResource $resource, Source $source): string
@@ -42,7 +35,8 @@ final class DrawioResourceGenerator implements ResourceGenerator
                 '--scale=2',
                 '--output',
                 $tmpFilePathname,
-                $this->sourcePathForResource($resource),
+                $source->file()
+                    ->pathname(),
             ]
         );
         $result = $process->run();
@@ -62,6 +56,6 @@ final class DrawioResourceGenerator implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource));
+        return $determineLastModifiedTimestamp->ofFile($source->file()->pathname());
     }
 }
