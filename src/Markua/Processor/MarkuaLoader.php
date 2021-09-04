@@ -21,18 +21,8 @@ final class MarkuaLoader
     /**
      * @throws FailedToLoadMarkuaFile
      */
-    public function load(ExistingFile $markuaFile): Document
+    public function load(string $markua, ExistingFile $markuaFile): Document
     {
-        return $this->loadString($markuaFile->contents(), $markuaFile);
-    }
-
-    /**
-     * @throws FailedToLoadMarkuaFile
-     */
-    public function loadString(string $markua, ExistingFile $markuaFile): Document
-    {
-        // @TODO This isn't pretty, fix weird two methods!
-
         try {
             $document = $this->parser->parseDocument($markua);
         } catch (ParserHasFailed $exception) {

@@ -32,11 +32,12 @@ final class InlineIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor
 
         if (str_ends_with($node->link, 'md') || str_ends_with($node->link, 'markdown')) {
             if (is_file($node->expectedFilePathname())) {
-                return $this->markuaLoader->load(ExistingFile::fromPathname($node->expectedFilePathname()));
+                $markuaFile = ExistingFile::fromPathname($node->expectedFilePathname());
+                return $this->markuaLoader->load($markuaFile->contents(), $markuaFile);
             }
 
             // The included file inherits the file attribute of the current node
-            return $this->markuaLoader->loadString(
+            return $this->markuaLoader->load(
                 $this->resourceLoader->load($node)
                     ->contents(),
                 $node->getAttribute(MetaAttributes::FILE)
