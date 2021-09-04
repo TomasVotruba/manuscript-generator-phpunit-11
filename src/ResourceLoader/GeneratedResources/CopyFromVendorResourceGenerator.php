@@ -20,7 +20,7 @@ final class CopyFromVendorResourceGenerator implements CacheableResourceGenerato
         return getcwd() . '/' . str_replace(self::EXPECTED_PREFIX, 'vendor/', $resource->link);
     }
 
-    public function generateResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource, Source $source): string
     {
         $sourceFilePathname = $this->sourcePathForResource($resource);
 

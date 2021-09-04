@@ -27,7 +27,7 @@ final class TitlePageResourceGenerator implements CacheableResourceGenerator
         return dirname($resource->expectedFilePathname()) . '/images/cover/' . self::GIMP_SOURCE_FILE_NAME;
     }
 
-    public function generateResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource, Source $source): string
     {
         if (! is_dir($this->tmpDir)) {
             mkdir($this->tmpDir, 0777, true);

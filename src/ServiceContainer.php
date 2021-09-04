@@ -27,10 +27,10 @@ use ManuscriptGenerator\ResourceLoader\GeneratedResources\DelegatingResourceGene
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DetermineLastModifiedTimestamp;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DrawioResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\GenerateIncludedResourceNodeVisitor;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\IncludedResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpScriptOutputResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpUnitResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\RectorOutputResourceLoader;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\TableOfTokensResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\TitlePageResourceGenerator;
 use ManuscriptGenerator\ResourceProcessor\ApplyCropAttributesProcessor;
@@ -89,7 +89,7 @@ final class ServiceContainer
         return new FileResourceLoader();
     }
 
-    private function resourceGenerator(): ResourceGenerator
+    private function includedResourceGenerator(): IncludedResourceGenerator
     {
         return new DelegatingResourceGenerator(
             array_merge(
@@ -121,7 +121,7 @@ final class ServiceContainer
     private function markuaNodeVisitors(): array
     {
         $nodeVisitors = [
-            new GenerateIncludedResourceNodeVisitor($this->resourceGenerator()),
+            new GenerateIncludedResourceNodeVisitor($this->includedResourceGenerator()),
             new UseFilenameAsCaptionNodeVisitor(),
             new InlineIncludedMarkdownFilesNodeVisitor($this->resourceLoader(), $this->markuaLoader()),
             new InlineIncludedResourcesNodeVisitor($this->resourceLoader()),

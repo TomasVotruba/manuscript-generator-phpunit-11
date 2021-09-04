@@ -20,20 +20,18 @@ final class TableOfTokensResourceGenerator implements CacheableResourceGenerator
 
     public function sourcePathForResource(IncludedResource $resource): ExistingFile
     {
-        $script = $resource->attributes->get('script');
+        $script = $resource->attributes->get('source');
         Assertion::string($script);
 
-        return ExistingFile::fromPathname($resource->includedFromFile()->directory() . '/' . $script);
+        return ExistingFile::fromPathname($resource->includedFromFile()->containingDirectory() . '/' . $script);
     }
 
-    public function generateResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource, Source $source): string
     {
         $phpFile = $this->sourcePathForResource($resource);
 
         /** @var PhpToken[] $allTokens */
         $allTokens = PhpToken::tokenize($phpFile->contents());
-
-        $resource->attributes->remove('script');
 
         return $this->printTokens($allTokens);
     }

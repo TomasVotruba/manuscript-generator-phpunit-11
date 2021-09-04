@@ -6,9 +6,7 @@ namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 
-interface ResourceGenerator
+interface IncludedResourceGenerator
 {
-    public function name(): string;
-
-    public function generateResource(IncludedResource $resource, Source $source): string;
+    public function generateResource(IncludedResource $resource): void;
 }

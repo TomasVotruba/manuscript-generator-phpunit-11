@@ -10,7 +10,7 @@ use ManuscriptGenerator\FileOperations\Filesystem;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use Psr\Log\LoggerInterface;
 
-final class DelegatingResourceGenerator implements ResourceGenerator
+final class DelegatingResourceGenerator implements IncludedResourceGenerator
 {
     /**
      * @param array<ResourceGenerator> $resourceGenerators
@@ -23,13 +23,7 @@ final class DelegatingResourceGenerator implements ResourceGenerator
     ) {
     }
 
-    public function name(): string
-    {
-        // @TODO reconsider type hierarchy: this method makes no sense here
-        return 'delegating';
-    }
-
-    public function generateResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource): void
     {
         $resourceGenerator = $this->getResourceGeneratorFor($resource);
         $expectedPath = $resource->expectedFilePathname();
@@ -42,19 +36,19 @@ final class DelegatingResourceGenerator implements ResourceGenerator
                 $this->logger->debug('Generated resource {link} was still fresh', [
                     'link' => $resource->link,
                 ]);
-
-                return $this->filesystem->getContents($expectedPath);
             }
         }
 
-        $generatedResource = $resourceGenerator->generateResource($resource);
+        // @TODO deal with null
+        $source = new Source($resource->includedFromFile()->containingDirectory() . '/' . $resource->attributes->get(
+            'source'
+        ));
+        $generatedResource = $resourceGenerator->generateResource($resource, $source);
         $this->filesystem->putContents($expectedPath, $generatedResource);
 
         $this->logger->info('Generated resource {link}', [
             'link' => $resource->link,
         ]);
-
-        return $generatedResource;
     }
 
     private function getResourceGeneratorFor(IncludedResource $includedResource): ResourceGenerator

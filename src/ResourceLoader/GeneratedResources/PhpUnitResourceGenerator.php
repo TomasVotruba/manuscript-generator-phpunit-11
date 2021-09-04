@@ -25,7 +25,7 @@ final class PhpUnitResourceGenerator implements CacheableResourceGenerator
         return dirname($resource->expectedFilePathname());
     }
 
-    public function generateResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource, Source $source): string
     {
         return $this->getOutputOfPhpUnitRun($this->sourcePathForResource($resource));
     }

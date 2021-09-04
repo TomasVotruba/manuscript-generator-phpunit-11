@@ -26,7 +26,7 @@ final class DrawioResourceGenerator implements CacheableResourceGenerator
         return str_replace(self::DRAWIO_PNG_SUFFIX, '.drawio', $resource->expectedFilePathname());
     }
 
-    public function generateResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource, Source $source): string
     {
         if (! is_dir($this->tmpDir)) {
             mkdir($this->tmpDir, 0777, true);

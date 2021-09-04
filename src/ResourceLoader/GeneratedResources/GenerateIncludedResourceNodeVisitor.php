@@ -11,7 +11,7 @@ use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
 final class GenerateIncludedResourceNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
-        private ResourceGenerator $resourceGenerator
+        private IncludedResourceGenerator $includedResourceGenerator
     ) {
     }
 
@@ -26,9 +26,10 @@ final class GenerateIncludedResourceNodeVisitor extends AbstractNodeVisitor
             return null;
         }
 
-        $this->resourceGenerator->generateResource($node);
+        $this->includedResourceGenerator->generateResource($node);
 
         $node->attributes->remove('generator');
+        $node->attributes->remove('source');
 
         return null;
     }

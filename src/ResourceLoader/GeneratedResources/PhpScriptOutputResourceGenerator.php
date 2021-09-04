@@ -25,23 +25,19 @@ final class PhpScriptOutputResourceGenerator implements CacheableResourceGenerat
     public function sourcePathForResource(IncludedResource $resource): ExistingFile
     {
         // @TODO add getter for required attribute
-        $script = $resource->attributes->get('script');
+        $script = $resource->attributes->get('source');
         Assertion::string($script);
 
-        return ExistingFile::fromPathname($resource->includedFromFile()->directory() . '/' . $script);
+        return ExistingFile::fromPathname($resource->includedFromFile()->containingDirectory() . '/' . $script);
     }
 
-    public function generateResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource, Source $source): string
     {
-        $scriptFile = $this->sourcePathForResource($resource);
+        $this->dependenciesInstaller->install($source->file()->containingDirectory());
 
-        $this->dependenciesInstaller->install($scriptFile->directory());
-
-        $process = new Process(['php', $scriptFile->basename()], $scriptFile->directory());
+        $process = new Process(['php', $source->file()->basename()], $source->file()->containingDirectory());
 
         $result = $process->run();
-
-        $resource->attributes->remove('script');
 
         return $result->standardAndErrorOutputCombined();
     }
@@ -50,6 +46,9 @@ final class PhpScriptOutputResourceGenerator implements CacheableResourceGenerat
         IncludedResource $resource,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofDirectory($this->sourcePathForResource($resource)->directory());
+        return $determineLastModifiedTimestamp->ofDirectory(
+            $this->sourcePathForResource($resource)
+                ->containingDirectory()
+        );
     }
 }

@@ -25,7 +25,7 @@ final class RectorOutputResourceLoader implements CacheableResourceGenerator
         return dirname($resource->expectedFilePathname());
     }
 
-    public function generateResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource, Source $source): string
     {
         return $this->getOutputOfRectorRun($this->sourcePathForResource($resource));
     }

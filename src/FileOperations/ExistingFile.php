@@ -41,7 +41,7 @@ final class ExistingFile
         return $this->pathname;
     }
 
-    public function directory(): string
+    public function containingDirectory(): string
     {
         return dirname($this->pathname);
     }
