@@ -20,27 +20,9 @@ final class PhpUnitResourceGenerator implements ResourceGenerator
         return 'phpunit-output';
     }
 
-    public function sourcePathForResource(IncludedResource $resource): string
-    {
-        return dirname($resource->expectedFilePathname());
-    }
-
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        return $this->getOutputOfPhpUnitRun($this->sourcePathForResource($resource));
-    }
-
-    public function sourceLastModified(
-        IncludedResource $resource,
-        Source $source,
-        DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
-    ): int {
-        return $determineLastModifiedTimestamp->ofDirectory($this->sourcePathForResource($resource));
-    }
-
-    private function getOutputOfPhpUnitRun(string $workingDir): string
-    {
-        $this->dependenciesInstaller->install($workingDir);
+        $this->dependenciesInstaller->install($source->directory()->toString());
 
         $process = new Process(
             [
@@ -49,10 +31,19 @@ final class PhpUnitResourceGenerator implements ResourceGenerator
                 'LeanBookTools\\PHPUnit\\CleanerResultPrinter',
                 '--do-not-cache-result',
             ],
-            $workingDir
+            $source->directory()
+                ->toString()
         );
         $result = $process->run();
 
         return $result->standardAndErrorOutputCombined();
+    }
+
+    public function sourceLastModified(
+        IncludedResource $resource,
+        Source $source,
+        DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
+    ): int {
+        return $determineLastModifiedTimestamp->ofDirectory($source->directory()->toString());
     }
 }

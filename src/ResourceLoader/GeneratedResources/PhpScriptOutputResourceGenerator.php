@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
-use Assert\Assertion;
 use ManuscriptGenerator\Dependencies\DependenciesInstaller;
-use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 
@@ -20,15 +18,6 @@ final class PhpScriptOutputResourceGenerator implements ResourceGenerator
     public function name(): string
     {
         return 'php_script_output';
-    }
-
-    public function sourcePathForResource(IncludedResource $resource): ExistingFile
-    {
-        // @TODO add getter for required attribute
-        $script = $resource->attributes->get('source');
-        Assertion::string($script);
-
-        return ExistingFile::fromPathname($resource->includedFromFile()->containingDirectory() . '/' . $script);
     }
 
     public function generateResource(IncludedResource $resource, Source $source): string
@@ -47,9 +36,6 @@ final class PhpScriptOutputResourceGenerator implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofDirectory(
-            $this->sourcePathForResource($resource)
-                ->containingDirectory()
-        );
+        return $determineLastModifiedTimestamp->ofDirectory($source->file()->containingDirectory());
     }
 }

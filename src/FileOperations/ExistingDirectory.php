@@ -12,7 +12,7 @@ final class ExistingDirectory
 
     private function __construct(string $directory)
     {
-        if (! is_file($directory)) {
+        if (! is_dir($directory)) {
             throw new RuntimeException('Expected this directory to exist: ' . $directory);
         }
 
