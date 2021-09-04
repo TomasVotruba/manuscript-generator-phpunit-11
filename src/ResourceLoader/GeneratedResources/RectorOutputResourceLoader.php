@@ -20,14 +20,14 @@ final class RectorOutputResourceLoader implements ResourceGenerator
         return 'rector_output';
     }
 
-    public function sourcePathForResource(IncludedResource $resource): string
-    {
-        return dirname($resource->expectedFilePathname());
-    }
-
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        return $this->getOutputOfRectorRun($this->sourcePathForResource($resource));
+        $this->dependenciesInstaller->install($source->directory()->toString());
+
+        $process = new Process(['vendor/bin/rector', 'process', '--dry-run'], $source->directory()->toString());
+        $result = $process->run();
+
+        return $result->standardOutput();
     }
 
     public function sourceLastModified(
@@ -35,16 +35,6 @@ final class RectorOutputResourceLoader implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofDirectory($this->sourcePathForResource($resource));
-    }
-
-    private function getOutputOfRectorRun(string $workingDir): string
-    {
-        $this->dependenciesInstaller->install($workingDir);
-
-        $process = new Process(['vendor/bin/rector', 'process', '--dry-run'], $workingDir);
-        $result = $process->run();
-
-        return $result->standardOutput();
+        return $determineLastModifiedTimestamp->ofDirectory($source->directory()->toString());
     }
 }

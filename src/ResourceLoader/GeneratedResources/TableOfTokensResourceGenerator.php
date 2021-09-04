@@ -4,34 +4,20 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
-use Assert\Assertion;
-use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use PhpToken;
 
 final class TableOfTokensResourceGenerator implements ResourceGenerator
 {
-    public const FILE_SUFFIX = '.table_of_tokens.md';
-
     public function name(): string
     {
         return 'table_of_tokens';
     }
 
-    public function sourcePathForResource(IncludedResource $resource): ExistingFile
-    {
-        $script = $resource->attributes->get('source');
-        Assertion::string($script);
-
-        return ExistingFile::fromPathname($resource->includedFromFile()->containingDirectory() . '/' . $script);
-    }
-
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        $phpFile = $this->sourcePathForResource($resource);
-
         /** @var PhpToken[] $allTokens */
-        $allTokens = PhpToken::tokenize($phpFile->contents());
+        $allTokens = PhpToken::tokenize($source->file()->contents());
 
         return $this->printTokens($allTokens);
     }
@@ -41,7 +27,7 @@ final class TableOfTokensResourceGenerator implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource)->pathname());
+        return $determineLastModifiedTimestamp->ofFile($source->file()->pathname());
     }
 
     /**

@@ -1,4 +1,4 @@
-{generator: phpunit-output, source: tests}
+{generator: phpunit-output, source: tests/}
 ![](tests/phpunit-output.txt)
 
 {generator: table_of_tokens, source: tokens/hello_world.php}
@@ -16,5 +16,5 @@
 {generator: copy_from_vendor, source: vendor/symfony/event-dispatcher-contracts/EventDispatcherInterface.php}
 ![`EventDispatcherInterface`](EventDispatcherInterface.php)
 
-{generator: rector_output}
+{generator: rector_output, source: rector/}
 ![](rector/rector-output.diff)
