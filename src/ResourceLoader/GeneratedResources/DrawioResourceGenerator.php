@@ -29,7 +29,6 @@ final class DrawioResourceGenerator implements ResourceGenerator
     public function generateResource(IncludedResource $resource): string
     {
         if (! is_dir($this->tmpDir)) {
-            // @TODO introduce WritableDir "VO" for this
             mkdir($this->tmpDir, 0777, true);
         }
 

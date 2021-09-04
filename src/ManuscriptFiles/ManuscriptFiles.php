@@ -41,7 +41,6 @@ final class ManuscriptFiles
 
     public function dumpTo(string $targetDir): void
     {
-        // @TODO use our own Filesystem for this stuff?
         $filesystem = new Filesystem();
         $filesystem->remove($targetDir);
         $filesystem->mkdir($targetDir);

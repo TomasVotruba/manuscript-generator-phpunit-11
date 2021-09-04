@@ -20,8 +20,6 @@ final class ExternalLinkCollector
     {
         $lines = array_filter(explode("\n", $string));
 
-        // @TODO use Parsica :)
-
         return new self(
             array_map(
                 function (string $line): ExternalLink {
