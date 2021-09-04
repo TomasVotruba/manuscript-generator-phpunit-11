@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-namespace ManuscriptGenerator\ResourceLoader\GeneratedResources\PHPUnit;
+namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
 use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\CacheableResourceGenerator;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\DetermineLastModifiedTimestamp;
 
 final class PhpUnitResourceGenerator implements CacheableResourceGenerator
 {
