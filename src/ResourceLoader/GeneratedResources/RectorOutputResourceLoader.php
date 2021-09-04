@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
+use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
-use function str_ends_with;
 
-final class RectorOutputResourceLoader implements ResourceGenerator
+final class RectorOutputResourceLoader implements CacheableResourceGenerator
 {
-    public function supportsResource(IncludedResource $resource): bool
+    public function __construct(
+        private DependenciesInstaller $dependenciesInstaller
+    ) {
+    }
+
+    public function name(): string
     {
-        return str_ends_with($resource->link, 'rector-output.diff');
+        return 'rector_output';
     }
 
     public function sourcePathForResource(IncludedResource $resource): string
@@ -34,6 +39,8 @@ final class RectorOutputResourceLoader implements ResourceGenerator
 
     private function getOutputOfRectorRun(string $workingDir): string
     {
+        $this->dependenciesInstaller->install($workingDir);
+
         $process = new Process(['vendor/bin/rector', 'process', '--dry-run'], $workingDir);
         $result = $process->run();
 

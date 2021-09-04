@@ -4,34 +4,44 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
+use Assert\Assertion;
+use ManuscriptGenerator\Dependencies\DependenciesInstaller;
+use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
-use SplFileInfo;
 
-final class PhpScriptOutputResourceGenerator implements ResourceGenerator
+final class PhpScriptOutputResourceGenerator implements CacheableResourceGenerator
 {
-    public const PHP_SCRIPT_OUTPUT_TXT = '.php_script_output.txt';
-
-    public function supportsResource(IncludedResource $resource): bool
-    {
-        return str_ends_with($resource->link, self::PHP_SCRIPT_OUTPUT_TXT);
+    public function __construct(
+        private DependenciesInstaller $dependenciesInstaller
+    ) {
     }
 
-    public function sourcePathForResource(IncludedResource $resource): string
+    public function name(): string
     {
-        return str_replace(self::PHP_SCRIPT_OUTPUT_TXT, '.php', $resource->expectedFilePathname());
+        return 'php_script_output';
+    }
+
+    public function sourcePathForResource(IncludedResource $resource): ExistingFile
+    {
+        // @TODO add getter for required attribute
+        $script = $resource->attributes->get('script');
+        Assertion::string($script);
+
+        return ExistingFile::fromPathname($resource->includedFromFile()->directory() . '/' . $script);
     }
 
     public function generateResource(IncludedResource $resource): string
     {
-        $scriptFile = new SplFileInfo($this->sourcePathForResource($resource));
+        $scriptFile = $this->sourcePathForResource($resource);
 
-        $scriptFileName = $scriptFile->getBasename();
-        $workingDir = realpath($scriptFile->getPath());
-        assert(is_string($workingDir));
+        $this->dependenciesInstaller->install($scriptFile->directory());
 
-        $process = new Process(['php', $scriptFileName], $workingDir);
+        $process = new Process(['php', $scriptFile->basename()], $scriptFile->directory());
+
         $result = $process->run();
+
+        $resource->attributes->remove('script');
 
         return $result->standardAndErrorOutputCombined();
     }
@@ -40,6 +50,6 @@ final class PhpScriptOutputResourceGenerator implements ResourceGenerator
         IncludedResource $resource,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofDirectory(dirname($this->sourcePathForResource($resource)));
+        return $determineLastModifiedTimestamp->ofDirectory($this->sourcePathForResource($resource)->directory());
     }
 }

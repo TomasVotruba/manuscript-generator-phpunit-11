@@ -5,23 +5,16 @@ declare(strict_types=1);
 use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\AbstractOutputBufferResourceGenerator;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\CacheableResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DetermineLastModifiedTimestamp;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
 
 $configuration = BookProjectConfiguration::usingDefaults();
 
 $configuration->addResourceGenerator(
     new class() extends AbstractOutputBufferResourceGenerator {
-        private const EXPECTED_SUFFIX = '.buffered-output.txt';
-
-        public function supportsResource(IncludedResource $resource): bool
+        public function name(): string
         {
-            return str_ends_with($resource->link, self::EXPECTED_SUFFIX);
-        }
-
-        public function sourcePathForResource(IncludedResource $resource): string
-        {
-            return __FILE__;
+            return 'buffered_output';
         }
 
         public function sourceLastModified(
@@ -39,17 +32,10 @@ $configuration->addResourceGenerator(
 );
 
 $configuration->addResourceGenerator(
-    new class() implements ResourceGenerator {
-        private const EXPECTED_SUFFIX = '.diagram.png';
-
-        public function supportsResource(IncludedResource $resource): bool
+    new class() implements CacheableResourceGenerator {
+        public function name(): string
         {
-            return str_ends_with($resource->link, self::EXPECTED_SUFFIX);
-        }
-
-        public function sourcePathForResource(IncludedResource $resource): string
-        {
-            return __FILE__;
+            return 'diagram';
         }
 
         public function generateResource(IncludedResource $resource): string

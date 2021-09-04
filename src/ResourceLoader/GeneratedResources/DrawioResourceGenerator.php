@@ -7,7 +7,7 @@ namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 
-final class DrawioResourceGenerator implements ResourceGenerator
+final class DrawioResourceGenerator implements CacheableResourceGenerator
 {
     private const DRAWIO_PNG_SUFFIX = '.drawio.png';
 
@@ -16,9 +16,9 @@ final class DrawioResourceGenerator implements ResourceGenerator
     ) {
     }
 
-    public function supportsResource(IncludedResource $resource): bool
+    public function name(): string
     {
-        return str_ends_with($resource->link, self::DRAWIO_PNG_SUFFIX);
+        return 'drawio';
     }
 
     public function sourcePathForResource(IncludedResource $resource): string

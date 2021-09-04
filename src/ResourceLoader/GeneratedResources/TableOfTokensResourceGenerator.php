@@ -4,30 +4,36 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
+use Assert\Assertion;
 use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use PhpToken;
 
-final class TableOfTokensResourceGenerator implements ResourceGenerator
+final class TableOfTokensResourceGenerator implements CacheableResourceGenerator
 {
     public const FILE_SUFFIX = '.table_of_tokens.md';
 
-    public function supportsResource(IncludedResource $resource): bool
+    public function name(): string
     {
-        return str_ends_with($resource->link, self::FILE_SUFFIX);
+        return 'table_of_tokens';
     }
 
-    public function sourcePathForResource(IncludedResource $resource): string
+    public function sourcePathForResource(IncludedResource $resource): ExistingFile
     {
-        return str_replace(self::FILE_SUFFIX, '.php', $resource->expectedFilePathname());
+        $script = $resource->attributes->get('script');
+        Assertion::string($script);
+
+        return ExistingFile::fromPathname($resource->includedFromFile()->directory() . '/' . $script);
     }
 
     public function generateResource(IncludedResource $resource): string
     {
-        $phpFile = ExistingFile::fromPathname($this->sourcePathForResource($resource));
+        $phpFile = $this->sourcePathForResource($resource);
 
         /** @var PhpToken[] $allTokens */
         $allTokens = PhpToken::tokenize($phpFile->contents());
+
+        $resource->attributes->remove('script');
 
         return $this->printTokens($allTokens);
     }
@@ -36,7 +42,7 @@ final class TableOfTokensResourceGenerator implements ResourceGenerator
         IncludedResource $resource,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource));
+        return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource)->pathname());
     }
 
     /**

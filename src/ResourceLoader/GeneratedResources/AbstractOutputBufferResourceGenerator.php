@@ -6,7 +6,7 @@ namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 
-abstract class AbstractOutputBufferResourceGenerator implements ResourceGenerator
+abstract class AbstractOutputBufferResourceGenerator implements CacheableResourceGenerator
 {
     public function generateResource(IncludedResource $resource): string
     {

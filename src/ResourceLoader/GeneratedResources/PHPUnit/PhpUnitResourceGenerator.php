@@ -4,17 +4,22 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources\PHPUnit;
 
+use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\CacheableResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DetermineLastModifiedTimestamp;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
-use function str_ends_with;
 
-final class PhpUnitResourceGenerator implements ResourceGenerator
+final class PhpUnitResourceGenerator implements CacheableResourceGenerator
 {
-    public function supportsResource(IncludedResource $resource): bool
+    public function __construct(
+        private DependenciesInstaller $dependenciesInstaller
+    ) {
+    }
+
+    public function name(): string
     {
-        return str_ends_with($resource->link, 'phpunit-output.txt');
+        return 'phpunit-output';
     }
 
     public function sourcePathForResource(IncludedResource $resource): string
@@ -36,6 +41,8 @@ final class PhpUnitResourceGenerator implements ResourceGenerator
 
     private function getOutputOfPhpUnitRun(string $workingDir): string
     {
+        $this->dependenciesInstaller->install($workingDir);
+
         $process = new Process(
             [
                 'vendor/bin/phpunit',

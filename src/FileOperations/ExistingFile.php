@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\FileOperations;
 
 use RuntimeException;
+use SplFileInfo;
 
 final class ExistingFile
 {
@@ -53,5 +54,12 @@ final class ExistingFile
         }
 
         return $this->pathname;
+    }
+
+    public function basename(): string
+    {
+        $fileInfo = (new SplFileInfo($this->pathname));
+
+        return $fileInfo->getBasename();
     }
 }

@@ -8,20 +8,18 @@ use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 use RuntimeException;
 
-final class TitlePageResourceGenerator implements ResourceGenerator
+final class TitlePageResourceGenerator implements CacheableResourceGenerator
 {
     private const GIMP_SOURCE_FILE_NAME = 'title_page.xcf';
-
-    private const PNG_TARGET_FILE = 'title_page.png';
 
     public function __construct(
         private string $tmpDir
     ) {
     }
 
-    public function supportsResource(IncludedResource $resource): bool
+    public function name(): string
     {
-        return $resource->link === self::PNG_TARGET_FILE;
+        return 'title_page';
     }
 
     public function sourcePathForResource(IncludedResource $resource): string

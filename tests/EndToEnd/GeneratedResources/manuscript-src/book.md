@@ -1,13 +1,20 @@
+{generator: phpunit-output}
 ![](tests/phpunit-output.txt)
 
+{generator: table_of_tokens, script: tokens/hello_world.php}
 ![](tokens/hello_world.table_of_tokens.md)
 
+{generator: php_script_output, script: php_script/script.php}
 ![](php_script/script.php_script_output.txt)
 
+{generator: buffered_output}
 ![](example.buffered-output.txt)
 
+{generator: diagram}
 ![](images/image.diagram.png)
 
-![`EventDispatcherInterface`](copy-from-vendor/symfony/event-dispatcher-contracts/EventDispatcherInterface.php)
+{generator: copy_from_vendor}
+![`EventDispatcherInterface`](vendor/symfony/event-dispatcher-contracts/EventDispatcherInterface.php)
 
+{generator: rector_output}
 ![](rector/rector-output.diff)

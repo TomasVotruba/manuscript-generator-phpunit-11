@@ -54,4 +54,9 @@ final class IncludedResource extends AbstractNode
 
         return 'guess';
     }
+
+    public function debugInfo(): string
+    {
+        return sprintf('resource %s included from file %s', $this->link, $this->includedFromFile() ->pathname());
+    }
 }

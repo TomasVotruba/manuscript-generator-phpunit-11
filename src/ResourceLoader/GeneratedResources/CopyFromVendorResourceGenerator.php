@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
-use function str_starts_with;
 
-final class CopyFromVendorResourceGenerator implements ResourceGenerator
+final class CopyFromVendorResourceGenerator implements CacheableResourceGenerator
 {
     private const EXPECTED_PREFIX = 'copy-from-vendor/';
 
-    public function supportsResource(IncludedResource $resource): bool
+    public function name(): string
     {
-        return str_starts_with($resource->link, self::EXPECTED_PREFIX);
+        return 'copy_from_vendor';
     }
 
     public function sourcePathForResource(IncludedResource $resource): string
