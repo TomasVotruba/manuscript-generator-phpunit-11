@@ -13,8 +13,8 @@
 {generator: diagram}
 ![](images/image.diagram.png)
 
-{generator: copy_from_vendor}
-![`EventDispatcherInterface`](vendor/symfony/event-dispatcher-contracts/EventDispatcherInterface.php)
+{generator: copy_from_vendor, source: vendor/symfony/event-dispatcher-contracts/EventDispatcherInterface.php}
+![`EventDispatcherInterface`](EventDispatcherInterface.php)
 
 {generator: rector_output}
 ![](rector/rector-output.diff)

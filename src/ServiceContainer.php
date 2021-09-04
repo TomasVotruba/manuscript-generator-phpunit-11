@@ -95,7 +95,7 @@ final class ServiceContainer
             array_merge(
                 $this->configuration->additionalResourceGenerators(),
                 [
-                    new CopyFromVendorResourceGenerator(),
+                    new CopyFromVendorResourceGenerator($this->dependenciesInstaller()),
                     new PhpUnitResourceGenerator($this->dependenciesInstaller()),
                     new RectorOutputResourceLoader($this->dependenciesInstaller()),
                     new TableOfTokensResourceGenerator(),

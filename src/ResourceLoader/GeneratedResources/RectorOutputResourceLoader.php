@@ -32,6 +32,7 @@ final class RectorOutputResourceLoader implements ResourceGenerator
 
     public function sourceLastModified(
         IncludedResource $resource,
+        Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
         return $determineLastModifiedTimestamp->ofDirectory($this->sourcePathForResource($resource));

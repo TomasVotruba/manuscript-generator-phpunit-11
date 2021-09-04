@@ -20,6 +20,7 @@ $configuration->addResourceGenerator(
 
         public function sourceLastModified(
             IncludedResource $resource,
+            Source $source,
             DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
         ): int {
             return 0;
@@ -46,6 +47,7 @@ $configuration->addResourceGenerator(
 
         public function sourceLastModified(
             IncludedResource $resource,
+            Source $source,
             DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
         ): int {
             return 0;

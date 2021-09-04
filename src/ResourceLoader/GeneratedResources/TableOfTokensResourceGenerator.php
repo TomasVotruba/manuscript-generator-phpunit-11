@@ -38,6 +38,7 @@ final class TableOfTokensResourceGenerator implements ResourceGenerator
 
     public function sourceLastModified(
         IncludedResource $resource,
+        Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
         return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource)->pathname());

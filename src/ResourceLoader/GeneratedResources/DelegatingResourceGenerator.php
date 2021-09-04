@@ -26,10 +26,17 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
     public function generateResource(IncludedResource $resource): void
     {
         $resourceGenerator = $this->getResourceGeneratorFor($resource);
+
         $expectedPath = $resource->expectedFilePathname();
 
+        // @TODO deal with null
+        $source = new Source(
+            $resource->includedFromFile()
+                ->containingDirectory() . '/' . $resource->attributes->get('source')
+        );
+
         if (is_file($expectedPath)
-            && $resourceGenerator->sourceLastModified($resource, $this->determineLastModifiedTimestamp)
+            && $resourceGenerator->sourceLastModified($resource, $source, $this->determineLastModifiedTimestamp)
             <= ((int) filemtime($expectedPath))
         ) {
             $this->logger->debug('Generated resource {link} was still fresh', [
@@ -38,10 +45,6 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
             return;
         }
 
-        // @TODO deal with null
-        $source = new Source($resource->includedFromFile()->containingDirectory() . '/' . $resource->attributes->get(
-            'source'
-        ));
         $generatedResource = $resourceGenerator->generateResource($resource, $source);
         $this->filesystem->putContents($expectedPath, $generatedResource);
 

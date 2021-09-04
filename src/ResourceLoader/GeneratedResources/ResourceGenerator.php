@@ -14,6 +14,7 @@ interface ResourceGenerator
 
     public function sourceLastModified(
         IncludedResource $resource,
+        Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int;
 }
