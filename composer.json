@@ -24,7 +24,9 @@
         "phpstan/phpstan": "^0.12.93",
         "symplify/easy-coding-standard": "^9.4.40",
         "symplify/coding-standard": "^9.4.40",
-        "rector/rector": "^0.11.40"
+        "rector/rector": "^0.11.40",
+        "phpstan/phpstan-beberlei-assert": "^0.12.6",
+        "phpstan/extension-installer": "^1.1"
     },
     "bin": ["bin/generate-manuscript"],
     "scripts": {

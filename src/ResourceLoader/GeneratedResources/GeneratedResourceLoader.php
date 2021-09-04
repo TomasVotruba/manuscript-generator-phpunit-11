@@ -41,7 +41,6 @@ final class GeneratedResourceLoader implements ResourceLoader
                 && $resourceGenerator->sourceLastModified($includedResource, $this->determineLastModifiedTimestamp)
                 <= ((int) filemtime($expectedPath))
             ) {
-                // @TODO directly call the logger
                 $this->logger->debug('Generated resource {link} was still fresh', [
                     'link' => $includedResource->link,
                 ]);
@@ -60,7 +59,6 @@ final class GeneratedResourceLoader implements ResourceLoader
             $this->dependenciesInstaller->install($directory);
 
             $generatedResource = $resourceGenerator->generateResource($includedResource);
-            // @TODO introduce a caching mechanism instead? Not sure yet
             $this->filesystem->putContents($expectedPath, $generatedResource);
 
             $this->logger->info('Generated resource {link}', [

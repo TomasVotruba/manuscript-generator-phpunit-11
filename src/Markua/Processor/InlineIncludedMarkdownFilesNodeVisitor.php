@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Markua\Processor;
 
+use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\Markua\Parser\Node;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
-use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
 use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
+use ManuscriptGenerator\Markua\Processor\Meta\MetaAttributes;
 use ManuscriptGenerator\ResourceLoader\ResourceLoader;
 
 final class InlineIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
         private ResourceLoader $resourceLoader,
-        private SimpleMarkuaParser $markuaParser
+        private MarkuaLoader $markuaLoader
     ) {
     }
 
@@ -28,12 +29,21 @@ final class InlineIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor
             // we'll take the existence of attributes as a hint that the writer want to show the contents of the file as it is
             return null;
         }
-        if (str_ends_with($node->link, 'md')) {
-            return $this->markuaParser->parseDocument($this->resourceLoader->load($node)->contents());
+
+        if (str_ends_with($node->link, 'md') || str_ends_with($node->link, 'markdown')) {
+            if (is_file($node->expectedFilePathname())) {
+                $markuaFile = ExistingFile::fromPathname($node->expectedFilePathname());
+                return $this->markuaLoader->load($markuaFile->contents(), $markuaFile);
+            }
+
+            // The included file inherits the file attribute of the current node
+            return $this->markuaLoader->load(
+                $this->resourceLoader->load($node)
+                    ->contents(),
+                $node->getAttribute(MetaAttributes::FILE)
+            );
         }
-        if (str_ends_with($node->link, 'markdown')) {
-            return $this->markuaParser->parseDocument($this->resourceLoader->load($node)->contents());
-        }
+
         return null;
     }
 }

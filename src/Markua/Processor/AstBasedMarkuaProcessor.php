@@ -6,13 +6,11 @@ namespace ManuscriptGenerator\Markua\Processor;
 
 use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
-use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeTraverser;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeVisitor;
 use ManuscriptGenerator\Markua\Printer\MarkuaPrinter;
-use ManuscriptGenerator\Markua\Processor\Meta\AddFileAttributeNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\Meta\AddManuscriptFilesNodeVisitor;
-use Parsica\Parsica\ParserHasFailed;
+use ManuscriptGenerator\Markua\Processor\Meta\AddTitlePageResourceNodeVisitor;
 
 final class AstBasedMarkuaProcessor implements MarkuaProcessor
 {
@@ -21,26 +19,21 @@ final class AstBasedMarkuaProcessor implements MarkuaProcessor
      */
     public function __construct(
         private array $nodeVisitors,
-        private SimpleMarkuaParser $parser,
+        private MarkuaLoader $markuaLoader,
         private MarkuaPrinter $markuaPrinter
     ) {
     }
 
-    public function process(ExistingFile $markuaFile, string $markua, ManuscriptFiles $manuscriptFiles): string
+    public function process(ExistingFile $markuaFile, ManuscriptFiles $manuscriptFiles): string
     {
-        try {
-            $document = $this->parser->parseDocument($markua);
-        } catch (ParserHasFailed $exception) {
-            throw FailedToProcessMarkua::becauseItCouldNotBeParsed($markuaFile->pathname(), $markua, $exception);
-        }
+        $document = $this->markuaLoader->load($markuaFile->contents(), $markuaFile);
 
         $nodeTraverser = new NodeTraverser(
             array_merge([
-                new AddFileAttributeNodeVisitor($markuaFile),
                 new AddManuscriptFilesNodeVisitor($manuscriptFiles),
+                new AddTitlePageResourceNodeVisitor(),
             ], $this->nodeVisitors)
         );
-
         $result = $nodeTraverser->traverseDocument($document);
 
         return $this->markuaPrinter->printDocument($result);
