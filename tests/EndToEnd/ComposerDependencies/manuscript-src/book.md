@@ -1,2 +1,2 @@
-{generator: phpunit-output, source: tests/}
+{generator: phpunit-output}
 ![](tests/phpunit-output.txt)

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Markua\Parser\Node;
 
 use Assert\Assertion;
+use ManuscriptGenerator\FileOperations\Directory;
 use ManuscriptGenerator\FileOperations\ExistingFile;
+use ManuscriptGenerator\FileOperations\File;
 use ManuscriptGenerator\Markua\Processor\Meta\MetaAttributes;
 
 final class IncludedResource extends AbstractNode
@@ -31,6 +33,11 @@ final class IncludedResource extends AbstractNode
             ->containingDirectory()
             ->appendPath($this->link)
             ->pathname();
+    }
+
+    public function directoryOfExpectedFile(): Directory
+    {
+        return File::fromPathname($this->expectedFilePathname())->containingDirectory();
     }
 
     public function includedFromFile(): ExistingFile

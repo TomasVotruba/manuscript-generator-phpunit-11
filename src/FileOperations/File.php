@@ -58,4 +58,9 @@ final class File
             unlink($this->pathname);
         }
     }
+
+    public function containingDirectory(): Directory
+    {
+        return Directory::fromPathname(dirname($this->pathname));
+    }
 }

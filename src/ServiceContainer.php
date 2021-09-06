@@ -31,7 +31,7 @@ use ManuscriptGenerator\ResourceLoader\GeneratedResources\GenerateIncludedResour
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\IncludedResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpScriptOutputResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpUnitResourceGenerator;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\RectorOutputResourceLoader;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\RectorOutputResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\TableOfTokensResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\TitlePageResourceGenerator;
 use ManuscriptGenerator\ResourceProcessor\ApplyCropAttributesProcessor;
@@ -98,7 +98,7 @@ final class ServiceContainer
                 [
                     new CopyFromVendorResourceGenerator($this->dependenciesInstaller()),
                     new PhpUnitResourceGenerator($this->dependenciesInstaller()),
-                    new RectorOutputResourceLoader($this->dependenciesInstaller()),
+                    new RectorOutputResourceGenerator($this->dependenciesInstaller()),
                     new TableOfTokensResourceGenerator(),
                     new PhpScriptOutputResourceGenerator($this->dependenciesInstaller()),
                     new DrawioResourceGenerator($this->tmpDir()),
