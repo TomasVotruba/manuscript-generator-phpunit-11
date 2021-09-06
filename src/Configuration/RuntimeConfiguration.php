@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Configuration;
 
+use ManuscriptGenerator\FileOperations\Directory;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
 use ManuscriptGenerator\ResourceProcessor\ResourceProcessor;
 
@@ -62,7 +63,7 @@ final class RuntimeConfiguration
         return $this->bookProjectConfiguration->additionalResourceProcessors();
     }
 
-    public function tmpDir(): string
+    public function tmpDir(): Directory
     {
         return $this->bookProjectConfiguration->tmpDir();
     }

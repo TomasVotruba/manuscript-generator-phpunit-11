@@ -30,10 +30,7 @@ final class Filesystem
             return;
         }
 
-        $containingDir = dirname($pathname);
-        if (! is_dir($containingDir)) {
-            mkdir(dirname($pathname), 0777, true);
-        }
+        Directory::fromPathname(dirname($pathname))->create();
 
         file_put_contents($pathname, $contents);
     }

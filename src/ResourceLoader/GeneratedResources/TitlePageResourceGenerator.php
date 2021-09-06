@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
+use ManuscriptGenerator\FileOperations\Directory;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 use RuntimeException;
@@ -13,7 +14,7 @@ final class TitlePageResourceGenerator implements ResourceGenerator
     private const GIMP_SOURCE_FILE_NAME = 'title_page.xcf';
 
     public function __construct(
-        private string $tmpDir
+        private Directory $tmpDir
     ) {
     }
 
@@ -29,11 +30,8 @@ final class TitlePageResourceGenerator implements ResourceGenerator
 
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        if (! is_dir($this->tmpDir)) {
-            mkdir($this->tmpDir, 0777, true);
-        }
-
-        $tmpFilePathname = $this->tmpDir . '/' . uniqid('title_page') . '.png';
+        $tmpFilePathname = $this->tmpDir->create()
+            ->toString() . '/' . uniqid('title_page') . '.png';
 
         // Convert xcf to png
         $process = new Process(['xcf2png', $this->sourcePathForResource($resource), '-o', $tmpFilePathname]);

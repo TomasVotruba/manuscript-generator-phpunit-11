@@ -7,6 +7,7 @@ namespace ManuscriptGenerator;
 use ManuscriptGenerator\Cli\ResultPrinter;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Dependencies\ComposerDependenciesInstaller;
+use ManuscriptGenerator\FileOperations\Directory;
 use ManuscriptGenerator\FileOperations\Filesystem;
 use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeVisitor;
@@ -162,7 +163,7 @@ final class ServiceContainer
         return $nodeVisitors;
     }
 
-    private function tmpDir(): string
+    private function tmpDir(): Directory
     {
         return $this->configuration->tmpDir();
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Configuration;
 
+use ManuscriptGenerator\FileOperations\Directory;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
 use ManuscriptGenerator\ResourceProcessor\ResourceProcessor;
 
@@ -106,9 +107,9 @@ final class BookProjectConfiguration
         return $this->linkRegistryConfiguration;
     }
 
-    public function tmpDir(): string
+    public function tmpDir(): Directory
     {
-        return $this->tmpDir;
+        return Directory::fromPathname($this->tmpDir);
     }
 
     public function setTmpDir(string $tmpDir): void

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
+use ManuscriptGenerator\FileOperations\Directory;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 
 final class DrawioResourceGenerator implements ResourceGenerator
 {
     public function __construct(
-        private string $tmpDir
+        private Directory $tmpDir
     ) {
     }
 
@@ -21,11 +22,8 @@ final class DrawioResourceGenerator implements ResourceGenerator
 
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        if (! is_dir($this->tmpDir)) {
-            mkdir($this->tmpDir, 0777, true);
-        }
-
-        $tmpFilePathname = $this->tmpDir . '/' . uniqid('drawio') . '.drawio.png';
+        $tmpFilePathname = $this->tmpDir->create()
+            ->toString() . '/' . uniqid('drawio') . '.drawio.png';
 
         $process = new Process(
             [
