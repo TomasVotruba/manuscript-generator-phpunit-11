@@ -32,7 +32,13 @@ final class CopyFromVendorResourceGenerator implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $source->existingFile()
+        if (! $source->file()->exists()) {
+            // The file may only be installed once the dependency installer runs (see above)
+            return 0;
+        }
+
+        return $source->file()
+            ->existing()
             ->lastModifiedTime();
     }
 }
