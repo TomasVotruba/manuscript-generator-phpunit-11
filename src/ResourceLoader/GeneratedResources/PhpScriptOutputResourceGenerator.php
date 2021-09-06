@@ -22,9 +22,12 @@ final class PhpScriptOutputResourceGenerator implements ResourceGenerator
 
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        $this->dependenciesInstaller->install($source->file()->containingDirectory());
+        $this->dependenciesInstaller->install($source->existingFile()->containingDirectory());
 
-        $process = new Process(['php', $source->file()->basename()], $source->file()->containingDirectory());
+        $process = new Process([
+            'php',
+            $source->existingFile()->basename(),
+        ], $source->existingFile()->containingDirectory());
 
         $result = $process->run();
 
@@ -36,6 +39,6 @@ final class PhpScriptOutputResourceGenerator implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofDirectory($source->file()->containingDirectory()->toString());
+        return $determineLastModifiedTimestamp->ofDirectory($source->existingFile()->containingDirectory()->pathname());
     }
 }

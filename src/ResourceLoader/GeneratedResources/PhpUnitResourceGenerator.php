@@ -22,7 +22,7 @@ final class PhpUnitResourceGenerator implements ResourceGenerator
 
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        $this->dependenciesInstaller->install($source->directory());
+        $this->dependenciesInstaller->install($source->existingDirectory());
 
         $process = new Process(
             [
@@ -31,7 +31,7 @@ final class PhpUnitResourceGenerator implements ResourceGenerator
                 'LeanBookTools\\PHPUnit\\CleanerResultPrinter',
                 '--do-not-cache-result',
             ],
-            $source->directory()
+            $source->existingDirectory()
         );
         $result = $process->run();
 
@@ -43,6 +43,6 @@ final class PhpUnitResourceGenerator implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofDirectory($source->directory()->toString());
+        return $determineLastModifiedTimestamp->ofDirectory($source->existingDirectory()->pathname());
     }
 }

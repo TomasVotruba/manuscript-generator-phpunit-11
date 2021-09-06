@@ -23,7 +23,7 @@ final class CopyFromVendorResourceGenerator implements ResourceGenerator
     {
         $this->dependenciesInstaller->install($resource->includedFromFile()->containingDirectory());
 
-        return $source->file()
+        return $source->existingFile()
             ->getContents();
     }
 
@@ -32,6 +32,6 @@ final class CopyFromVendorResourceGenerator implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofFile($source->file()->pathname());
+        return $determineLastModifiedTimestamp->ofFile($source->existingFile()->pathname());
     }
 }

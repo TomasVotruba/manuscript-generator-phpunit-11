@@ -44,7 +44,7 @@ final class ManuscriptGenerator
             if (! $srcFile->exists()) {
                 $this->logger->warning('Skipping generation of {targetFileName} because {srcFilePath} does not exist', [
                     'targetFileName' => $targetFileName,
-                    'srcFilePath' => $srcFile->toString(),
+                    'srcFilePath' => $srcFile->pathname(),
                 ]);
 
                 continue;

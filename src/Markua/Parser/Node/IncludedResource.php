@@ -30,7 +30,7 @@ final class IncludedResource extends AbstractNode
         return $this->includedFromFile()
             ->containingDirectory()
             ->appendPath($this->link)
-            ->toString();
+            ->pathname();
     }
 
     public function includedFromFile(): ExistingFile

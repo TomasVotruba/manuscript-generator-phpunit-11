@@ -38,7 +38,7 @@ final class ExistingDirectory
         return FileOrDirectory::fromPathname(rtrim($this->directory, '/') . '/' . ltrim($append, '/'));
     }
 
-    public function toString(): string
+    public function pathname(): string
     {
         return $this->directory;
     }

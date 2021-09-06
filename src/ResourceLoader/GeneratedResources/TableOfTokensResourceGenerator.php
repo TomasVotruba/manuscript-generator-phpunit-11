@@ -17,7 +17,7 @@ final class TableOfTokensResourceGenerator implements ResourceGenerator
     public function generateResource(IncludedResource $resource, Source $source): string
     {
         /** @var PhpToken[] $allTokens */
-        $allTokens = PhpToken::tokenize($source->file()->getContents());
+        $allTokens = PhpToken::tokenize($source->existingFile()->getContents());
 
         return $this->printTokens($allTokens);
     }
@@ -27,7 +27,7 @@ final class TableOfTokensResourceGenerator implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofFile($source->file()->pathname());
+        return $determineLastModifiedTimestamp->ofFile($source->existingFile()->pathname());
     }
 
     /**

@@ -22,9 +22,9 @@ final class RectorOutputResourceLoader implements ResourceGenerator
 
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        $this->dependenciesInstaller->install($source->directory());
+        $this->dependenciesInstaller->install($source->existingDirectory());
 
-        $process = new Process(['vendor/bin/rector', 'process', '--dry-run'], $source->directory());
+        $process = new Process(['vendor/bin/rector', 'process', '--dry-run'], $source->existingDirectory());
         $result = $process->run();
 
         return $result->standardOutput();
@@ -35,6 +35,6 @@ final class RectorOutputResourceLoader implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofDirectory($source->directory()->toString());
+        return $determineLastModifiedTimestamp->ofDirectory($source->existingDirectory()->pathname());
     }
 }

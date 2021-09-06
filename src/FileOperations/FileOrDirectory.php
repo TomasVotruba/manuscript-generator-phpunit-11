@@ -26,7 +26,7 @@ final class FileOrDirectory
         return Directory::fromPathname($this->pathname);
     }
 
-    public function toString(): string
+    public function pathname(): string
     {
         return $this->pathname;
     }

@@ -35,7 +35,7 @@ final class File
         return is_file($this->pathname);
     }
 
-    public function toString(): string
+    public function pathname(): string
     {
         return $this->pathname;
     }
@@ -50,5 +50,12 @@ final class File
     {
         $this->createIfNotExists()
             ->putContents($contents);
+    }
+
+    public function unlink(): void
+    {
+        if (is_file($this->pathname)) {
+            unlink($this->pathname);
+        }
     }
 }

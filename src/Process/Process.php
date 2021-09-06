@@ -21,7 +21,7 @@ final class Process
 
     public function run(): Result
     {
-        $process = new SymfonyProcess($this->command, $this->workingDir->toString());
+        $process = new SymfonyProcess($this->command, $this->workingDir->pathname());
 
         $combinedOutput = '';
 

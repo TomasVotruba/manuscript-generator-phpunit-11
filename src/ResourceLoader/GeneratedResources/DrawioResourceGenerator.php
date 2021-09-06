@@ -25,7 +25,7 @@ final class DrawioResourceGenerator implements ResourceGenerator
     {
         $tmpFilePathname = $this->tmpDir->createIfNotExists()
             ->appendPath(uniqid('drawio') . '.drawio.png')
-            ->toString();
+            ->pathname();
 
         $process = new Process(
             [
@@ -35,7 +35,7 @@ final class DrawioResourceGenerator implements ResourceGenerator
                 '--scale=2',
                 '--output',
                 $tmpFilePathname,
-                $source->file()
+                $source->existingFile()
                     ->pathname(),
             ],
             ExistingDirectory::currentWorkingDirectory()
@@ -57,6 +57,6 @@ final class DrawioResourceGenerator implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofFile($source->file()->pathname());
+        return $determineLastModifiedTimestamp->ofFile($source->existingFile()->pathname());
     }
 }

@@ -12,8 +12,6 @@ use RuntimeException;
 
 final class TitlePageResourceGenerator implements ResourceGenerator
 {
-    private const GIMP_SOURCE_FILE_NAME = 'title_page.xcf';
-
     public function __construct(
         private Directory $tmpDir
     ) {
@@ -24,23 +22,19 @@ final class TitlePageResourceGenerator implements ResourceGenerator
         return 'title_page';
     }
 
-    public function sourcePathForResource(IncludedResource $resource): string
-    {
-        return dirname($resource->expectedFilePathname()) . '/images/cover/' . self::GIMP_SOURCE_FILE_NAME;
-    }
-
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        $tmpFilePathname = $this->tmpDir->createIfNotExists()
+        $tmpFile = $this->tmpDir->createIfNotExists()
             ->appendPath(uniqid('title_page') . '.png')
-            ->toString();
+            ->file();
 
         // Convert xcf to png
         $process = new Process([
             'xcf2png',
-            $this->sourcePathForResource($resource),
+            $source->existingFile()
+                ->pathname(),
             '-o',
-            $tmpFilePathname,
+            $tmpFile->pathname(),
         ], ExistingDirectory::currentWorkingDirectory());
         $result = $process->run();
         if (! $result->isSuccessful()) {
@@ -57,10 +51,10 @@ final class TitlePageResourceGenerator implements ResourceGenerator
         $process = new Process([
             'magick',
             'convert',
-            $tmpFilePathname,
+            $tmpFile->pathname(),
             '-resize',
             '1050x',
-            $tmpFilePathname,
+            $tmpFile->pathname(),
         ], ExistingDirectory::currentWorkingDirectory());
         $result = $process->run();
         if (! $result->isSuccessful()) {
@@ -73,8 +67,8 @@ final class TitlePageResourceGenerator implements ResourceGenerator
             );
         }
 
-        $output = (string) file_get_contents($tmpFilePathname);
-        unlink($tmpFilePathname);
+        $output = $tmpFile->getContents();
+        $tmpFile->unlink();
 
         return $output;
     }
@@ -84,6 +78,6 @@ final class TitlePageResourceGenerator implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource));
+        return $determineLastModifiedTimestamp->ofFile($source->file()->pathname());
     }
 }
