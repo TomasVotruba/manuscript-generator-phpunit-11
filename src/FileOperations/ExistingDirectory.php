@@ -42,4 +42,9 @@ final class ExistingDirectory
     {
         return $this->directory;
     }
+
+    public function tmpFile(string $prefix, string $extension): File
+    {
+        return $this->appendPath(uniqid($prefix) . '.' . ltrim($extension, '.'))->file();
+    }
 }

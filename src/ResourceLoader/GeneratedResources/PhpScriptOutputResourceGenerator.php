@@ -24,10 +24,8 @@ final class PhpScriptOutputResourceGenerator implements ResourceGenerator
     {
         $this->dependenciesInstaller->install($source->existingFile()->containingDirectory());
 
-        $process = new Process([
-            'php',
-            $source->existingFile()->basename(),
-        ], $source->existingFile()->containingDirectory());
+        $process = new Process(['php', $source->existingFile() ->basename()], $source->existingFile()
+            ->containingDirectory());
 
         $result = $process->run();
 

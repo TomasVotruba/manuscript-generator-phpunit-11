@@ -24,9 +24,7 @@ final class TitlePageResourceGenerator implements ResourceGenerator
 
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        $tmpFile = $this->tmpDir->createIfNotExists()
-            ->appendPath(uniqid('title_page') . '.png')
-            ->file();
+        $tmpFile = $this->tmpDir->tmpFile('title_page', '.png');
 
         // Convert xcf to png
         $process = new Process([

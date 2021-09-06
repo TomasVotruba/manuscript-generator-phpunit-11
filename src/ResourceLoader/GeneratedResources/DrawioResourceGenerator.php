@@ -23,9 +23,7 @@ final class DrawioResourceGenerator implements ResourceGenerator
 
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        $tmpFilePathname = $this->tmpDir->createIfNotExists()
-            ->appendPath(uniqid('drawio') . '.drawio.png')
-            ->pathname();
+        $tmpFile = $this->tmpDir->tmpFile('drawio', '.png');
 
         $process = new Process(
             [
@@ -34,7 +32,7 @@ final class DrawioResourceGenerator implements ResourceGenerator
                 '--format=png',
                 '--scale=2',
                 '--output',
-                $tmpFilePathname,
+                $tmpFile->pathname(),
                 $source->existingFile()
                     ->pathname(),
             ],
@@ -46,8 +44,8 @@ final class DrawioResourceGenerator implements ResourceGenerator
             throw CouldNotGenerateResource::becauseAnExternalProcessWasUnsuccessful($result);
         }
 
-        $generatedContents = (string) file_get_contents($tmpFilePathname);
-        unlink($tmpFilePathname);
+        $generatedContents = $tmpFile->getContents();
+        $tmpFile->unlink();
 
         return $generatedContents;
     }

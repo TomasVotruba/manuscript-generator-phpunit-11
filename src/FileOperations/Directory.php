@@ -32,4 +32,10 @@ final class Directory
     {
         return ExistingDirectory::fromPathname($this->pathname);
     }
+
+    public function tmpFile(string $prefix, string $extension): File
+    {
+        return $this->createIfNotExists()
+            ->tmpFile($prefix, $extension);
+    }
 }
