@@ -29,7 +29,6 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
 
         $expectedPath = $resource->expectedFilePathname();
 
-        // @TODO deal with null
         $source = new Source(
             $resource->includedFromFile()
                 ->containingDirectory() . '/' . $resource->attributes->get('source')
