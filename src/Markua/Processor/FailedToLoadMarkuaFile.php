@@ -17,7 +17,7 @@ final class FailedToLoadMarkuaFile extends RuntimeException
                 'Could not parse Markua file %s. Parse error: %s. Full contents: %s',
                 $markuaFile->pathname(),
                 $exception->getMessage(),
-                $markuaFile->contents()
+                $markuaFile->getContents()
             ),
             0,
             $exception

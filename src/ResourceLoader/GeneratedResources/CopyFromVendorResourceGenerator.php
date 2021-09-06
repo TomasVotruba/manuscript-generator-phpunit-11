@@ -24,7 +24,7 @@ final class CopyFromVendorResourceGenerator implements ResourceGenerator
         $this->dependenciesInstaller->install($resource->includedFromFile()->containingDirectory());
 
         return $source->file()
-            ->contents();
+            ->getContents();
     }
 
     public function sourceLastModified(

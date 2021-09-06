@@ -17,7 +17,7 @@ final class TableOfTokensResourceGenerator implements ResourceGenerator
     public function generateResource(IncludedResource $resource, Source $source): string
     {
         /** @var PhpToken[] $allTokens */
-        $allTokens = PhpToken::tokenize($source->file()->contents());
+        $allTokens = PhpToken::tokenize($source->file()->getContents());
 
         return $this->printTokens($allTokens);
     }

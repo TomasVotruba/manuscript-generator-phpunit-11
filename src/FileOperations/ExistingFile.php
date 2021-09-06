@@ -25,7 +25,7 @@ final class ExistingFile
         return new self($pathname);
     }
 
-    public function contents(): string
+    public function getContents(): string
     {
         $contents = file_get_contents($this->pathname);
 
@@ -61,5 +61,10 @@ final class ExistingFile
         $fileInfo = (new SplFileInfo($this->pathname));
 
         return $fileInfo->getBasename();
+    }
+
+    public function putContents(string $contents): void
+    {
+        file_put_contents($this->pathname, $contents);
     }
 }

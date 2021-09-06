@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Configuration;
 
 use ManuscriptGenerator\FileOperations\Directory;
+use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
 use ManuscriptGenerator\ResourceProcessor\ResourceProcessor;
 
@@ -34,9 +35,9 @@ final class BookProjectConfiguration
         return new self();
     }
 
-    public function manuscriptSrcDir(): string
+    public function manuscriptSrcDir(): ExistingDirectory
     {
-        return $this->manuscriptSrcDir;
+        return ExistingDirectory::fromPathname($this->manuscriptSrcDir);
     }
 
     public function setManuscriptSrcDir(string $manuscriptSrcDir): void

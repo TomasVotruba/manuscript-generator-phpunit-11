@@ -154,7 +154,6 @@ final class ServiceContainer
 
         if ($this->configuration->isLinkRegistryEnabled()) {
             $nodeVisitors[] = new CollectLinksForLinkRegistryNodeVisitor(
-                $this->filesystem(),
                 $this->configuration->linkRegistryConfiguration(),
                 $this->configuration
             );

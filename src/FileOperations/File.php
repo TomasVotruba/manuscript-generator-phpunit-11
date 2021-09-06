@@ -29,4 +29,26 @@ final class File
     {
         return ExistingFile::fromPathname($this->pathname);
     }
+
+    public function exists(): bool
+    {
+        return is_file($this->pathname);
+    }
+
+    public function toString(): string
+    {
+        return $this->pathname;
+    }
+
+    public function getContents(): string
+    {
+        return $this->existing()
+            ->getContents();
+    }
+
+    public function putContents(string $contents): void
+    {
+        $this->createIfNotExists()
+            ->putContents($contents);
+    }
 }

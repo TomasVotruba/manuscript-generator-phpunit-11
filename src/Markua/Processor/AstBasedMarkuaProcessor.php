@@ -26,7 +26,7 @@ final class AstBasedMarkuaProcessor implements MarkuaProcessor
 
     public function process(ExistingFile $markuaFile, ManuscriptFiles $manuscriptFiles): string
     {
-        $document = $this->markuaLoader->load($markuaFile->contents(), $markuaFile);
+        $document = $this->markuaLoader->load($markuaFile->getContents(), $markuaFile);
 
         $nodeTraverser = new NodeTraverser(
             array_merge([

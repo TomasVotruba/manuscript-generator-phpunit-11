@@ -7,7 +7,6 @@ namespace ManuscriptGenerator;
 use ManuscriptGenerator\Cli\ResultPrinter;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Dependencies\DependenciesInstaller;
-use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\ManuscriptFiles\ManuscriptDiff;
 use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Processor\MarkuaProcessor;
@@ -39,19 +38,19 @@ final class ManuscriptGenerator
             'book.md' => 'Book.txt',
             'subset.md' => 'Subset.txt',
         ] as $srcFileName => $targetFileName) {
-            $srcFilePath = $this->configuration->manuscriptSrcDir() . '/' . $srcFileName;
-            if (! is_file($srcFilePath)) {
+            $srcFile = $this->configuration->manuscriptSrcDir()
+                ->appendPath($srcFileName)
+                ->file();
+            if (! $srcFile->exists()) {
                 $this->logger->warning('Skipping generation of {targetFileName} because {srcFilePath} does not exist', [
                     'targetFileName' => $targetFileName,
-                    'srcFilePath' => $srcFilePath,
+                    'srcFilePath' => $srcFile->toString(),
                 ]);
 
                 continue;
             }
 
-            $srcFilePath = ExistingFile::fromPathname($srcFilePath);
-
-            $processedContents = $this->markuaProcessor->process($srcFilePath, $manuscriptFiles);
+            $processedContents = $this->markuaProcessor->process($srcFile->existing(), $manuscriptFiles);
 
             $manuscriptFiles->addFile($srcFileName, $processedContents);
 

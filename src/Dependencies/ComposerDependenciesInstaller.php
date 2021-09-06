@@ -35,7 +35,7 @@ final class ComposerDependenciesInstaller implements DependenciesInstaller
     {
         $composerJsonFileFinder = Finder::create()
             ->files()
-            ->in($this->configuration->manuscriptSrcDir())
+            ->in($this->configuration->manuscriptSrcDir()->toString())
             ->notPath('vendor') // don't try to install dependencies for vendor packages!
             ->name('composer.json');
 
