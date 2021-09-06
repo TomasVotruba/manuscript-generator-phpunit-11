@@ -17,7 +17,7 @@ final class PhpUnitResourceGenerator implements ResourceGenerator
 
     public function name(): string
     {
-        return 'phpunit-output';
+        return 'phpunit_output';
     }
 
     public function generateResource(IncludedResource $resource, Source $source): string

@@ -1,4 +1,4 @@
-{generator: phpunit-output}
+{generator: phpunit_output}
 ![](tests/phpunit-output.txt)
 
 {generator: table_of_tokens, source: tokens/hello_world.php}
