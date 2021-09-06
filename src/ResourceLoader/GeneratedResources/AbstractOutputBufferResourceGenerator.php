@@ -8,7 +8,7 @@ use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 
 abstract class AbstractOutputBufferResourceGenerator implements ResourceGenerator
 {
-    public function generateResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource, Source $source): string
     {
         ob_start();
 

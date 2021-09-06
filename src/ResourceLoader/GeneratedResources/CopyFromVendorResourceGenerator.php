@@ -4,38 +4,35 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
+use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
-use function str_starts_with;
 
 final class CopyFromVendorResourceGenerator implements ResourceGenerator
 {
-    private const EXPECTED_PREFIX = 'copy-from-vendor/';
-
-    public function supportsResource(IncludedResource $resource): bool
-    {
-        return str_starts_with($resource->link, self::EXPECTED_PREFIX);
+    public function __construct(
+        private DependenciesInstaller $dependenciesInstaller
+    ) {
     }
 
-    public function sourcePathForResource(IncludedResource $resource): string
+    public function name(): string
     {
-        return getcwd() . '/' . str_replace(self::EXPECTED_PREFIX, 'vendor/', $resource->link);
+        return 'copy_from_vendor';
     }
 
-    public function generateResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource, Source $source): string
     {
-        $sourceFilePathname = $this->sourcePathForResource($resource);
+        $this->dependenciesInstaller->install($resource->includedFromFile()->containingDirectory());
 
-        if (! is_file($sourceFilePathname)) {
-            throw CouldNotGenerateResource::becauseSourceFileNotFound($sourceFilePathname);
-        }
-
-        return (string) file_get_contents($sourceFilePathname);
+        return $source->existingFile()
+            ->getContents();
     }
 
     public function sourceLastModified(
         IncludedResource $resource,
+        Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource));
+        return $source->existingFile()
+            ->lastModifiedTime();
     }
 }

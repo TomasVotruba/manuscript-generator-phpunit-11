@@ -4,41 +4,36 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
+use ManuscriptGenerator\FileOperations\Directory;
+use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 use RuntimeException;
 
 final class TitlePageResourceGenerator implements ResourceGenerator
 {
-    private const GIMP_SOURCE_FILE_NAME = 'title_page.xcf';
-
-    private const PNG_TARGET_FILE = 'title_page.png';
-
     public function __construct(
-        private string $tmpDir
+        private Directory $tmpDir
     ) {
     }
 
-    public function supportsResource(IncludedResource $resource): bool
+    public function name(): string
     {
-        return $resource->link === self::PNG_TARGET_FILE;
+        return 'title_page';
     }
 
-    public function sourcePathForResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource, Source $source): string
     {
-        return dirname($resource->expectedFilePathname()) . '/images/cover/' . self::GIMP_SOURCE_FILE_NAME;
-    }
-
-    public function generateResource(IncludedResource $resource): string
-    {
-        if (! is_dir($this->tmpDir)) {
-            mkdir($this->tmpDir, 0777, true);
-        }
-
-        $tmpFilePathname = $this->tmpDir . '/' . uniqid('title_page') . '.png';
+        $tmpFile = $this->tmpDir->tmpFile('title_page', '.png');
 
         // Convert xcf to png
-        $process = new Process(['xcf2png', $this->sourcePathForResource($resource), '-o', $tmpFilePathname]);
+        $process = new Process([
+            'xcf2png',
+            $source->existingFile()
+                ->pathname(),
+            '-o',
+            $tmpFile->pathname(),
+        ], ExistingDirectory::currentWorkingDirectory());
         $result = $process->run();
         if (! $result->isSuccessful()) {
             throw new RuntimeException(
@@ -51,7 +46,14 @@ final class TitlePageResourceGenerator implements ResourceGenerator
         }
 
         // Resize png
-        $process = new Process(['magick', 'convert', $tmpFilePathname, '-resize', '1050x', $tmpFilePathname]);
+        $process = new Process([
+            'magick',
+            'convert',
+            $tmpFile->pathname(),
+            '-resize',
+            '1050x',
+            $tmpFile->pathname(),
+        ], ExistingDirectory::currentWorkingDirectory());
         $result = $process->run();
         if (! $result->isSuccessful()) {
             throw new RuntimeException(
@@ -63,16 +65,23 @@ final class TitlePageResourceGenerator implements ResourceGenerator
             );
         }
 
-        $output = (string) file_get_contents($tmpFilePathname);
-        unlink($tmpFilePathname);
+        $output = $tmpFile->getContents();
+        $tmpFile->unlink();
 
         return $output;
     }
 
     public function sourceLastModified(
         IncludedResource $resource,
+        Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource));
+        if (! $source->file()->exists()) {
+            return 0;
+        }
+
+        return $source->file()
+            ->existing()
+            ->lastModifiedTime();
     }
 }

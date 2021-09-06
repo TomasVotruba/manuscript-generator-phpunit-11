@@ -1,0 +1,5 @@
+{
+    "require": {
+        "symfony/event-dispatcher": "v5.3.4"
+    }
+}

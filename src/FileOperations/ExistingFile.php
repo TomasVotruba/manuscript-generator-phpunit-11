@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\FileOperations;
 
 use RuntimeException;
+use SplFileInfo;
 
 final class ExistingFile
 {
@@ -24,7 +25,7 @@ final class ExistingFile
         return new self($pathname);
     }
 
-    public function contents(): string
+    public function getContents(): string
     {
         $contents = file_get_contents($this->pathname);
 
@@ -40,9 +41,9 @@ final class ExistingFile
         return $this->pathname;
     }
 
-    public function directory(): string
+    public function containingDirectory(): ExistingDirectory
     {
-        return dirname($this->pathname);
+        return ExistingDirectory::fromPathname(dirname($this->pathname));
     }
 
     public function pathnameRelativeTo(string $dirname): string
@@ -53,5 +54,22 @@ final class ExistingFile
         }
 
         return $this->pathname;
+    }
+
+    public function basename(): string
+    {
+        $fileInfo = (new SplFileInfo($this->pathname));
+
+        return $fileInfo->getBasename();
+    }
+
+    public function putContents(string $contents): void
+    {
+        file_put_contents($this->pathname, $contents);
+    }
+
+    public function lastModifiedTime(): int
+    {
+        return filemtime($this->pathname) ?: 0;
     }
 }

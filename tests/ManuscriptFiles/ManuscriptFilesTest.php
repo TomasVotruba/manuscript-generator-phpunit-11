@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Test\ManuscriptFiles;
 
+use ManuscriptGenerator\FileOperations\Directory;
 use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 use ManuscriptGenerator\ManuscriptFiles\ModifiedFile;
 use ManuscriptGenerator\ManuscriptFiles\NewFile;
@@ -25,7 +26,7 @@ final class ManuscriptFilesTest extends TestCase
         // the contents didn't change
         $manuscriptFiles->addFile('unchanged.md', "unchanged\n");
 
-        $diff = $manuscriptFiles->diff(ManuscriptFiles::fromDir(__DIR__ . '/manuscript'));
+        $diff = $manuscriptFiles->diff(ManuscriptFiles::fromDir(Directory::fromPathname(__DIR__ . '/manuscript')));
 
         self::assertTrue($diff->hasDifferences());
 

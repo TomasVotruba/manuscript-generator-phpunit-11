@@ -4,32 +4,24 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Process;
 
+use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use RuntimeException;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
 final class Process
 {
-    private string $workingDir;
-
     /**
      * @param array<string> $command
-     * @param string $workingDir
      */
     public function __construct(
         private array $command,
-        ?string $workingDir = null
+        private ExistingDirectory $workingDir
     ) {
-        if ($workingDir === null) {
-            $workingDir = getcwd();
-        }
-
-        assert(is_string($workingDir));
-        $this->workingDir = $workingDir;
     }
 
     public function run(): Result
     {
-        $process = new SymfonyProcess($this->command, $this->workingDir);
+        $process = new SymfonyProcess($this->command, $this->workingDir->pathname());
 
         $combinedOutput = '';
 

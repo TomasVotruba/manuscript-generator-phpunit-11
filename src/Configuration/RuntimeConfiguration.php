@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Configuration;
 
+use ManuscriptGenerator\FileOperations\Directory;
+use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
 use ManuscriptGenerator\ResourceProcessor\ResourceProcessor;
 
@@ -16,12 +18,12 @@ final class RuntimeConfiguration
     ) {
     }
 
-    public function manuscriptSrcDir(): string
+    public function manuscriptSrcDir(): ExistingDirectory
     {
         return $this->bookProjectConfiguration->manuscriptSrcDir();
     }
 
-    public function manuscriptTargetDir(): string
+    public function manuscriptTargetDir(): Directory
     {
         return $this->bookProjectConfiguration->manuscriptTargetDir();
     }
@@ -62,7 +64,7 @@ final class RuntimeConfiguration
         return $this->bookProjectConfiguration->additionalResourceProcessors();
     }
 
-    public function tmpDir(): string
+    public function tmpDir(): Directory
     {
         return $this->bookProjectConfiguration->tmpDir();
     }

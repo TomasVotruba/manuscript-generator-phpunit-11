@@ -4,39 +4,31 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
-use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use PhpToken;
 
 final class TableOfTokensResourceGenerator implements ResourceGenerator
 {
-    public const FILE_SUFFIX = '.table_of_tokens.md';
-
-    public function supportsResource(IncludedResource $resource): bool
+    public function name(): string
     {
-        return str_ends_with($resource->link, self::FILE_SUFFIX);
+        return 'table_of_tokens';
     }
 
-    public function sourcePathForResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource, Source $source): string
     {
-        return str_replace(self::FILE_SUFFIX, '.php', $resource->expectedFilePathname());
-    }
-
-    public function generateResource(IncludedResource $resource): string
-    {
-        $phpFile = ExistingFile::fromPathname($this->sourcePathForResource($resource));
-
         /** @var PhpToken[] $allTokens */
-        $allTokens = PhpToken::tokenize($phpFile->contents());
+        $allTokens = PhpToken::tokenize($source->existingFile()->getContents());
 
         return $this->printTokens($allTokens);
     }
 
     public function sourceLastModified(
         IncludedResource $resource,
+        Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource));
+        return $source->existingFile()
+            ->lastModifiedTime();
     }
 
     /**
@@ -44,9 +36,7 @@ final class TableOfTokensResourceGenerator implements ResourceGenerator
      */
     private function printTokens(array $allTokens): string
     {
-        $table = '';
-
-        $table .= "| Line | Token | Value |\n";
+        $table = "| Line | Token | Value |\n";
         $table .= "| --- | --- | --- |\n";
 
         foreach ($allTokens as $token) {

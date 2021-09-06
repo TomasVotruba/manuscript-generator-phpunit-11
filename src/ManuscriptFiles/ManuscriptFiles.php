@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ManuscriptFiles;
 
-use Symfony\Component\Filesystem\Filesystem;
+use ManuscriptGenerator\FileOperations\Directory;
 use Symfony\Component\Finder\Finder;
 
 final class ManuscriptFiles
@@ -22,9 +22,10 @@ final class ManuscriptFiles
         return new self([]);
     }
 
-    public static function fromDir(string $directory): self
+    public static function fromDir(Directory $directory): self
     {
-        $finder = Finder::create()->files()->in($directory);
+        $finder = Finder::create()->files()->in($directory->pathname());
+
         $files = [];
         foreach ($finder as $file) {
             $files[$file->getRelativePathname()] = $file->getContents();
@@ -39,19 +40,14 @@ final class ManuscriptFiles
         $this->files[$relativePathname] = $contents;
     }
 
-    public function dumpTo(string $targetDir): void
+    public function dumpTo(Directory $targetDir): void
     {
-        $filesystem = new Filesystem();
-        $filesystem->remove($targetDir);
-        $filesystem->mkdir($targetDir);
+        $targetDir = $targetDir->makeEmpty();
 
         foreach ($this->files as $relativePathname => $contents) {
-            $filePath = $targetDir . '/' . dirname($relativePathname);
-            if (! is_dir($filePath)) {
-                $filesystem->mkdir($filePath);
-            }
-
-            file_put_contents($targetDir . '/' . $relativePathname, $contents);
+            $targetDir->appendPath($relativePathname)
+                ->file()
+                ->putContents($contents);
         }
     }
 

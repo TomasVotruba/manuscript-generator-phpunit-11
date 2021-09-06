@@ -7,7 +7,7 @@ namespace ManuscriptGenerator\Markua\Processor\LinkRegistry;
 use Assert\Assertion;
 use ManuscriptGenerator\Configuration\LinkRegistryConfiguration;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
-use ManuscriptGenerator\FileOperations\Filesystem;
+use ManuscriptGenerator\FileOperations\File;
 use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Parser\Node;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
@@ -20,7 +20,6 @@ final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
     private ExternalLinkCollector $linkCollector;
 
     public function __construct(
-        private Filesystem $filesystem,
         private LinkRegistryConfiguration $linkRegistryConfiguration,
         private RuntimeConfiguration $configuration
     ) {
@@ -28,9 +27,10 @@ final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
 
     public function beforeTraversing(Document $document): void
     {
-        if (is_file($this->linksFilePathnameInSrc())) {
+        if ($this->linksFilePathnameInSrc()->exists()) {
             $this->linkCollector = ExternalLinkCollector::loadFromString(
-                (string) file_get_contents($this->linksFilePathnameInSrc())
+                $this->linksFilePathnameInSrc()
+                    ->getContents()
             );
         } else {
             $this->linkCollector = new ExternalLinkCollector();
@@ -70,14 +70,17 @@ final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
         $linksFileContents = $this->linkCollector->asString();
 
         // Save a copy in manuscript-src, so we can load it the next time
-        $this->filesystem->putContents($this->linksFilePathnameInSrc(), $linksFileContents);
+        $this->linksFilePathnameInSrc()
+            ->putContents($linksFileContents);
 
         // Copy the file to manuscript, because it's a file that needs to be published in some way
         $manuscriptFiles->addFile($this->linkRegistryConfiguration->linksFile(), $linksFileContents);
     }
 
-    private function linksFilePathnameInSrc(): string
+    private function linksFilePathnameInSrc(): File
     {
-        return $this->configuration->manuscriptSrcDir() . '/' . $this->linkRegistryConfiguration->linksFile();
+        return $this->configuration->manuscriptSrcDir()
+            ->appendPath($this->linkRegistryConfiguration->linksFile())
+            ->file();
     }
 }

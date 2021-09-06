@@ -4,33 +4,29 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
+use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
-use SplFileInfo;
 
 final class PhpScriptOutputResourceGenerator implements ResourceGenerator
 {
-    public const PHP_SCRIPT_OUTPUT_TXT = '.php_script_output.txt';
-
-    public function supportsResource(IncludedResource $resource): bool
-    {
-        return str_ends_with($resource->link, self::PHP_SCRIPT_OUTPUT_TXT);
+    public function __construct(
+        private DependenciesInstaller $dependenciesInstaller
+    ) {
     }
 
-    public function sourcePathForResource(IncludedResource $resource): string
+    public function name(): string
     {
-        return str_replace(self::PHP_SCRIPT_OUTPUT_TXT, '.php', $resource->expectedFilePathname());
+        return 'php_script_output';
     }
 
-    public function generateResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource, Source $source): string
     {
-        $scriptFile = new SplFileInfo($this->sourcePathForResource($resource));
+        $this->dependenciesInstaller->install($source->existingFile()->containingDirectory());
 
-        $scriptFileName = $scriptFile->getBasename();
-        $workingDir = realpath($scriptFile->getPath());
-        assert(is_string($workingDir));
+        $process = new Process(['php', $source->existingFile() ->basename()], $source->existingFile()
+            ->containingDirectory());
 
-        $process = new Process(['php', $scriptFileName], $workingDir);
         $result = $process->run();
 
         return $result->standardAndErrorOutputCombined();
@@ -38,8 +34,9 @@ final class PhpScriptOutputResourceGenerator implements ResourceGenerator
 
     public function sourceLastModified(
         IncludedResource $resource,
+        Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofDirectory(dirname($this->sourcePathForResource($resource)));
+        return $determineLastModifiedTimestamp->ofDirectory($source->existingFile()->containingDirectory()->pathname());
     }
 }

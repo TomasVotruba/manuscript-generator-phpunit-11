@@ -7,6 +7,7 @@ namespace ManuscriptGenerator;
 use ManuscriptGenerator\Cli\ResultPrinter;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Dependencies\ComposerDependenciesInstaller;
+use ManuscriptGenerator\FileOperations\Directory;
 use ManuscriptGenerator\FileOperations\Filesystem;
 use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeVisitor;
@@ -21,14 +22,15 @@ use ManuscriptGenerator\Markua\Processor\LinkRegistry\CollectLinksForLinkRegistr
 use ManuscriptGenerator\Markua\Processor\MarkuaLoader;
 use ManuscriptGenerator\Markua\Processor\ProcessInlineResourcesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\UseFilenameAsCaptionNodeVisitor;
-use ManuscriptGenerator\ResourceLoader\DelegatingResourceLoader;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\CopyFromVendorResourceGenerator;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\DelegatingResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DetermineLastModifiedTimestamp;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DrawioResourceGenerator;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\GeneratedResourceLoader;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\GenerateIncludedResourceNodeVisitor;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\IncludedResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpScriptOutputResourceGenerator;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\PHPUnit\PhpUnitResourceGenerator;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpUnitResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\RectorOutputResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\TableOfTokensResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\TitlePageResourceGenerator;
@@ -83,31 +85,29 @@ final class ServiceContainer
         return new Filesystem($this->configuration->readOnlyFilesystem());
     }
 
-    private function resourceLoader(): DelegatingResourceLoader
+    private function resourceLoader(): FileResourceLoader
     {
-        return new DelegatingResourceLoader(
-            [
-                new GeneratedResourceLoader(
-                    array_merge(
-                        $this->configuration->additionalResourceGenerators(),
-                        [
-                            new CopyFromVendorResourceGenerator(),
-                            new PhpUnitResourceGenerator(),
-                            new RectorOutputResourceLoader(),
-                            new TableOfTokensResourceGenerator(),
-                            new PhpScriptOutputResourceGenerator(),
-                            new DrawioResourceGenerator($this->tmpDir()),
-                            new TitlePageResourceGenerator($this->tmpDir()),
-                        ]
-                    ),
-                    new FileResourceLoader(),
-                    $this->filesystem(),
-                    $this->dependenciesInstaller(),
-                    new DetermineLastModifiedTimestamp(),
-                    $this->logger()
-                ),
-                new FileResourceLoader(),
-            ]
+        return new FileResourceLoader();
+    }
+
+    private function includedResourceGenerator(): IncludedResourceGenerator
+    {
+        return new DelegatingResourceGenerator(
+            array_merge(
+                $this->configuration->additionalResourceGenerators(),
+                [
+                    new CopyFromVendorResourceGenerator($this->dependenciesInstaller()),
+                    new PhpUnitResourceGenerator($this->dependenciesInstaller()),
+                    new RectorOutputResourceLoader($this->dependenciesInstaller()),
+                    new TableOfTokensResourceGenerator(),
+                    new PhpScriptOutputResourceGenerator($this->dependenciesInstaller()),
+                    new DrawioResourceGenerator($this->tmpDir()),
+                    new TitlePageResourceGenerator($this->tmpDir()),
+                ]
+            ),
+            $this->filesystem(),
+            new DetermineLastModifiedTimestamp(),
+            $this->logger()
         );
     }
 
@@ -122,6 +122,7 @@ final class ServiceContainer
     private function markuaNodeVisitors(): array
     {
         $nodeVisitors = [
+            new GenerateIncludedResourceNodeVisitor($this->includedResourceGenerator()),
             new UseFilenameAsCaptionNodeVisitor(),
             new InlineIncludedMarkdownFilesNodeVisitor($this->resourceLoader(), $this->markuaLoader()),
             new InlineIncludedResourcesNodeVisitor($this->resourceLoader()),
@@ -153,7 +154,6 @@ final class ServiceContainer
 
         if ($this->configuration->isLinkRegistryEnabled()) {
             $nodeVisitors[] = new CollectLinksForLinkRegistryNodeVisitor(
-                $this->filesystem(),
                 $this->configuration->linkRegistryConfiguration(),
                 $this->configuration
             );
@@ -162,7 +162,7 @@ final class ServiceContainer
         return $nodeVisitors;
     }
 
-    private function tmpDir(): string
+    private function tmpDir(): Directory
     {
         return $this->configuration->tmpDir();
     }

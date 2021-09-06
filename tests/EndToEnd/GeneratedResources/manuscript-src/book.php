@@ -7,25 +7,20 @@ use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\AbstractOutputBufferResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DetermineLastModifiedTimestamp;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\Source;
 
 $configuration = BookProjectConfiguration::usingDefaults();
 
 $configuration->addResourceGenerator(
     new class() extends AbstractOutputBufferResourceGenerator {
-        private const EXPECTED_SUFFIX = '.buffered-output.txt';
-
-        public function supportsResource(IncludedResource $resource): bool
+        public function name(): string
         {
-            return str_ends_with($resource->link, self::EXPECTED_SUFFIX);
-        }
-
-        public function sourcePathForResource(IncludedResource $resource): string
-        {
-            return __FILE__;
+            return 'buffered_output';
         }
 
         public function sourceLastModified(
             IncludedResource $resource,
+            Source $source,
             DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
         ): int {
             return 0;
@@ -40,25 +35,19 @@ $configuration->addResourceGenerator(
 
 $configuration->addResourceGenerator(
     new class() implements ResourceGenerator {
-        private const EXPECTED_SUFFIX = '.diagram.png';
-
-        public function supportsResource(IncludedResource $resource): bool
+        public function name(): string
         {
-            return str_ends_with($resource->link, self::EXPECTED_SUFFIX);
+            return 'diagram';
         }
 
-        public function sourcePathForResource(IncludedResource $resource): string
-        {
-            return __FILE__;
-        }
-
-        public function generateResource(IncludedResource $resource): string
+        public function generateResource(IncludedResource $resource, Source $source): string
         {
             return "binary contents\n";
         }
 
         public function sourceLastModified(
             IncludedResource $resource,
+            Source $source,
             DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
         ): int {
             return 0;

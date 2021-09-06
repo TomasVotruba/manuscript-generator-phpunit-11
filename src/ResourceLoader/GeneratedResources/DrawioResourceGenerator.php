@@ -4,35 +4,26 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
+use ManuscriptGenerator\FileOperations\Directory;
+use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 
 final class DrawioResourceGenerator implements ResourceGenerator
 {
-    private const DRAWIO_PNG_SUFFIX = '.drawio.png';
-
     public function __construct(
-        private string $tmpDir
+        private Directory $tmpDir
     ) {
     }
 
-    public function supportsResource(IncludedResource $resource): bool
+    public function name(): string
     {
-        return str_ends_with($resource->link, self::DRAWIO_PNG_SUFFIX);
+        return 'drawio';
     }
 
-    public function sourcePathForResource(IncludedResource $resource): string
+    public function generateResource(IncludedResource $resource, Source $source): string
     {
-        return str_replace(self::DRAWIO_PNG_SUFFIX, '.drawio', $resource->expectedFilePathname());
-    }
-
-    public function generateResource(IncludedResource $resource): string
-    {
-        if (! is_dir($this->tmpDir)) {
-            mkdir($this->tmpDir, 0777, true);
-        }
-
-        $tmpFilePathname = $this->tmpDir . '/' . uniqid('drawio') . '.drawio.png';
+        $tmpFile = $this->tmpDir->tmpFile('drawio', '.png');
 
         $process = new Process(
             [
@@ -41,9 +32,11 @@ final class DrawioResourceGenerator implements ResourceGenerator
                 '--format=png',
                 '--scale=2',
                 '--output',
-                $tmpFilePathname,
-                $this->sourcePathForResource($resource),
-            ]
+                $tmpFile->pathname(),
+                $source->existingFile()
+                    ->pathname(),
+            ],
+            ExistingDirectory::currentWorkingDirectory()
         );
         $result = $process->run();
 
@@ -51,16 +44,18 @@ final class DrawioResourceGenerator implements ResourceGenerator
             throw CouldNotGenerateResource::becauseAnExternalProcessWasUnsuccessful($result);
         }
 
-        $generatedContents = (string) file_get_contents($tmpFilePathname);
-        unlink($tmpFilePathname);
+        $generatedContents = $tmpFile->getContents();
+        $tmpFile->unlink();
 
         return $generatedContents;
     }
 
     public function sourceLastModified(
         IncludedResource $resource,
+        Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofFile($this->sourcePathForResource($resource));
+        return $source->existingFile()
+            ->lastModifiedTime();
     }
 }

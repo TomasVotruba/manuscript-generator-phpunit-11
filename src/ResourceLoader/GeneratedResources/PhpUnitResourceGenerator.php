@@ -8,7 +8,7 @@ use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 
-final class RectorOutputResourceLoader implements ResourceGenerator
+final class PhpUnitResourceGenerator implements ResourceGenerator
 {
     public function __construct(
         private DependenciesInstaller $dependenciesInstaller
@@ -17,17 +17,25 @@ final class RectorOutputResourceLoader implements ResourceGenerator
 
     public function name(): string
     {
-        return 'rector_output';
+        return 'phpunit-output';
     }
 
     public function generateResource(IncludedResource $resource, Source $source): string
     {
         $this->dependenciesInstaller->install($source->existingDirectory());
 
-        $process = new Process(['vendor/bin/rector', 'process', '--dry-run'], $source->existingDirectory());
+        $process = new Process(
+            [
+                'vendor/bin/phpunit',
+                '--printer',
+                'LeanBookTools\\PHPUnit\\CleanerResultPrinter',
+                '--do-not-cache-result',
+            ],
+            $source->existingDirectory()
+        );
         $result = $process->run();
 
-        return $result->standardOutput();
+        return $result->standardAndErrorOutputCombined();
     }
 
     public function sourceLastModified(

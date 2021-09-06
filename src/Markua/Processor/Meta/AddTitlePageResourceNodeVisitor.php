@@ -19,6 +19,8 @@ final class AddTitlePageResourceNodeVisitor extends AbstractNodeVisitor
         Assertion::isInstanceOf($includedFromFile, ExistingFile::class);
 
         $includedResource->setAttribute(MetaAttributes::FILE, $includedFromFile);
+        $includedResource->attributes->set('generator', 'title_page');
+        $includedResource->attributes->set('source', 'title_page.xcf');
 
         $document->virtualNodes[] = $includedResource;
     }

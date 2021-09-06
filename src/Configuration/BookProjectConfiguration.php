@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Configuration;
 
+use ManuscriptGenerator\FileOperations\Directory;
+use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
 use ManuscriptGenerator\ResourceProcessor\ResourceProcessor;
 
@@ -33,9 +35,9 @@ final class BookProjectConfiguration
         return new self();
     }
 
-    public function manuscriptSrcDir(): string
+    public function manuscriptSrcDir(): ExistingDirectory
     {
-        return $this->manuscriptSrcDir;
+        return ExistingDirectory::fromPathname($this->manuscriptSrcDir);
     }
 
     public function setManuscriptSrcDir(string $manuscriptSrcDir): void
@@ -48,9 +50,9 @@ final class BookProjectConfiguration
         $this->manuscriptTargetDir = $manuscriptTargetDir;
     }
 
-    public function manuscriptTargetDir(): string
+    public function manuscriptTargetDir(): Directory
     {
-        return $this->manuscriptTargetDir;
+        return Directory::fromPathname($this->manuscriptTargetDir);
     }
 
     public function capitalizeHeadlines(): bool
@@ -106,9 +108,9 @@ final class BookProjectConfiguration
         return $this->linkRegistryConfiguration;
     }
 
-    public function tmpDir(): string
+    public function tmpDir(): Directory
     {
-        return $this->tmpDir;
+        return Directory::fromPathname($this->tmpDir);
     }
 
     public function setTmpDir(string $tmpDir): void
