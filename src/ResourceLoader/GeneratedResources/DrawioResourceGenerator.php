@@ -23,8 +23,9 @@ final class DrawioResourceGenerator implements ResourceGenerator
 
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        $tmpFilePathname = $this->tmpDir->create()
-            ->toString() . '/' . uniqid('drawio') . '.drawio.png';
+        $tmpFilePathname = $this->tmpDir->createIfNotExists()
+            ->appendPath(uniqid('drawio') . '.drawio.png')
+            ->toString();
 
         $process = new Process(
             [

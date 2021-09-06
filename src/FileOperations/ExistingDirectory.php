@@ -33,6 +33,11 @@ final class ExistingDirectory
         return self::fromPathname($cwd);
     }
 
+    public function appendPath(string $append): FileOrDirectory
+    {
+        return FileOrDirectory::fromPathname(rtrim($this->directory, '/') . '/' . ltrim($append, '/'));
+    }
+
     public function toString(): string
     {
         return $this->directory;

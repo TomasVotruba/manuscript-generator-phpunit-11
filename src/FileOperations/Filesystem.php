@@ -30,7 +30,7 @@ final class Filesystem
             return;
         }
 
-        Directory::fromPathname(dirname($pathname))->create();
+        Directory::fromPathname(dirname($pathname))->createIfNotExists();
 
         file_put_contents($pathname, $contents);
     }

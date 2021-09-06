@@ -19,12 +19,17 @@ final class Directory
         return new self($pathname);
     }
 
-    public function create(): ExistingDirectory
+    public function createIfNotExists(): ExistingDirectory
     {
         if (! is_dir($this->pathname)) {
             mkdir($this->pathname, 0777, true);
         }
 
+        return ExistingDirectory::fromPathname($this->pathname);
+    }
+
+    public function existing(): ExistingDirectory
+    {
         return ExistingDirectory::fromPathname($this->pathname);
     }
 }
