@@ -67,4 +67,9 @@ final class ExistingFile
     {
         file_put_contents($this->pathname, $contents);
     }
+
+    public function lastModifiedTime(): int
+    {
+        return filemtime($this->pathname) ?: 0;
+    }
 }

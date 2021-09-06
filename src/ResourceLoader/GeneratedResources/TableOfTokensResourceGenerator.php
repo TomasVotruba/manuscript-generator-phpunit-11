@@ -27,7 +27,8 @@ final class TableOfTokensResourceGenerator implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofFile($source->existingFile()->pathname());
+        return $source->existingFile()
+            ->lastModifiedTime();
     }
 
     /**
@@ -35,9 +36,7 @@ final class TableOfTokensResourceGenerator implements ResourceGenerator
      */
     private function printTokens(array $allTokens): string
     {
-        $table = '';
-
-        $table .= "| Line | Token | Value |\n";
+        $table = "| Line | Token | Value |\n";
         $table .= "| --- | --- | --- |\n";
 
         foreach ($allTokens as $token) {

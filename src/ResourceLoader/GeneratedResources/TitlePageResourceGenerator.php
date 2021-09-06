@@ -76,6 +76,12 @@ final class TitlePageResourceGenerator implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofFile($source->file()->pathname());
+        if (! $source->file()->exists()) {
+            return 0;
+        }
+
+        return $source->file()
+            ->existing()
+            ->lastModifiedTime();
     }
 }

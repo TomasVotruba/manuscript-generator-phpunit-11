@@ -8,15 +8,6 @@ use RuntimeException;
 
 final class DetermineLastModifiedTimestamp
 {
-    public function ofFile(string $filePathname): int
-    {
-        if (! is_file($filePathname)) {
-            return 0;
-        }
-
-        return (int) filemtime($filePathname);
-    }
-
     public function ofDirectory(string $directory): int
     {
         if (! is_dir($directory)) {

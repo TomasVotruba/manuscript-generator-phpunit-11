@@ -54,7 +54,7 @@ final class File
 
     public function unlink(): void
     {
-        if (is_file($this->pathname)) {
+        if ($this->exists()) {
             unlink($this->pathname);
         }
     }
