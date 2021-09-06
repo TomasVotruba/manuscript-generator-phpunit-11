@@ -36,6 +36,6 @@ final class PhpScriptOutputResourceGenerator implements ResourceGenerator
         Source $source,
         DetermineLastModifiedTimestamp $determineLastModifiedTimestamp
     ): int {
-        return $determineLastModifiedTimestamp->ofDirectory($source->file()->containingDirectory());
+        return $determineLastModifiedTimestamp->ofDirectory($source->file()->containingDirectory()->toString());
     }
 }

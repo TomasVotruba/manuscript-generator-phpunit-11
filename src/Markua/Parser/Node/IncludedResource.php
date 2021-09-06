@@ -28,7 +28,8 @@ final class IncludedResource extends AbstractNode
     public function expectedFilePathname(): string
     {
         return $this->includedFromFile()
-            ->containingDirectory() . '/' . $this->link;
+            ->containingDirectory()
+            ->toString() . '/' . $this->link;
     }
 
     public function includedFromFile(): ExistingFile

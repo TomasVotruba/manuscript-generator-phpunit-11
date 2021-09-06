@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
 use ManuscriptGenerator\FileOperations\Directory;
+use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 use RuntimeException;
@@ -34,7 +35,12 @@ final class TitlePageResourceGenerator implements ResourceGenerator
             ->toString() . '/' . uniqid('title_page') . '.png';
 
         // Convert xcf to png
-        $process = new Process(['xcf2png', $this->sourcePathForResource($resource), '-o', $tmpFilePathname]);
+        $process = new Process([
+            'xcf2png',
+            $this->sourcePathForResource($resource),
+            '-o',
+            $tmpFilePathname,
+        ], ExistingDirectory::currentWorkingDirectory());
         $result = $process->run();
         if (! $result->isSuccessful()) {
             throw new RuntimeException(
@@ -47,7 +53,14 @@ final class TitlePageResourceGenerator implements ResourceGenerator
         }
 
         // Resize png
-        $process = new Process(['magick', 'convert', $tmpFilePathname, '-resize', '1050x', $tmpFilePathname]);
+        $process = new Process([
+            'magick',
+            'convert',
+            $tmpFilePathname,
+            '-resize',
+            '1050x',
+            $tmpFilePathname,
+        ], ExistingDirectory::currentWorkingDirectory());
         $result = $process->run();
         if (! $result->isSuccessful()) {
             throw new RuntimeException(

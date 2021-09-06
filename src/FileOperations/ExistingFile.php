@@ -41,9 +41,9 @@ final class ExistingFile
         return $this->pathname;
     }
 
-    public function containingDirectory(): string
+    public function containingDirectory(): ExistingDirectory
     {
-        return dirname($this->pathname);
+        return ExistingDirectory::fromPathname(dirname($this->pathname));
     }
 
     public function pathnameRelativeTo(string $dirname): string

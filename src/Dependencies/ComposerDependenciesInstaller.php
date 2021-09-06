@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Dependencies;
 
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
+use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Process\Process;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -23,11 +24,11 @@ final class ComposerDependenciesInstaller implements DependenciesInstaller
     ) {
     }
 
-    public function install(string $directory): void
+    public function install(ExistingDirectory $directory): void
     {
         $command = self::INSTALL_COMMAND;
 
-        $this->runComposerInDirectory($directory, $command);
+        $this->runComposerInDirectory($directory->toString(), $command);
     }
 
     public function updateAll(): void
@@ -74,7 +75,7 @@ final class ComposerDependenciesInstaller implements DependenciesInstaller
         $workingDir = $composerJsonFile->getPath();
         $this->logger->info('Running composer ' . $command . ' in ' . $workingDir);
 
-        $composer = new Process(['composer', $command], $workingDir);
+        $composer = new Process(['composer', $command], ExistingDirectory::fromPathname($workingDir));
         $result = $composer->run();
 
         /*

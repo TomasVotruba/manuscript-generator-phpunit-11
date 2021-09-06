@@ -22,9 +22,9 @@ final class RectorOutputResourceLoader implements ResourceGenerator
 
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        $this->dependenciesInstaller->install($source->directory()->toString());
+        $this->dependenciesInstaller->install($source->directory());
 
-        $process = new Process(['vendor/bin/rector', 'process', '--dry-run'], $source->directory()->toString());
+        $process = new Process(['vendor/bin/rector', 'process', '--dry-run'], $source->directory());
         $result = $process->run();
 
         return $result->standardOutput();

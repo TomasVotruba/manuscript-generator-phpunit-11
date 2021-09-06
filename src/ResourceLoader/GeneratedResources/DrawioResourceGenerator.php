@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
 use ManuscriptGenerator\FileOperations\Directory;
+use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 
@@ -35,7 +36,8 @@ final class DrawioResourceGenerator implements ResourceGenerator
                 $tmpFilePathname,
                 $source->file()
                     ->pathname(),
-            ]
+            ],
+            ExistingDirectory::currentWorkingDirectory()
         );
         $result = $process->run();
 

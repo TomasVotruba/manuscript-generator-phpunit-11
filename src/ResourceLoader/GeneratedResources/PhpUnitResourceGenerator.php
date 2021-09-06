@@ -22,7 +22,7 @@ final class PhpUnitResourceGenerator implements ResourceGenerator
 
     public function generateResource(IncludedResource $resource, Source $source): string
     {
-        $this->dependenciesInstaller->install($source->directory()->toString());
+        $this->dependenciesInstaller->install($source->directory());
 
         $process = new Process(
             [
@@ -32,7 +32,6 @@ final class PhpUnitResourceGenerator implements ResourceGenerator
                 '--do-not-cache-result',
             ],
             $source->directory()
-                ->toString()
         );
         $result = $process->run();
 

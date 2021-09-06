@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Process;
 
+use ManuscriptGenerator\FileOperations\ExistingDirectory;
+
 final class Result
 {
     public function __construct(
-        private string $workingDir,
+        private ExistingDirectory $workingDir,
         private string $command,
         private string $standardOutput,
         private string $errorOutput,
@@ -43,6 +45,6 @@ final class Result
 
     private function stripFilesystemContextFromOutput(string $output): string
     {
-        return str_replace($this->workingDir . '/', '', $output);
+        return str_replace($this->workingDir->toString() . '/', '', $output);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\FileOperations;
 
+use Assert\Assertion;
 use RuntimeException;
 
 final class ExistingDirectory
@@ -22,6 +23,14 @@ final class ExistingDirectory
     public static function fromPathname(string $pathname): self
     {
         return new self($pathname);
+    }
+
+    public static function currentWorkingDirectory(): self
+    {
+        $cwd = getcwd();
+        Assertion::string($cwd);
+
+        return self::fromPathname($cwd);
     }
 
     public function toString(): string
