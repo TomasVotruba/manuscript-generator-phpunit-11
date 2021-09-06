@@ -76,7 +76,8 @@ final class ManuscriptGenerator
         $manuscriptFiles->dumpTo($this->configuration->manuscriptTargetDir());
 
         $this->logger->info('Generated the manuscript files in {manuscriptTargetDir}', [
-            'manuscriptTargetDir' => $this->configuration->manuscriptTargetDir(),
+            'manuscriptTargetDir' => $this->configuration->manuscriptTargetDir()
+                ->pathname(),
         ]);
     }
 }

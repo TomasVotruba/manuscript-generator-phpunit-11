@@ -23,7 +23,7 @@ final class RuntimeConfiguration
         return $this->bookProjectConfiguration->manuscriptSrcDir();
     }
 
-    public function manuscriptTargetDir(): string
+    public function manuscriptTargetDir(): Directory
     {
         return $this->bookProjectConfiguration->manuscriptTargetDir();
     }

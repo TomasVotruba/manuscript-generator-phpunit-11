@@ -50,9 +50,9 @@ final class BookProjectConfiguration
         $this->manuscriptTargetDir = $manuscriptTargetDir;
     }
 
-    public function manuscriptTargetDir(): string
+    public function manuscriptTargetDir(): Directory
     {
-        return $this->manuscriptTargetDir;
+        return Directory::fromPathname($this->manuscriptTargetDir);
     }
 
     public function capitalizeHeadlines(): bool
