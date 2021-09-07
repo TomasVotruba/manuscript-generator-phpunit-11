@@ -37,11 +37,16 @@ final class InlineIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor
             }
 
             // The included file inherits the file attribute of the current node
-            return $this->markuaLoader->load(
+            $document = $this->markuaLoader->load(
                 $this->resourceLoader->load($node)
                     ->contents(),
                 $node->getAttribute(MetaAttributes::FILE)
             );
+            // Copy "subset" attribute
+            $document->setAttribute('subset', $node->getAttribute('subset'));
+            // @TODO should we copy all attributes?
+
+            return $document;
         }
 
         return null;

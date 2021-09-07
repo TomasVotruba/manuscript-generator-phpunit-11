@@ -30,10 +30,13 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
 
         $expectedFile = $resource->expectedFile();
 
+        $sourceAttribute = $resource->attributes->get('source');
+        Assertion::nullOrString($sourceAttribute);
+
         $source = new Source(
             $resource->includedFromFile()
                 ->containingDirectory()
-                ->appendPath($resource->attributes->get('source') ?? '')
+                ->appendPath($sourceAttribute ?? '')
                 ->pathname()
         );
 

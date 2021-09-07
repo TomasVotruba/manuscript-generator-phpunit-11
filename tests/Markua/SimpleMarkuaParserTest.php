@@ -42,6 +42,27 @@ CODE_SAMPLE
         );
     }
 
+    public function testNodeWithBooleanAttributes(): void
+    {
+        $subsetTrue = new IncludedResource('chapter1.md');
+        $subsetTrue->attributes->set('subset', true);
+        $subsetFalse = new IncludedResource('chapter2.md');
+        $subsetFalse->attributes->set('subset', false);
+
+        self::assertEquals(
+            $this->documentWith([$subsetTrue, $subsetFalse]),
+            $this->parser->parseDocument(
+                <<<CODE_SAMPLE
+{subset: true}
+![](chapter1.md)
+
+{subset: false}
+![](chapter2.md)
+CODE_SAMPLE
+            )
+        );
+    }
+
     public function testInlineResourceWithExtraBacktickFails(): void
     {
         $this->expectException(ParserHasFailed::class);

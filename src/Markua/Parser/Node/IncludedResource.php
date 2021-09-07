@@ -53,7 +53,10 @@ final class IncludedResource extends AbstractNode
     public function format(): string
     {
         $formatAttribute = $this->attributes->get('format');
+
         if ($formatAttribute !== null) {
+            Assertion::string($formatAttribute, '"format" attribute only supports strings');
+
             return $formatAttribute;
         }
 

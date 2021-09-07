@@ -14,7 +14,7 @@ final class AttributeList extends AbstractNode
     ) {
     }
 
-    public function set(string $key, string $value): void
+    public function set(string $key, string|bool $value): void
     {
         foreach ($this->attributes as $index => $existingAttribute) {
             if ($existingAttribute->key === $key) {
@@ -26,7 +26,7 @@ final class AttributeList extends AbstractNode
         $this->attributes[] = new Attribute($key, $value);
     }
 
-    public function get(string $key): ?string
+    public function get(string $key): string|bool|null
     {
         foreach ($this->attributes as $attribute) {
             if ($attribute->key === $key) {

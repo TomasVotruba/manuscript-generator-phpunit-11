@@ -102,8 +102,16 @@ final class MarkuaPrinter
         }
     }
 
-    private function printAttributeValue(string $value): string
+    private function printAttributeValue(bool|string $value): string
     {
+        if ($value === true) {
+            return 'true';
+        }
+
+        if ($value === false) {
+            return 'false';
+        }
+
         if (preg_match('/^[\w\-]+$/', $value) === 1) {
             // no need to quote the value if it contains no spaces or special characters
             return $value;

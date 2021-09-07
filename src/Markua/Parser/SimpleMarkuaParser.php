@@ -257,7 +257,12 @@ final class SimpleMarkuaParser
             collect(
                 self::token(zeroOrMore(satisfy(fn (string $char): bool => ! in_array($char, [':'], true)))),
                 self::token(char(':')),
-                choice(self::token(self::stringLiteral()), self::token(self::constant()))
+                choice(
+                    self::token(string('true'))->map(fn (): bool => true),
+                    self::token(string('false'))->map(fn (): bool => false),
+                    self::token(self::stringLiteral()),
+                    self::token(self::constant())
+                )
             )->label('attribute'),
             fn (array $o): Attribute => new Attribute($o[0], $o[2])
         );

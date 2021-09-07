@@ -20,6 +20,7 @@ use ManuscriptGenerator\Markua\Processor\InlineIncludedResourcesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\LinkRegistry\CollectLinksForLinkRegistryNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\MarkuaLoader;
 use ManuscriptGenerator\Markua\Processor\ProcessInlineResourcesNodeVisitor;
+use ManuscriptGenerator\Markua\Processor\Subset\MarkNodesForInclusionInSubsetNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\UseFilenameAsCaptionNodeVisitor;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\CopyFromVendorResourceGenerator;
@@ -117,6 +118,7 @@ final class ServiceContainer
     private function markuaNodeVisitors(): array
     {
         $nodeVisitors = [
+            new MarkNodesForInclusionInSubsetNodeVisitor(),
             new GenerateIncludedResourceNodeVisitor($this->includedResourceGenerator()),
             new UseFilenameAsCaptionNodeVisitor(),
             new InlineIncludedMarkdownFilesNodeVisitor($this->resourceLoader(), $this->markuaLoader()),

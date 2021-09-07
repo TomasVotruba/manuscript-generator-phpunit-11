@@ -8,15 +8,7 @@ final class Attribute extends AbstractNode
 {
     public function __construct(
         public string $key,
-        public string $value
+        public string | bool $value
     ) {
-    }
-
-    /**
-     * @deprecated Rely on Markdown printer to do this
-     */
-    public static function quote(string $value): string
-    {
-        return '"' . addslashes($value) . '"';
     }
 }

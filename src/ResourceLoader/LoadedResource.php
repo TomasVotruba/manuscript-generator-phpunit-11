@@ -42,7 +42,7 @@ final class LoadedResource
         $this->contents = $newContents;
     }
 
-    public function getAttribute(string $key): ?string
+    public function getAttribute(string $key): string|bool|null
     {
         return $this->attributes->get($key);
     }
