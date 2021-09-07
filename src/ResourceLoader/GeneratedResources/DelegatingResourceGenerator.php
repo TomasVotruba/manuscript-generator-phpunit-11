@@ -6,9 +6,10 @@ namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
 use Assert\Assertion;
 use LogicException;
-use ManuscriptGenerator\FileOperations\Filesystem;
+use ManuscriptGenerator\FileOperations\File;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 final class DelegatingResourceGenerator implements IncludedResourceGenerator
 {
@@ -17,10 +18,10 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
      */
     public function __construct(
         private array $resourceGenerators,
-        private Filesystem $filesystem,
         private DetermineLastModifiedTimestamp $determineLastModifiedTimestamp,
         private LoggerInterface $logger,
-        private bool $regenerateAllResources
+        private bool $regenerateAllResources,
+        private bool $dryRun
     ) {
     }
 
@@ -37,7 +38,7 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
                 ->pathname()
         );
 
-        if (!$this->regenerateAllResources
+        if (! $this->regenerateAllResources
             && is_file($expectedPath)
             && $resourceGenerator->sourceLastModified($resource, $source, $this->determineLastModifiedTimestamp)
             <= ((int) filemtime($expectedPath))
@@ -48,8 +49,16 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
             return;
         }
 
+        if ($this->dryRun) {
+            throw new RuntimeException(sprintf(
+                'The following resource would have to be (re)generated: %s ',
+                $resource->debugInfo()
+            ));
+        }
+
         $generatedResource = $resourceGenerator->generateResource($resource, $source);
-        $this->filesystem->putContents($expectedPath, $generatedResource);
+
+        File::fromPathname($expectedPath)->putContents($generatedResource);
 
         $this->logger->info('Generated resource {link}', [
             'link' => $resource->link,

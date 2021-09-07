@@ -303,7 +303,7 @@ final class GenerateManuscriptTest extends TestCase
     {
         $process = new Process(['which', 'xcf2png']);
         $process->run();
-        if (!$process->isSuccessful()) {
+        if (! $process->isSuccessful()) {
             $this->markTestSkipped('Using --force will also regenerate title_page.png, for which xcf2png is needed');
         }
 
@@ -340,7 +340,7 @@ final class GenerateManuscriptTest extends TestCase
                 '--manuscript-dir' => $this->manuscriptDir,
                 '--manuscript-src-dir' => $this->manuscriptSrcDir,
                 '--config' => $this->manuscriptSrcDir . '/book.php',
-                '--force' => true
+                '--force' => true,
             ],
             [
                 'verbosity' => OutputInterface::VERBOSITY_DEBUG,

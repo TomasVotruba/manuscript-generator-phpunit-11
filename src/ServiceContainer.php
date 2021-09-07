@@ -8,7 +8,6 @@ use ManuscriptGenerator\Cli\ResultPrinter;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Dependencies\ComposerDependenciesInstaller;
 use ManuscriptGenerator\FileOperations\Directory;
-use ManuscriptGenerator\FileOperations\Filesystem;
 use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeVisitor;
 use ManuscriptGenerator\Markua\Printer\MarkuaPrinter;
@@ -80,11 +79,6 @@ final class ServiceContainer
         return new ResultPrinter(new ConsoleDiffer(new Differ(), new ColorConsoleDiffFormatter()));
     }
 
-    private function filesystem(): Filesystem
-    {
-        return new Filesystem($this->configuration->readOnlyFilesystem());
-    }
-
     private function resourceLoader(): FileResourceLoader
     {
         return new FileResourceLoader();
@@ -105,10 +99,10 @@ final class ServiceContainer
                     new TitlePageResourceGenerator($this->tmpDir()),
                 ]
             ),
-            $this->filesystem(),
             new DetermineLastModifiedTimestamp(),
             $this->logger(),
-            $this->configuration->regenerateAllGeneratedResources()
+            $this->configuration->regenerateAllGeneratedResources(),
+            $this->configuration->readOnlyFilesystem(),
         );
     }
 
