@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\FileOperations;
 
 use Assert\Assertion;
+use LogicException;
 use RuntimeException;
 
 final class ExistingDirectory
 {
-    private string $directory;
+    private string $pathname;
 
     private function __construct(string $directory)
     {
@@ -17,7 +18,7 @@ final class ExistingDirectory
             throw new RuntimeException('Expected this directory to exist: ' . $directory);
         }
 
-        $this->directory = $directory;
+        $this->pathname = $directory;
     }
 
     public static function fromPathname(string $pathname): self
@@ -35,16 +36,26 @@ final class ExistingDirectory
 
     public function appendPath(string $append): FileOrDirectory
     {
-        return FileOrDirectory::fromPathname(rtrim($this->directory, '/') . '/' . ltrim($append, '/'));
+        return FileOrDirectory::fromPathname(rtrim($this->pathname, '/') . '/' . ltrim($append, '/'));
     }
 
     public function pathname(): string
     {
-        return $this->directory;
+        return $this->pathname;
     }
 
     public function tmpFile(string $prefix, string $extension): File
     {
         return $this->appendPath(uniqid($prefix) . '.' . ltrim($extension, '.'))->file();
+    }
+
+    public function absolute(): self
+    {
+        $realPathname = realpath($this->pathname);
+        if (! $realPathname) {
+            throw new LogicException('Could not determine absolute path of ' . $this->pathname);
+        }
+
+        return self::fromPathname($realPathname);
     }
 }
