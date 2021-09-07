@@ -45,6 +45,6 @@ final class Result
 
     private function stripFilesystemContextFromOutput(string $output): string
     {
-        return str_replace($this->workingDir->pathname() . '/', '', $output);
+        return str_replace($this->workingDir->absolute()->pathname() . '/', '', $output);
     }
 }

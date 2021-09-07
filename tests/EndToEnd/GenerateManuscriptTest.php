@@ -11,6 +11,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Process\Process;
 
 final class GenerateManuscriptTest extends TestCase
 {
@@ -295,6 +296,58 @@ final class GenerateManuscriptTest extends TestCase
             ]
         );
 
+        self::assertStringContainsString('Generated resource tests/phpunit-output.txt', $this->tester->getDisplay());
+    }
+
+    public function testYouCanForceTheGeneratorToRegenerateAllGeneratedResources(): void
+    {
+        $process = new Process(['which', 'xcf2png']);
+        $process->run();
+        if (! $process->isSuccessful()) {
+            $this->markTestSkipped('Using --force will also regenerate title_page.png, for which xcf2png is needed');
+        }
+
+        $this->filesystem->mirror(__DIR__ . '/GeneratedResources/manuscript-src', $this->manuscriptSrcDir);
+
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+                '--config' => $this->manuscriptSrcDir . '/book.php',
+            ],
+            [
+                'verbosity' => OutputInterface::VERBOSITY_DEBUG,
+            ]
+        );
+
+        // First time: phpunit-output.txt will be generated
+        self::assertStringContainsString('Generated resource tests/phpunit-output.txt', $this->tester->getDisplay());
+
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+                '--config' => $this->manuscriptSrcDir . '/book.php',
+            ]
+        );
+
+        // Second time it won't
+        self::assertStringNotContainsString('Generated resource tests/phpunit-output.txt', $this->tester->getDisplay());
+
+        // Third time we add the --force option
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+                '--config' => $this->manuscriptSrcDir . '/book.php',
+                '--force' => true,
+            ],
+            [
+                'verbosity' => OutputInterface::VERBOSITY_DEBUG,
+            ]
+        );
+
+        // The output will be regenerated
         self::assertStringContainsString('Generated resource tests/phpunit-output.txt', $this->tester->getDisplay());
     }
 

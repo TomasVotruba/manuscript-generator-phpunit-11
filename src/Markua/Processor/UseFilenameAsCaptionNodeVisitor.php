@@ -30,7 +30,8 @@ final class UseFilenameAsCaptionNodeVisitor extends AbstractNodeVisitor
 
     private function determineCaption(IncludedResource $node): string
     {
-        $fullPath = $node->expectedFilePathname();
+        $fullPath = $node->expectedFile()
+            ->pathname();
 
         $path = $fullPath;
         while (! in_array(($path = dirname($path)), ['.', '/'], true)) {

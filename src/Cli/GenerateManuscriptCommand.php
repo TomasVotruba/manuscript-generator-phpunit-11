@@ -26,7 +26,13 @@ final class GenerateManuscriptCommand extends Command
                 'dry-run',
                 null,
                 InputOption::VALUE_NONE,
-                'Add this option to treat the filesystem as read-only'
+                'Add this option to make no changes to the current version of the generated manuscript'
+            )
+            ->addOption(
+                'force',
+                null,
+                InputOption::VALUE_NONE,
+                'Add this option to force generated resources to be generated again'
             )
             ->addOption(
                 'update-dependencies',
@@ -59,12 +65,16 @@ final class GenerateManuscriptCommand extends Command
         $dryRun = $input->getOption('dry-run');
         assert(is_bool($dryRun));
 
+        $force = $input->getOption('force');
+        assert(is_bool($force));
+
         $updateDependencies = $input->getOption('update-dependencies');
         assert(is_bool($updateDependencies));
 
         $configuration = new RuntimeConfiguration(
             $this->loadBookProjectConfiguration($input),
             $dryRun,
+            $force,
             $updateDependencies
         );
         $container = new ServiceContainer($configuration, $output);
