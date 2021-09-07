@@ -6,7 +6,6 @@ namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 
 use Assert\Assertion;
 use LogicException;
-use ManuscriptGenerator\FileOperations\File;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -29,7 +28,7 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
     {
         $resourceGenerator = $this->getResourceGeneratorFor($resource);
 
-        $expectedPath = $resource->expectedFilePathname();
+        $expectedFile = $resource->expectedFile();
 
         $source = new Source(
             $resource->includedFromFile()
@@ -39,9 +38,10 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
         );
 
         if (! $this->regenerateAllResources
-            && is_file($expectedPath)
+            && $expectedFile->exists()
             && $resourceGenerator->sourceLastModified($resource, $source, $this->determineLastModifiedTimestamp)
-            <= ((int) filemtime($expectedPath))
+            <= $expectedFile->existing()
+                ->lastModifiedTime()
         ) {
             $this->logger->debug('Generated resource {link} was still fresh', [
                 'link' => $resource->link,
@@ -58,7 +58,7 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
 
         $generatedResource = $resourceGenerator->generateResource($resource, $source);
 
-        File::fromPathname($expectedPath)->putContents($generatedResource);
+        $expectedFile->putContents($generatedResource);
 
         $this->logger->info('Generated resource {link}', [
             'link' => $resource->link,
