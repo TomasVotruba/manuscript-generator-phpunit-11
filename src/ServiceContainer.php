@@ -107,7 +107,8 @@ final class ServiceContainer
             ),
             $this->filesystem(),
             new DetermineLastModifiedTimestamp(),
-            $this->logger()
+            $this->logger(),
+            $this->configuration->regenerateAllGeneratedResources()
         );
     }
 

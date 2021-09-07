@@ -19,7 +19,8 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
         private array $resourceGenerators,
         private Filesystem $filesystem,
         private DetermineLastModifiedTimestamp $determineLastModifiedTimestamp,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private bool $regenerateAllResources
     ) {
     }
 
@@ -36,7 +37,8 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
                 ->pathname()
         );
 
-        if (is_file($expectedPath)
+        if (!$this->regenerateAllResources
+            && is_file($expectedPath)
             && $resourceGenerator->sourceLastModified($resource, $source, $this->determineLastModifiedTimestamp)
             <= ((int) filemtime($expectedPath))
         ) {
