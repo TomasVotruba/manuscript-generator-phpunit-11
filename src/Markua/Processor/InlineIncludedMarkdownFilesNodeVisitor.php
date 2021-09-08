@@ -23,8 +23,11 @@ final class InlineIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor
         if (! $node instanceof IncludedResource) {
             return null;
         }
-
         if (count($node->attributes->attributes) !== 0) {
+            // we'll take the existence of attributes as a hint that the writer want to show the contents of the file as it is
+            return null;
+        }
+        if ($node->attributes->has('subset')) {
             // we'll take the existence of attributes as a hint that the writer want to show the contents of the file as it is
             return null;
         }
@@ -33,18 +36,19 @@ final class InlineIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor
             if ($node->expectedFile()->exists()) {
                 $markuaFile = $node->expectedFile()
                     ->existing();
-                return $this->markuaLoader->load($markuaFile->getContents(), $markuaFile);
+                $document = $this->markuaLoader->load($markuaFile->getContents(), $markuaFile);
+            } else {
+                // The included file inherits the file attribute of the current node
+                $document = $this->markuaLoader->load(
+                    $this->resourceLoader->load($node)
+                        ->contents(),
+                    $node->getAttribute(MetaAttributes::FILE)
+                );
             }
 
-            // The included file inherits the file attribute of the current node
-            $document = $this->markuaLoader->load(
-                $this->resourceLoader->load($node)
-                    ->contents(),
-                $node->getAttribute(MetaAttributes::FILE)
-            );
             // Copy "subset" attribute
             $document->setAttribute('subset', $node->getAttribute('subset'));
-            // @TODO should we copy all attributes?
+            // @TODO should we copy all other attributes too?
 
             return $document;
         }

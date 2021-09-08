@@ -14,7 +14,7 @@ final class Document extends AbstractNode
      */
     public function __construct(
         public array $nodes,
-        public array $virtualNodes
+        public array $virtualNodes = []
     ) {
     }
 

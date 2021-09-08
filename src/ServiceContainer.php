@@ -20,6 +20,7 @@ use ManuscriptGenerator\Markua\Processor\InlineIncludedResourcesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\LinkRegistry\CollectLinksForLinkRegistryNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\MarkuaLoader;
 use ManuscriptGenerator\Markua\Processor\ProcessInlineResourcesNodeVisitor;
+use ManuscriptGenerator\Markua\Processor\Subset\CreateSubsetNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\Subset\MarkNodesForInclusionInSubsetNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\UseFilenameAsCaptionNodeVisitor;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
@@ -64,7 +65,7 @@ final class ServiceContainer
         return new ManuscriptGenerator(
             $this->configuration,
             $this->dependenciesInstaller(),
-            new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaLoader(), new MarkuaPrinter()),
+            new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaLoader(), $this->markuaPrinter()),
             $this->logger(),
             $this->resultPrinter()
         );
@@ -143,6 +144,7 @@ final class ServiceContainer
                 )
             ),
             new CopyIncludedResourceNodeVisitor($this->resourceLoader()),
+            new CreateSubsetNodeVisitor($this->markuaPrinter()),
             new CapitalizeHeadlinesNodeVisitor(
                 new HeadlineCapitalizer(),
                 $this->configuration->capitalizeHeadlines()
@@ -172,5 +174,10 @@ final class ServiceContainer
     private function markuaLoader(): MarkuaLoader
     {
         return new MarkuaLoader($this->markuaParser());
+    }
+
+    private function markuaPrinter(): MarkuaPrinter
+    {
+        return new MarkuaPrinter();
     }
 }
