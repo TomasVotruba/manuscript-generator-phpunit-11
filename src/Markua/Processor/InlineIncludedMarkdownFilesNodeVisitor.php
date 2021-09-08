@@ -23,12 +23,15 @@ final class InlineIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor
         if (! $node instanceof IncludedResource) {
             return null;
         }
-        if (count($node->attributes->attributes) !== 0) {
-            // we'll take the existence of attributes as a hint that the writer want to show the contents of the file as it is
+        $import = $node->attributes->getBoolOrNull('import');
+        if ($import === null) {
             return null;
         }
-        if ($node->attributes->has('subset')) {
-            // we'll take the existence of attributes as a hint that the writer want to show the contents of the file as it is
+
+        // Erase the attribute anyway, so it won't end up in the generated manuscript itself
+        $node->attributes->remove('import');
+
+        if (! $import) {
             return null;
         }
 
