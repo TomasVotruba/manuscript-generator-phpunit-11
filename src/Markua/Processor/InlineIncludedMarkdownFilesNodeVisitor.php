@@ -38,6 +38,7 @@ final class InlineIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor
                     ->existing();
                 $document = $this->markuaLoader->load($markuaFile->getContents(), $markuaFile);
             } else {
+                // @TODO is still needed? I think the file will always exist so we only need the branch above
                 // The included file inherits the file attribute of the current node
                 $document = $this->markuaLoader->load(
                     $this->resourceLoader->load($node)

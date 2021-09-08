@@ -34,29 +34,17 @@ final class ManuscriptGenerator
 
         $manuscriptFiles = ManuscriptFiles::createEmpty();
 
-        foreach ([
-            'book.md' => 'Book.txt',
-            'subset.md' => 'Subset.txt',
-        ] as $srcFileName => $targetFileName) {
-            $srcFile = $this->configuration->manuscriptSrcDir()
-                ->appendPath($srcFileName)
-                ->file();
-            if (! $srcFile->exists()) {
-                $this->logger->warning('Skipping generation of {targetFileName} because {srcFilePath} does not exist', [
-                    'targetFileName' => $targetFileName,
-                    'srcFilePath' => $srcFile->pathname(),
-                ]);
+        $srcFileName = 'book.md';
+        $srcFile = $this->configuration->manuscriptSrcDir()
+            ->appendPath($srcFileName)
+            ->file();
 
-                continue;
-            }
+        $processedContents = $this->markuaProcessor->process($srcFile->existing(), $manuscriptFiles);
 
-            $processedContents = $this->markuaProcessor->process($srcFile->existing(), $manuscriptFiles);
+        $manuscriptFiles->addFile($srcFileName, $processedContents);
 
-            $manuscriptFiles->addFile($srcFileName, $processedContents);
-
-            $txtFileContents = $srcFileName . "\n";
-            $manuscriptFiles->addFile($targetFileName, $txtFileContents);
-        }
+        $txtFileContents = $srcFileName . "\n";
+        $manuscriptFiles->addFile('Book.txt', $txtFileContents);
 
         return $manuscriptFiles;
     }
