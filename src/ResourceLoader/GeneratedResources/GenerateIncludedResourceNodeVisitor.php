@@ -21,7 +21,7 @@ final class GenerateIncludedResourceNodeVisitor extends AbstractNodeVisitor
             return null;
         }
 
-        if (! is_string($node->attributes->get('generator'))) {
+        if ($node->attributes->getStringOrNull('generator') === null) {
             // This included resources is not supposed to be generated
             return null;
         }

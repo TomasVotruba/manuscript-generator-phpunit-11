@@ -47,11 +47,10 @@ final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
             return null;
         }
 
-        $slug = $node->attributes->get('slug');
+        $slug = $node->attributes->getStringOrNull('slug');
         if ($slug === null) {
             throw CouldNotProcessExternalLink::becauseItHasNoSlugAttribute($node);
         }
-        Assertion::string($slug);
 
         $this->linkCollector->add($slug, $node->target);
 

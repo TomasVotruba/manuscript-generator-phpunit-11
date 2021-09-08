@@ -10,7 +10,8 @@ final class FragmentResourceProcessor implements ResourceProcessor
 {
     public function process(LoadedResource $resource): void
     {
-        $selectFragment = $resource->getAttribute('fragment');
+        $selectFragment = $resource->attributes()
+            ->getStringOrNull('fragment');
         if ($selectFragment === null) {
             return;
         }
@@ -18,6 +19,7 @@ final class FragmentResourceProcessor implements ResourceProcessor
         $cropper = new TextCropper('// fragment-start ' . $selectFragment, '// fragment-end ' . $selectFragment);
 
         $resource->setContents($cropper->crop($resource->contents()));
-        $resource->removeAttribute('fragment');
+        $resource->attributes()
+            ->remove('fragment');
     }
 }

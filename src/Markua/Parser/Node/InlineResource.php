@@ -23,11 +23,6 @@ final class InlineResource extends AbstractNode
 
     public function format(): string
     {
-        $formatAttribute = $this->attributes->get('format');
-        if (is_string($formatAttribute)) {
-            return $formatAttribute;
-        }
-
-        return 'guess';
+        return $this->attributes->getStringOrNull('format') ?? 'guess';
     }
 }

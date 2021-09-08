@@ -16,7 +16,7 @@ final class MarkNodesForInclusionInSubsetNodeVisitor extends AbstractNodeVisitor
             return null;
         }
 
-        $subsetAttribute = $node->attributes->get('subset');
+        $subsetAttribute = $node->attributes->getBoolOrNull('subset');
         if ($subsetAttribute === null) {
             return null;
         }

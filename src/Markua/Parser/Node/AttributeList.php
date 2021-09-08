@@ -37,6 +37,36 @@ final class AttributeList extends AbstractNode
         return null;
     }
 
+    public function getStringOrNull(string $key): ?string
+    {
+        $value = $this->get($key);
+
+        if ($value === null) {
+            return null;
+        }
+
+        if (! is_string($value)) {
+            throw new InvalidAttributeType($key, 'string', $value);
+        }
+
+        return $value;
+    }
+
+    public function getBoolOrNull(string $key): ?bool
+    {
+        $value = $this->get($key);
+
+        if ($value === null) {
+            return null;
+        }
+
+        if (! is_bool($value)) {
+            throw new InvalidAttributeType($key, 'bool', $value);
+        }
+
+        return $value;
+    }
+
     public function remove(string $key): void
     {
         foreach ($this->attributes as $index => $attribute) {

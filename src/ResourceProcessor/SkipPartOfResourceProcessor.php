@@ -14,7 +14,8 @@ final class SkipPartOfResourceProcessor implements ResourceProcessor
 
     public function process(LoadedResource $resource): void
     {
-        $replacement = $resource->getAttribute('skipReplacement');
+        $replacement = $resource->attributes()
+            ->getStringOrNull('skipReplacement');
         if (! is_string($replacement)) {
             $replacement = '// ...';
         }

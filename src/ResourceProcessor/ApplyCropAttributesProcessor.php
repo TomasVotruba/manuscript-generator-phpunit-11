@@ -13,8 +13,10 @@ final class ApplyCropAttributesProcessor implements ResourceProcessor
 {
     public function process(LoadedResource $resource): void
     {
-        $cropStart = $resource->getAttribute('crop-start');
-        $cropEnd = $resource->getAttribute('crop-end');
+        $cropStart = $resource->attributes()
+            ->getStringOrNull('crop-start');
+        $cropEnd = $resource->attributes()
+            ->getStringOrNull('crop-end');
 
         if ($cropStart === null && $cropEnd === null) {
             return;
@@ -26,8 +28,10 @@ final class ApplyCropAttributesProcessor implements ResourceProcessor
             $cropEnd === null ? null : (int) $cropEnd,
         );
 
-        $resource->removeAttribute('crop-start');
-        $resource->removeAttribute('crop-end');
+        $resource->attributes()
+            ->remove('crop-start');
+        $resource->attributes()
+            ->remove('crop-end');
 
         $resource->setContents($croppedContent);
     }

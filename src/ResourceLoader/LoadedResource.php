@@ -42,18 +42,8 @@ final class LoadedResource
         $this->contents = $newContents;
     }
 
-    public function getAttribute(string $key): string|bool|null
+    public function attributes(): AttributeList
     {
-        return $this->attributes->get($key);
-    }
-
-    public function setAttribute(string $key, string $value): void
-    {
-        $this->attributes->set($key, $value);
-    }
-
-    public function removeAttribute(string $key): void
-    {
-        $this->attributes->remove($key);
+        return $this->attributes;
     }
 }

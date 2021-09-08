@@ -30,8 +30,7 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
 
         $expectedFile = $resource->expectedFile();
 
-        $sourceAttribute = $resource->attributes->get('source');
-        Assertion::nullOrString($sourceAttribute);
+        $sourceAttribute = $resource->attributes->getStringOrNull('source');
 
         $source = new Source(
             $resource->includedFromFile()
@@ -70,7 +69,7 @@ final class DelegatingResourceGenerator implements IncludedResourceGenerator
 
     private function getResourceGeneratorFor(IncludedResource $includedResource): ResourceGenerator
     {
-        $generatorName = $includedResource->attributes->get('generator');
+        $generatorName = $includedResource->attributes->getStringOrNull('generator');
         Assertion::string($generatorName);
 
         foreach ($this->resourceGenerators as $resourceGenerator) {
