@@ -80,9 +80,16 @@ final class IncludedResourceGenerator
 
         throw new LogicException(
             sprintf(
-                '"generator" key contains unknown resource generator "%s" (%s)',
+                '"generator" key contains unknown resource generator "%s" (%s). Available options: %s',
                 $generatorName,
-                $includedResource->debugInfo()
+                $includedResource->debugInfo(),
+                implode(
+                    ', ',
+                    array_map(
+                        fn (ResourceGenerator $resourceGenerator): string => $resourceGenerator->name(),
+                        $this->resourceGenerators
+                    )
+                )
             )
         );
     }
