@@ -25,7 +25,6 @@ use ManuscriptGenerator\Markua\Processor\Subset\MarkNodesForInclusionInSubsetNod
 use ManuscriptGenerator\Markua\Processor\UseFilenameAsCaptionNodeVisitor;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\CopyFromVendorResourceGenerator;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\DelegatingResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DetermineLastModifiedTimestamp;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DrawioResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\GenerateIncludedResourceNodeVisitor;
@@ -88,7 +87,7 @@ final class ServiceContainer
 
     private function includedResourceGenerator(): IncludedResourceGenerator
     {
-        return new DelegatingResourceGenerator(
+        return new IncludedResourceGenerator(
             array_merge(
                 $this->configuration->additionalResourceGenerators(),
                 [
