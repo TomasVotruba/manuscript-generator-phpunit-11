@@ -196,14 +196,40 @@ final class GenerateManuscriptTest extends TestCase
     {
         $this->filesystem->mirror($manuscriptSrcDir, $this->manuscriptSrcDir);
 
+        $command = [
+            '--manuscript-dir' => $this->manuscriptDir,
+            '--manuscript-src-dir' => $this->manuscriptSrcDir,
+        ];
+
+        $configFile = $this->manuscriptSrcDir . '/book.php';
+        if (is_file($configFile)) {
+            $command['--config'] = $configFile;
+        }
+
+        $this->tester->execute($command);
+
+        self::assertDirectoryContentsEquals($manuscriptExpectedDir, $this->manuscriptDir);
+    }
+
+    public function testGenerateTitlePage(): void
+    {
+        $process = new Process(['which', 'xcf2png']);
+        $process->run();
+        if (! $process->isSuccessful()) {
+            $this->markTestSkipped('xcf2png is needed for generating the title page');
+        }
+
+        $this->filesystem->mirror(__DIR__ . '/GenerateTitlePage/manuscript-src', $this->manuscriptSrcDir);
+
         $this->tester->execute(
             [
                 '--manuscript-dir' => $this->manuscriptDir,
                 '--manuscript-src-dir' => $this->manuscriptSrcDir,
+                '--config' => $this->manuscriptSrcDir . '/book.php',
             ]
         );
 
-        self::assertDirectoryContentsEquals($manuscriptExpectedDir, $this->manuscriptDir);
+        self::assertFileExists($this->manuscriptDir . '/resources/title_page.png');
     }
 
     /**
@@ -212,6 +238,10 @@ final class GenerateManuscriptTest extends TestCase
     public function manuscriptDirProvider(): array
     {
         return [
+            'CopyTitlePage' => [
+                __DIR__ . '/CopyTitlePage/manuscript-src',
+                __DIR__ . '/CopyTitlePage/manuscript-expected',
+            ],
             'Comments' => [__DIR__ . '/Comments/manuscript-src', __DIR__ . '/Comments/manuscript-expected'],
             'Subset' => [__DIR__ . '/Subset/manuscript-src', __DIR__ . '/Subset/manuscript-expected'],
             'IncludeRelativePaths' => [
@@ -303,12 +333,6 @@ final class GenerateManuscriptTest extends TestCase
 
     public function testYouCanForceTheGeneratorToRegenerateAllGeneratedResources(): void
     {
-        $process = new Process(['which', 'xcf2png']);
-        $process->run();
-        if (! $process->isSuccessful()) {
-            $this->markTestSkipped('Using --force will also regenerate title_page.png, for which xcf2png is needed');
-        }
-
         $this->filesystem->mirror(__DIR__ . '/GeneratedResources/manuscript-src', $this->manuscriptSrcDir);
 
         $this->tester->execute(

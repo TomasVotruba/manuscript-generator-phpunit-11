@@ -240,9 +240,9 @@ final class SimpleMarkuaParser
     {
         return keepFirst(
             collect(
-                    keepFirst(string('%%'), skipSpace()),
-                    atLeastOne(satisfy(fn (string $char): bool => $char !== "\n")),
-                ),
+                keepFirst(string('%%'), skipSpace()),
+                atLeastOne(satisfy(fn (string $char): bool => $char !== "\n")),
+            ),
             self::newLineOrEof()
         )
             ->map(fn (array $parts): Comment => new Comment($parts[1]))

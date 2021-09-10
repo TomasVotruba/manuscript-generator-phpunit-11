@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Markua\Processor;
 
+use ManuscriptGenerator\Configuration\TitlePageConfiguration;
 use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Parser\Visitor\NodeTraverser;
@@ -20,7 +21,8 @@ final class AstBasedMarkuaProcessor implements MarkuaProcessor
     public function __construct(
         private array $nodeVisitors,
         private MarkuaLoader $markuaLoader,
-        private MarkuaPrinter $markuaPrinter
+        private MarkuaPrinter $markuaPrinter,
+        private TitlePageConfiguration $titlePageConfiguration
     ) {
     }
 
@@ -31,7 +33,7 @@ final class AstBasedMarkuaProcessor implements MarkuaProcessor
         $nodeTraverser = new NodeTraverser(
             array_merge([
                 new AddManuscriptFilesNodeVisitor($manuscriptFiles),
-                new AddTitlePageResourceNodeVisitor(),
+                new AddTitlePageResourceNodeVisitor($this->titlePageConfiguration),
             ], $this->nodeVisitors)
         );
         $result = $nodeTraverser->traverseDocument($document);
