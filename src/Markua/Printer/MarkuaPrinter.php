@@ -102,7 +102,7 @@ final class MarkuaPrinter
         }
     }
 
-    private function printAttributeValue(bool|string $value): string
+    private function printAttributeValue(bool|string|int $value): string
     {
         if ($value === true) {
             return 'true';
@@ -110,6 +110,10 @@ final class MarkuaPrinter
 
         if ($value === false) {
             return 'false';
+        }
+
+        if (is_int($value)) {
+            return (string) $value;
         }
 
         if (preg_match('/^[\w\-]+$/', $value) === 1) {

@@ -25,6 +25,7 @@ use function Parsica\Parsica\between;
 use function Parsica\Parsica\char;
 use function Parsica\Parsica\choice;
 use function Parsica\Parsica\collect;
+use function Parsica\Parsica\digitChar;
 use function Parsica\Parsica\either;
 use function Parsica\Parsica\eof;
 use function Parsica\Parsica\eol;
@@ -258,6 +259,7 @@ final class SimpleMarkuaParser
                 self::token(zeroOrMore(satisfy(fn (string $char): bool => ! in_array($char, [':'], true)))),
                 self::token(char(':')),
                 choice(
+                    self::token(atLeastOne(digitChar()))->map(fn (string $value): int => intval($value)),
                     self::token(string('true'))->map(fn (): bool => true),
                     self::token(string('false'))->map(fn (): bool => false),
                     self::token(self::stringLiteral()),

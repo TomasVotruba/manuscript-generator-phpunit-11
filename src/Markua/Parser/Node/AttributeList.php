@@ -14,7 +14,7 @@ final class AttributeList extends AbstractNode
     ) {
     }
 
-    public function set(string $key, string|bool $value): void
+    public function set(string $key, string|bool|int $value): void
     {
         foreach ($this->attributes as $index => $existingAttribute) {
             if ($existingAttribute->key === $key) {
@@ -26,7 +26,7 @@ final class AttributeList extends AbstractNode
         $this->attributes[] = new Attribute($key, $value);
     }
 
-    public function get(string $key): string|bool|null
+    public function get(string $key): string|bool|int|null
     {
         foreach ($this->attributes as $attribute) {
             if ($attribute->key === $key) {
@@ -62,6 +62,21 @@ final class AttributeList extends AbstractNode
 
         if (! is_bool($value)) {
             throw new InvalidAttributeType($key, 'bool', $value);
+        }
+
+        return $value;
+    }
+
+    public function getIntOrNull(string $key): ?int
+    {
+        $value = $this->get($key);
+
+        if ($value === null) {
+            return null;
+        }
+
+        if (! is_int($value)) {
+            throw new InvalidAttributeType($key, 'int', $value);
         }
 
         return $value;

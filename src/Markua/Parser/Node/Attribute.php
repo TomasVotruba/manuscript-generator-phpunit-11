@@ -8,7 +8,7 @@ final class Attribute extends AbstractNode
 {
     public function __construct(
         public string $key,
-        public string | bool $value
+        public string | bool | int $value
     ) {
     }
 }

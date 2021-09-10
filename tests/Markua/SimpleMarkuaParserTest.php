@@ -63,6 +63,22 @@ CODE_SAMPLE
         );
     }
 
+    public function testNodeWithIntAttributes(): void
+    {
+        $intAttributes = new IncludedResource('chapter1.md');
+        $intAttributes->attributes->set('crop-start', 1);
+        $intAttributes->attributes->set('crop-end', 20);
+
+        self::assertEquals(
+            $this->documentWith([$intAttributes]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+{crop-start: 1, crop-end: 20}
+![](chapter1.md)
+CODE_SAMPLE
+            )
+        );
+    }
+
     public function testInlineResourceWithExtraBacktickFails(): void
     {
         $this->expectException(ParserHasFailed::class);
