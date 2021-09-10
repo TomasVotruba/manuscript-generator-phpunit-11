@@ -80,6 +80,21 @@ CODE_SAMPLE
         );
     }
 
+    public function testNodeWithPercentageAttribute(): void
+    {
+        $percentageAttribute = new IncludedResource('image.png');
+        $percentageAttribute->attributes->set('width', '15%');
+
+        self::assertEquals(
+            $this->documentWith([$percentageAttribute]),
+            $this->parser->parseDocument(<<<CODE_SAMPLE
+{width: 15%}
+![](image.png)
+CODE_SAMPLE
+            )
+        );
+    }
+
     public function testInlineResourceWithExtraBacktickFails(): void
     {
         $this->expectException(ParserHasFailed::class);

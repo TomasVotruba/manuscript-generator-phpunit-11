@@ -278,7 +278,9 @@ final class SimpleMarkuaParser
                 self::token(zeroOrMore(satisfy(fn (string $char): bool => ! in_array($char, [':'], true)))),
                 self::token(char(':')),
                 choice(
-                    self::token(atLeastOne(digitChar()))->map(fn (string $value): int => intval($value)),
+                    self::token(atLeastOne(digitChar()))->notFollowedBy(char('%'))->map(
+                        fn (string $value): int => intval($value)
+                    ),
                     self::token(string('true'))->map(fn (): bool => true),
                     self::token(string('false'))->map(fn (): bool => false),
                     self::token(self::stringLiteral()),
