@@ -20,12 +20,12 @@ use ManuscriptGenerator\Markua\Processor\InlineIncludedResourcesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\LinkRegistry\CollectLinksForLinkRegistryNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\MarkuaLoader;
 use ManuscriptGenerator\Markua\Processor\ProcessInlineResourcesNodeVisitor;
+use ManuscriptGenerator\Markua\Processor\RemoveCommentsNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\Subset\CreateSubsetNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\Subset\MarkNodesForInclusionInSubsetNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\UseFilenameAsCaptionNodeVisitor;
 use ManuscriptGenerator\ResourceLoader\FileResourceLoader;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\CopyFromVendorResourceGenerator;
-use ManuscriptGenerator\ResourceLoader\GeneratedResources\DelegatingResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DetermineLastModifiedTimestamp;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\DrawioResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\GenerateIncludedResourceNodeVisitor;
@@ -65,7 +65,12 @@ final class ServiceContainer
         return new ManuscriptGenerator(
             $this->configuration,
             $this->dependenciesInstaller(),
-            new AstBasedMarkuaProcessor($this->markuaNodeVisitors(), $this->markuaLoader(), $this->markuaPrinter()),
+            new AstBasedMarkuaProcessor(
+                $this->markuaNodeVisitors(),
+                $this->markuaLoader(),
+                $this->markuaPrinter(),
+                $this->configuration->titlePageConfiguration()
+            ),
             $this->logger(),
             $this->resultPrinter()
         );
@@ -88,7 +93,7 @@ final class ServiceContainer
 
     private function includedResourceGenerator(): IncludedResourceGenerator
     {
-        return new DelegatingResourceGenerator(
+        return new IncludedResourceGenerator(
             array_merge(
                 $this->configuration->additionalResourceGenerators(),
                 [
@@ -149,6 +154,7 @@ final class ServiceContainer
                 new HeadlineCapitalizer(),
                 $this->configuration->capitalizeHeadlines()
             ),
+            new RemoveCommentsNodeVisitor(),
         ];
 
         if ($this->configuration->isLinkRegistryEnabled()) {

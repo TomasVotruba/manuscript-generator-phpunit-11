@@ -11,7 +11,7 @@ final class FragmentResourceProcessor implements ResourceProcessor
     public function process(LoadedResource $resource): void
     {
         $selectFragment = $resource->attributes()
-            ->getStringOrNull('fragment');
+            ->get('fragment');
         if ($selectFragment === null) {
             return;
         }

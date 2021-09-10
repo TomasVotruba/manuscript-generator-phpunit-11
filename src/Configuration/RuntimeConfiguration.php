@@ -84,4 +84,9 @@ final class RuntimeConfiguration
     {
         return 72;
     }
+
+    public function titlePageConfiguration(): TitlePageConfiguration
+    {
+        return $this->bookProjectConfiguration->titlePageConfiguration();
+    }
 }

@@ -44,41 +44,6 @@ final class GenerateManuscriptTest extends TestCase
         $this->filesystem->remove($this->manuscriptSrcDir);
     }
 
-    public function testItGeneratesTheManuscriptFolderBasedOnFilesReferencedInBookMdAndSubsetMd(): void
-    {
-        $this->filesystem->mirror(__DIR__ . '/Project/manuscript-src', $this->manuscriptSrcDir);
-
-        $this->tester->execute(
-            [
-                '--manuscript-dir' => $this->manuscriptDir,
-                '--manuscript-src-dir' => $this->manuscriptSrcDir,
-                '--config' => $this->manuscriptSrcDir . '/book.php',
-            ]
-        );
-
-        self::assertDirectoryContentsEquals(__DIR__ . '/Project/manuscript-expected', $this->manuscriptDir);
-
-        self::assertSame(0, $this->tester->getStatusCode());
-    }
-
-    public function testItGeneratesResources(): void
-    {
-        $this->filesystem->mirror(__DIR__ . '/GeneratedResources/manuscript-src', $this->manuscriptSrcDir);
-
-        $this->tester->execute(
-            [
-                '--manuscript-dir' => $this->manuscriptDir,
-                '--manuscript-src-dir' => $this->manuscriptSrcDir,
-                '--config' => $this->manuscriptSrcDir . '/book.php',
-            ]
-        );
-
-        self::assertDirectoryContentsEquals(
-            __DIR__ . '/GeneratedResources/manuscript-expected',
-            $this->manuscriptDir
-        );
-    }
-
     public function testItUpdatesComposerDependenciesIfRequested(): void
     {
         $this->filesystem->mirror(__DIR__ . '/ComposerDependencies/manuscript-src', $this->manuscriptSrcDir);
@@ -196,14 +161,41 @@ final class GenerateManuscriptTest extends TestCase
     {
         $this->filesystem->mirror($manuscriptSrcDir, $this->manuscriptSrcDir);
 
+        $command = [
+            '--manuscript-dir' => $this->manuscriptDir,
+            '--manuscript-src-dir' => $this->manuscriptSrcDir,
+        ];
+
+        $configFile = $this->manuscriptSrcDir . '/book.php';
+        if (is_file($configFile)) {
+            $command['--config'] = $configFile;
+        }
+
+        $this->tester->execute($command);
+
+        self::assertDirectoryContentsEquals($manuscriptExpectedDir, $this->manuscriptDir);
+        self::assertSame(0, $this->tester->getStatusCode());
+    }
+
+    public function testGenerateTitlePage(): void
+    {
+        $process = new Process(['which', 'xcf2png']);
+        $process->run();
+        if (! $process->isSuccessful()) {
+            $this->markTestSkipped('xcf2png is needed for generating the title page');
+        }
+
+        $this->filesystem->mirror(__DIR__ . '/GenerateTitlePage/manuscript-src', $this->manuscriptSrcDir);
+
         $this->tester->execute(
             [
                 '--manuscript-dir' => $this->manuscriptDir,
                 '--manuscript-src-dir' => $this->manuscriptSrcDir,
+                '--config' => $this->manuscriptSrcDir . '/book.php',
             ]
         );
 
-        self::assertDirectoryContentsEquals($manuscriptExpectedDir, $this->manuscriptDir);
+        self::assertFileExists($this->manuscriptDir . '/resources/title_page.png');
     }
 
     /**
@@ -212,6 +204,28 @@ final class GenerateManuscriptTest extends TestCase
     public function manuscriptDirProvider(): array
     {
         return [
+            'Project' => [__DIR__ . '/Project/manuscript-src', __DIR__ . '/Project/manuscript-expected'],
+            'GeneratedResources' => [
+                __DIR__ . '/GeneratedResources/manuscript-src',
+                __DIR__ . '/GeneratedResources/manuscript-expected',
+            ],
+            'CustomResourceProcessor' => [
+                __DIR__ . '/CustomResourceProcessor/manuscript-src',
+                __DIR__ . '/CustomResourceProcessor/manuscript-expected',
+            ],
+            'LinkRegistry' => [
+                __DIR__ . '/LinkRegistry/manuscript-src',
+                __DIR__ . '/LinkRegistry/manuscript-expected',
+            ],
+            'LinkRegistryWithExistingLinks' => [
+                __DIR__ . '/LinkRegistryWithExistingLinks/manuscript-src',
+                __DIR__ . '/LinkRegistryWithExistingLinks/manuscript-expected',
+            ],
+            'CopyTitlePage' => [
+                __DIR__ . '/CopyTitlePage/manuscript-src',
+                __DIR__ . '/CopyTitlePage/manuscript-expected',
+            ],
+            'Comments' => [__DIR__ . '/Comments/manuscript-src', __DIR__ . '/Comments/manuscript-expected'],
             'Subset' => [__DIR__ . '/Subset/manuscript-src', __DIR__ . '/Subset/manuscript-expected'],
             'IncludeRelativePaths' => [
                 __DIR__ . '/IncludeRelativePaths/manuscript-src',
@@ -231,24 +245,6 @@ final class GenerateManuscriptTest extends TestCase
                 __DIR__ . '/CroppingAndSkipping/manuscript-expected',
             ],
         ];
-    }
-
-    public function testItUsesAdditionalResourceProcessors(): void
-    {
-        $this->filesystem->mirror(__DIR__ . '/CustomResourceProcessor/manuscript-src', $this->manuscriptSrcDir);
-
-        $this->tester->execute(
-            [
-                '--manuscript-dir' => $this->manuscriptDir,
-                '--manuscript-src-dir' => $this->manuscriptSrcDir,
-                '--config' => $this->manuscriptSrcDir . '/book.php',
-            ]
-        );
-
-        self::assertDirectoryContentsEquals(
-            __DIR__ . '/CustomResourceProcessor/manuscript-expected',
-            $this->manuscriptDir
-        );
     }
 
     public function testItGeneratesResourcesOnlyIfTheyNeedToBeRefreshed(): void
@@ -302,12 +298,6 @@ final class GenerateManuscriptTest extends TestCase
 
     public function testYouCanForceTheGeneratorToRegenerateAllGeneratedResources(): void
     {
-        $process = new Process(['which', 'xcf2png']);
-        $process->run();
-        if (! $process->isSuccessful()) {
-            $this->markTestSkipped('Using --force will also regenerate title_page.png, for which xcf2png is needed');
-        }
-
         $this->filesystem->mirror(__DIR__ . '/GeneratedResources/manuscript-src', $this->manuscriptSrcDir);
 
         $this->tester->execute(
@@ -388,43 +378,6 @@ final class GenerateManuscriptTest extends TestCase
         );
 
         self::assertSame(0, $this->tester->getStatusCode());
-    }
-
-    public function testItReplacesExternalLinksWithLinksToTheLinkRegistry(): void
-    {
-        $this->filesystem->mirror(__DIR__ . '/LinkRegistry/manuscript-src', $this->manuscriptSrcDir);
-
-        $this->tester->execute(
-            [
-                '--manuscript-dir' => $this->manuscriptDir,
-                '--manuscript-src-dir' => $this->manuscriptSrcDir,
-                '--config' => $this->manuscriptSrcDir . '/book.php',
-            ]
-        );
-
-        self::assertDirectoryContentsEquals(__DIR__ . '/LinkRegistry/manuscript-expected', $this->manuscriptDir);
-    }
-
-    public function testItKeepsExistingLinks(): void
-    {
-        $this->filesystem->mirror(__DIR__ . '/LinkRegistry/manuscript-src', $this->manuscriptSrcDir);
-
-        $existingLinks = '/example https://example.com';
-
-        file_put_contents($this->manuscriptSrcDir . '/links.txt', $existingLinks);
-
-        $this->tester->execute(
-            [
-                '--manuscript-dir' => $this->manuscriptDir,
-                '--manuscript-src-dir' => $this->manuscriptSrcDir,
-                '--config' => $this->manuscriptSrcDir . '/book.php',
-            ]
-        );
-
-        self::assertStringContainsString(
-            $existingLinks,
-            (string) file_get_contents($this->manuscriptDir . '/links.txt')
-        );
     }
 
     private static function assertDirectoryContentsEquals(string $expectedDir, string $actualDir): void

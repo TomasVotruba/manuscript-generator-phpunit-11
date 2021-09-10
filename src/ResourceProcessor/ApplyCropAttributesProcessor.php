@@ -14,9 +14,9 @@ final class ApplyCropAttributesProcessor implements ResourceProcessor
     public function process(LoadedResource $resource): void
     {
         $cropStart = $resource->attributes()
-            ->getStringOrNull('crop-start');
+            ->getIntOrNull('crop-start');
         $cropEnd = $resource->attributes()
-            ->getStringOrNull('crop-end');
+            ->getIntOrNull('crop-end');
 
         if ($cropStart === null && $cropEnd === null) {
             return;
@@ -24,8 +24,8 @@ final class ApplyCropAttributesProcessor implements ResourceProcessor
 
         $croppedContent = $this->selectLines(
             $resource->contents(),
-            $cropStart === null ? null : (int) $cropStart,
-            $cropEnd === null ? null : (int) $cropEnd,
+            $cropStart === null ? null : $cropStart,
+            $cropEnd === null ? null : $cropEnd,
         );
 
         $resource->attributes()

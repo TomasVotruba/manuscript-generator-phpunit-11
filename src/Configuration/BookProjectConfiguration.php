@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Configuration;
 
+use Assert\Assertion;
 use ManuscriptGenerator\FileOperations\Directory;
 use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\ResourceGenerator;
@@ -26,8 +27,12 @@ final class BookProjectConfiguration
         private string $manuscriptTargetDir = 'manuscript',
         private string $tmpDir = 'var/tmp',
         private bool $capitalizeHeadlines = false,
-        private ?LinkRegistryConfiguration $linkRegistryConfiguration = null
+        private ?LinkRegistryConfiguration $linkRegistryConfiguration = null,
+        private ?TitlePageConfiguration $titlePageConfiguration = null
     ) {
+        if ($this->titlePageConfiguration === null) {
+            $this->titlePageConfiguration = TitlePageConfiguration::uploadOnLeanpub();
+        }
     }
 
     public static function usingDefaults(): self
@@ -116,5 +121,17 @@ final class BookProjectConfiguration
     public function setTmpDir(string $tmpDir): void
     {
         $this->tmpDir = $tmpDir;
+    }
+
+    public function setTitlePageConfiguration(TitlePageConfiguration $titlePageConfiguration): void
+    {
+        $this->titlePageConfiguration = $titlePageConfiguration;
+    }
+
+    public function titlePageConfiguration(): TitlePageConfiguration
+    {
+        Assertion::notNull($this->titlePageConfiguration);
+
+        return $this->titlePageConfiguration;
     }
 }
