@@ -212,6 +212,7 @@ final class GenerateManuscriptTest extends TestCase
     public function manuscriptDirProvider(): array
     {
         return [
+            'Comments' => [__DIR__ . '/Comments/manuscript-src', __DIR__ . '/Comments/manuscript-expected'],
             'Subset' => [__DIR__ . '/Subset/manuscript-src', __DIR__ . '/Subset/manuscript-expected'],
             'IncludeRelativePaths' => [
                 __DIR__ . '/IncludeRelativePaths/manuscript-src',

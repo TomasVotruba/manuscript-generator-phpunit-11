@@ -11,12 +11,14 @@ use ManuscriptGenerator\Markua\Parser\Node\Attribute;
 use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
 use ManuscriptGenerator\Markua\Parser\Node\Blockquote;
 use ManuscriptGenerator\Markua\Parser\Node\Blurb;
+use ManuscriptGenerator\Markua\Parser\Node\Comment;
 use ManuscriptGenerator\Markua\Parser\Node\Directive;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
 use ManuscriptGenerator\Markua\Parser\Node\Heading;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Markua\Parser\Node\InlineResource;
 use ManuscriptGenerator\Markua\Parser\Node\Link;
+use ManuscriptGenerator\Markua\Parser\Node\Noop;
 use ManuscriptGenerator\Markua\Parser\Node\Paragraph;
 use ManuscriptGenerator\Markua\Parser\Node\Span;
 
@@ -47,6 +49,10 @@ final class MarkuaPrinter
 
     private function printNode(Node $node, Result $result): void
     {
+        if ($node instanceof Noop) {
+            return;
+        }
+
         if ($node instanceof Document) {
             foreach ($node->nodes as $subnode) {
                 $this->printNode($subnode, $result);
@@ -97,6 +103,9 @@ final class MarkuaPrinter
             $result->appendToCurrentBlock(
                 '```' . $node->format . "\n" . self::keepOnlyOneNewLineAtTheEnd($node->contents) . '```'
             );
+        } elseif ($node instanceof Comment) {
+            $result->startBlock();
+            $result->appendLineToBlock('%% ' . $node->text);
         } else {
             throw new LogicException('Unknown node type: ' . $node::class);
         }

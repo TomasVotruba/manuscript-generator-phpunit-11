@@ -10,6 +10,7 @@ use ManuscriptGenerator\Markua\Parser\Node\Attribute;
 use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
 use ManuscriptGenerator\Markua\Parser\Node\Blockquote;
 use ManuscriptGenerator\Markua\Parser\Node\Blurb;
+use ManuscriptGenerator\Markua\Parser\Node\Comment;
 use ManuscriptGenerator\Markua\Parser\Node\Directive;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
 use ManuscriptGenerator\Markua\Parser\Node\Heading;
@@ -300,6 +301,26 @@ CODE_SAMPLE
 # Title
 
 Paragraph 1
+CODE_SAMPLE
+            )
+        );
+    }
+
+    public function testComments(): void
+    {
+        self::assertEquals(
+            $this->documentWith([
+                new Comment('Comment right before chapter'),
+                new Heading(1, 'Chapter 1'),
+                new Comment('Comment as a semi-block element'),
+            ]),
+            $this->parser->parseDocument(
+                <<<CODE_SAMPLE
+%% Comment right before chapter
+# Chapter 1
+
+%% Comment as a semi-block element
+
 CODE_SAMPLE
             )
         );

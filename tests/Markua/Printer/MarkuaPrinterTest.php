@@ -73,6 +73,8 @@ Test
 A quote
 {/blockquote}
 
+%% Comment
+
 CODE_SAMPLE
         ];
     }

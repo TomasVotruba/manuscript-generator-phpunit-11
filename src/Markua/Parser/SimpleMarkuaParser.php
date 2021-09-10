@@ -9,6 +9,7 @@ use ManuscriptGenerator\Markua\Parser\Node\Attribute;
 use ManuscriptGenerator\Markua\Parser\Node\AttributeList;
 use ManuscriptGenerator\Markua\Parser\Node\Blockquote;
 use ManuscriptGenerator\Markua\Parser\Node\Blurb;
+use ManuscriptGenerator\Markua\Parser\Node\Comment;
 use ManuscriptGenerator\Markua\Parser\Node\Directive;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
 use ManuscriptGenerator\Markua\Parser\Node\Heading;
@@ -40,6 +41,7 @@ use Parsica\Parsica\ParserHasFailed;
 use function Parsica\Parsica\repeat;
 use function Parsica\Parsica\satisfy;
 use function Parsica\Parsica\sepBy;
+use function Parsica\Parsica\skipSpace;
 use function Parsica\Parsica\skipSpace1;
 use function Parsica\Parsica\string;
 use function Parsica\Parsica\takeWhile;
@@ -55,6 +57,7 @@ final class SimpleMarkuaParser
         $parser = zeroOrMore(
             collect(
                 any(
+                    self::comment(),
                     self::aside(),
                     self::blockquote(),
                     self::blurb(),
@@ -228,6 +231,22 @@ final class SimpleMarkuaParser
         )
             ->map(fn ($parts): Paragraph => new Paragraph(self::simplifyNodes($parts)))
             ->label('paragraph');
+    }
+
+    /**
+     * @return Parser<Comment>
+     */
+    private static function comment(): Parser
+    {
+        return keepFirst(
+            collect(
+                    keepFirst(string('%%'), skipSpace()),
+                    atLeastOne(satisfy(fn (string $char): bool => $char !== "\n")),
+                ),
+            self::newLineOrEof()
+        )
+            ->map(fn (array $parts): Comment => new Comment($parts[1]))
+            ->label('comment');
     }
 
     /**

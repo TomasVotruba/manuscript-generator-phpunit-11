@@ -20,6 +20,7 @@ use ManuscriptGenerator\Markua\Processor\InlineIncludedResourcesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\LinkRegistry\CollectLinksForLinkRegistryNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\MarkuaLoader;
 use ManuscriptGenerator\Markua\Processor\ProcessInlineResourcesNodeVisitor;
+use ManuscriptGenerator\Markua\Processor\RemoveCommentsNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\Subset\CreateSubsetNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\Subset\MarkNodesForInclusionInSubsetNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\UseFilenameAsCaptionNodeVisitor;
@@ -148,6 +149,7 @@ final class ServiceContainer
                 new HeadlineCapitalizer(),
                 $this->configuration->capitalizeHeadlines()
             ),
+            new RemoveCommentsNodeVisitor(),
         ];
 
         if ($this->configuration->isLinkRegistryEnabled()) {
