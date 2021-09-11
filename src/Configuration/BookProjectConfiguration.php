@@ -22,6 +22,8 @@ final class BookProjectConfiguration
      */
     private array $resourceProcessors = [];
 
+    private bool $autoImportMarkdownFiles = true;
+
     public function __construct(
         private string $manuscriptSrcDir = 'manuscript-src',
         private string $manuscriptTargetDir = 'manuscript',
@@ -133,5 +135,15 @@ final class BookProjectConfiguration
         Assertion::notNull($this->titlePageConfiguration);
 
         return $this->titlePageConfiguration;
+    }
+
+    public function autoImportMarkdownFiles(): bool
+    {
+        return $this->autoImportMarkdownFiles;
+    }
+
+    public function setAutoImportMarkdownFiles(bool $autoImportMarkdownFiles): void
+    {
+        $this->autoImportMarkdownFiles = $autoImportMarkdownFiles;
     }
 }

@@ -10,11 +10,12 @@ use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\Meta\MetaAttributes;
 use ManuscriptGenerator\ResourceLoader\ResourceLoader;
 
-final class InlineIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor
+final class ImportIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
         private ResourceLoader $resourceLoader,
-        private MarkuaLoader $markuaLoader
+        private MarkuaLoader $markuaLoader,
+        private bool $autoImportMarkdownFiles
     ) {
     }
 
@@ -25,7 +26,7 @@ final class InlineIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor
         }
         $import = $node->attributes->getBoolOrNull('import');
         if ($import === null) {
-            return null;
+            $import = $this->autoImportMarkdownFiles;
         }
 
         // Erase the attribute anyway, so it won't end up in the generated manuscript itself

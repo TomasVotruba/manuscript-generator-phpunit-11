@@ -15,7 +15,7 @@ use ManuscriptGenerator\Markua\Processor\AstBasedMarkuaProcessor;
 use ManuscriptGenerator\Markua\Processor\CopyIncludedResourceNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\Headlines\CapitalizeHeadlinesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\Headlines\HeadlineCapitalizer;
-use ManuscriptGenerator\Markua\Processor\InlineIncludedMarkdownFilesNodeVisitor;
+use ManuscriptGenerator\Markua\Processor\ImportIncludedMarkdownFilesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\InlineIncludedResourcesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\LinkRegistry\CollectLinksForLinkRegistryNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\MarkuaLoader;
@@ -127,7 +127,11 @@ final class ServiceContainer
             new MarkNodesForInclusionInSubsetNodeVisitor(),
             new GenerateIncludedResourceNodeVisitor($this->includedResourceGenerator()),
             new UseFilenameAsCaptionNodeVisitor(),
-            new InlineIncludedMarkdownFilesNodeVisitor($this->resourceLoader(), $this->markuaLoader()),
+            new ImportIncludedMarkdownFilesNodeVisitor(
+                $this->resourceLoader(),
+                $this->markuaLoader(),
+                $this->configuration->autoImportMarkdownFiles()
+            ),
             new InlineIncludedResourcesNodeVisitor($this->resourceLoader()),
             new ProcessInlineResourcesNodeVisitor(
                 array_merge(

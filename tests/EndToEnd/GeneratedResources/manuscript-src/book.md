@@ -1,7 +1,7 @@
 {generator: phpunit_output}
 ![](tests/phpunit-output.txt)
 
-{generator: table_of_tokens, source: tokens/hello_world.php, import: true}
+{generator: table_of_tokens, source: tokens/hello_world.php}
 ![](tokens/hello_world.table_of_tokens.md)
 
 {generator: php_script_output, source: php_script/script.php}

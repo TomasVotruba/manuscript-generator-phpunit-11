@@ -89,4 +89,9 @@ final class RuntimeConfiguration
     {
         return $this->bookProjectConfiguration->titlePageConfiguration();
     }
+
+    public function autoImportMarkdownFiles(): bool
+    {
+        return $this->bookProjectConfiguration->autoImportMarkdownFiles();
+    }
 }

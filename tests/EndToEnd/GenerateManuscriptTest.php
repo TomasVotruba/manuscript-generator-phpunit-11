@@ -204,6 +204,10 @@ final class GenerateManuscriptTest extends TestCase
     public function manuscriptDirProvider(): array
     {
         return [
+            'DisableMarkdownAutoImport' => [
+                __DIR__ . '/DisableMarkdownAutoImport/manuscript-src',
+                __DIR__ . '/DisableMarkdownAutoImport/manuscript-expected',
+            ],
             'Project' => [__DIR__ . '/Project/manuscript-src', __DIR__ . '/Project/manuscript-expected'],
             'GeneratedResources' => [
                 __DIR__ . '/GeneratedResources/manuscript-src',
