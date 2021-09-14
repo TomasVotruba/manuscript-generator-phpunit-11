@@ -29,7 +29,7 @@ final class ManuscriptGenerator
         if ($this->configuration->updateDependencies()) {
             // Only if the user wants to force-update dependencies should we do it at once for all subprojects
             $this->logger->info('Updating all manuscript source dependencies');
-            $this->dependenciesInstaller->updateAll();
+            $this->dependenciesInstaller->updateAll($this->configuration->manuscriptSrcDir());
         }
 
         $manuscriptFiles = ManuscriptFiles::createEmpty();

@@ -10,5 +10,5 @@ interface DependenciesInstaller
 {
     public function install(ExistingDirectory $directory): void;
 
-    public function updateAll(): void;
+    public function updateAll(ExistingDirectory $directory): void;
 }
