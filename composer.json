@@ -15,17 +15,17 @@
         "symfony/finder": "^5.2",
         "symfony/process": "^5.2",
         "symfony/console": "^5.2",
-        "symplify/console-color-diff": "^9.4.40",
+        "symplify/console-color-diff": "^10.0",
         "parsica-php/parsica": "@dev",
         "beberlei/assert": "^3.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
-        "phpstan/phpstan": "^0.12.93",
-        "symplify/easy-coding-standard": "^9.4.40",
-        "symplify/coding-standard": "^9.4.40",
-        "rector/rector": "^0.11.40",
-        "phpstan/phpstan-beberlei-assert": "^0.12.6",
+        "phpstan/phpstan": "^1.2",
+        "symplify/easy-coding-standard": "^10.0",
+        "symplify/coding-standard": "^10.0",
+        "rector/rector": "^0.12",
+        "phpstan/phpstan-beberlei-assert": "^1.0",
         "phpstan/extension-installer": "^1.1"
     },
     "bin": ["bin/generate-manuscript"],
