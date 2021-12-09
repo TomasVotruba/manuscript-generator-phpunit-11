@@ -52,6 +52,7 @@ final class CombinedChecker
                     $output->writeln('<comment>skipped</comment>');
                 }
             }
+            $output->writeln(PHP_EOL . PHP_EOL);
         }
 
         return $results;
