@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff;
+use PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitStrictFixer;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
@@ -15,6 +16,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters->set(Option::PATHS, [__DIR__ . '/src', __DIR__ . '/tests', __DIR__ . '/ecs.php']);
 
     $parameters->set(Option::CACHE_DIRECTORY, getcwd() . '/cache/ecs');
+    $parameters->set(Option::PARALLEL, true);
 
     $containerConfigurator->import(SetList::CONTROL_STRUCTURES);
     $containerConfigurator->import(SetList::PSR_12);
@@ -42,6 +44,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
             // some WTF in new php_code_sniffer
             AssignmentInConditionSniff::class . '.FoundInWhileCondition',
+
+            // allow @throws
+            GeneralPhpdocAnnotationRemoveFixer::class,
         ]
     );
 };

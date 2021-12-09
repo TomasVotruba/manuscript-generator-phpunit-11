@@ -1,11 +1,13 @@
 parameters:
-    level: max
+    level: 8
     paths:
         - src
         - tests
     tmpDir: %currentWorkingDirectory%/cache/phpstan
-    excludes_analyse:
+    excludePaths:
         - tests/EndToEnd/GeneratedResources/manuscript-src
         - tests/EndToEnd/LongLines/manuscript-src
-includes:
-    - phpstan-baseline.neon
+    ignoreErrors:
+        - '#Parameter \#1 \$pathname of static method ManuscriptGenerator\\FileOperations\\ExistingDirectory::fromPathname\(\) expects string, string\|false given#'
+        - '#Method ManuscriptGenerator\\Configuration\\BookProjectConfiguration::titlePageConfiguration\(\) should return ManuscriptGenerator\\Configuration\\TitlePageConfiguration but returns ManuscriptGenerator\\Configuration\\TitlePageConfiguration\|null#'
+    reportUnmatchedIgnoredErrors: false
