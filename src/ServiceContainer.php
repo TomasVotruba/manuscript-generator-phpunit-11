@@ -178,7 +178,7 @@ final class ServiceContainer
 
     private function dependenciesInstaller(): ComposerDependenciesInstaller
     {
-        return new ComposerDependenciesInstaller($this->configuration, $this->logger());
+        return new ComposerDependenciesInstaller($this->logger());
     }
 
     private function markuaLoader(): MarkuaLoader

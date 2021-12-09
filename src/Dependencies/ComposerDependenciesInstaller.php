@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Dependencies;
 
-use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Process\Process;
 use Psr\Log\LoggerInterface;
@@ -19,7 +18,6 @@ final class ComposerDependenciesInstaller implements DependenciesInstaller
     public const UPDATE_COMMAND = 'update';
 
     public function __construct(
-        private RuntimeConfiguration $configuration,
         private LoggerInterface $logger
     ) {
     }
@@ -31,11 +29,11 @@ final class ComposerDependenciesInstaller implements DependenciesInstaller
         $this->runComposerInDirectory($directory->pathname(), $command);
     }
 
-    public function updateAll(): void
+    public function updateAll(ExistingDirectory $directory): void
     {
         $composerJsonFileFinder = Finder::create()
             ->files()
-            ->in($this->configuration->manuscriptSrcDir()->pathname())
+            ->in($directory->pathname())
             ->notPath('vendor') // don't try to install dependencies for vendor packages!
             ->name('composer.json');
 
