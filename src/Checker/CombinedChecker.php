@@ -7,7 +7,7 @@ namespace ManuscriptGenerator\Checker;
 use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Process\Result;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\OutputStyle;
 
 final class CombinedChecker
 {
@@ -24,35 +24,36 @@ final class CombinedChecker
      * @param array<ExistingDirectory> $directories
      * @return array<Result>
      */
-    public function checkAll(array $directories, OutputInterface $output): array
+    public function checkAll(array $directories, OutputStyle $outputStyle): array
     {
         $results = [];
 
         foreach ($directories as $directory) {
-            $output->writeln('Checking directory ' . $directory->pathname());
+            $title = sprintf('Checking "%s" directory', $directory->pathname());
+            $outputStyle->title($title);
 
-            $output->writeln('Installing dependencies');
+            $outputStyle->note('Installing dependencies');
             $this->dependenciesInstaller->install($directory);
 
-            foreach ($this->checkers as $checker) {
-                $output->writeln('Checker ' . $checker->name() . ': ');
+            foreach ($this->checkers as $key => $checker) {
+                $checkerMessage = sprintf('%d) Checker %s', $key + 1, $checker->name());
+                $outputStyle->section($checkerMessage);
+
                 $result = $checker->check($directory);
                 if ($result !== null) {
                     if (! $result->isSuccessful()) {
-                        $output->writeln('<error>failed</error>');
-
-                        $output->writeln($result->standardAndErrorOutputCombined());
-                    }
-                    {
-                        $output->writeln('<info>success</info>');
+                        $outputStyle->error('Failed');
+                        $outputStyle->writeln($result->standardAndErrorOutputCombined());
+                    } else {
+                        $outputStyle->success('Success');
                     }
 
                     $results[] = $result;
                 } else {
-                    $output->writeln('<comment>skipped</comment>');
+                    $outputStyle->warning('Skipped');
                 }
             }
-            $output->writeln(PHP_EOL . PHP_EOL);
+            $outputStyle->newLine(2);
         }
 
         return $results;

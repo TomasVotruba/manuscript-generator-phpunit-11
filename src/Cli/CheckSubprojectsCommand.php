@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -81,5 +82,20 @@ final class CheckSubprojectsCommand extends Command
             ),
             iterator_to_array($subprojectMarkerFiles)
         );
+<<<<<<< HEAD
+=======
+
+        $symfonyStyle = new SymfonyStyle($input, $output);
+        $results = $checker->checkAll($directories, $symfonyStyle);
+
+        $exitCode = self::SUCCESS;
+        foreach ($results as $result) {
+            if (! $result->isSuccessful()) {
+                $exitCode = self::FAILURE;
+            }
+        }
+
+        return $exitCode;
+>>>>>>> make use of style output
     }
 }
