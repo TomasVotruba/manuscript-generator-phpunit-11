@@ -81,7 +81,14 @@ final class ComposerDependenciesInstaller implements DependenciesInstaller
          * of the lock file and compare it to the vendor/ dir to determine if we need to re-install the dependencies, we
          * have to touch vendor/ once more.
          */
-        touch($composerJsonFile->getPath() . '/vendor');
+        $vendorDirPathname = $composerJsonFile->getPath() . '/vendor';
+        if (is_dir($vendorDirPathname)) {
+            /*
+             * If composer.json lists no dependencies, it doesn't create a vendor/ directory. If we then try to "touch"
+             * the vendor dir, it creates an empty file instead.
+             */
+            touch($vendorDirPathname);
+        }
 
         if (! $result->isSuccessful()) {
             throw new RuntimeException('Composer failed: ' . $result->standardAndErrorOutputCombined());
