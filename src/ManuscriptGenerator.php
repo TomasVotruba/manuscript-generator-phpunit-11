@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator;
 
 use ManuscriptGenerator\Cli\ResultPrinter;
+use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\ManuscriptFiles\ManuscriptDiff;
@@ -17,6 +18,7 @@ final class ManuscriptGenerator
 {
     public function __construct(
         private RuntimeConfiguration $configuration,
+        private BookProjectConfiguration $bookProjectConfiguration,
         private DependenciesInstaller $dependenciesInstaller,
         private MarkuaProcessor $markuaProcessor,
         private LoggerInterface $logger,
@@ -29,13 +31,13 @@ final class ManuscriptGenerator
         if ($this->configuration->updateDependencies()) {
             // Only if the user wants to force-update dependencies should we do it at once for all subprojects
             $this->logger->info('Updating all manuscript source dependencies');
-            $this->dependenciesInstaller->updateAll($this->configuration->manuscriptSrcDir());
+            $this->dependenciesInstaller->updateAll($this->bookProjectConfiguration->manuscriptSrcDir());
         }
 
         $manuscriptFiles = ManuscriptFiles::createEmpty();
 
         $srcFileName = 'book.md';
-        $srcFile = $this->configuration->manuscriptSrcDir()
+        $srcFile = $this->bookProjectConfiguration->manuscriptSrcDir()
             ->appendPath($srcFileName)
             ->file();
 
@@ -51,7 +53,7 @@ final class ManuscriptGenerator
 
     public function diffWithExistingManuscriptDir(ManuscriptFiles $manuscriptFiles): ManuscriptDiff
     {
-        return $manuscriptFiles->diff(ManuscriptFiles::fromDir($this->configuration->manuscriptTargetDir()));
+        return $manuscriptFiles->diff(ManuscriptFiles::fromDir($this->bookProjectConfiguration->manuscriptTargetDir()));
     }
 
     public function printDiff(ManuscriptDiff $diff, OutputInterface $output): void
@@ -61,10 +63,10 @@ final class ManuscriptGenerator
 
     public function dumpManuscriptFiles(ManuscriptFiles $manuscriptFiles): void
     {
-        $manuscriptFiles->dumpTo($this->configuration->manuscriptTargetDir());
+        $manuscriptFiles->dumpTo($this->bookProjectConfiguration->manuscriptTargetDir());
 
         $this->logger->info('Generated the manuscript files in {manuscriptTargetDir}', [
-            'manuscriptTargetDir' => $this->configuration->manuscriptTargetDir()
+            'manuscriptTargetDir' => $this->bookProjectConfiguration->manuscriptTargetDir()
                 ->pathname(),
         ]);
     }

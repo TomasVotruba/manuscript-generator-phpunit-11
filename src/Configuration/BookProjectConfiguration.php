@@ -146,4 +146,9 @@ final class BookProjectConfiguration
     {
         $this->autoImportMarkdownFiles = $autoImportMarkdownFiles;
     }
+
+    public function maximumLineLengthForInlineResources(): int
+    {
+        return 72;
+    }
 }

@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceProcessor\LineLength;
 
-use ManuscriptGenerator\Configuration\RuntimeConfiguration;
+use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\ResourceLoader\LoadedResource;
 use ManuscriptGenerator\ResourceProcessor\ResourceProcessor;
 
 final class FixLongLinesResourceProcessor implements ResourceProcessor
 {
     public function __construct(
-        private RuntimeConfiguration $configuration,
+        private BookProjectConfiguration $bookProjectConfiguration,
         private LineFixer $lineFixer
     ) {
     }
 
     public function process(LoadedResource $resource): void
     {
-        $maximumLineLength = $this->configuration->maximumLineLengthForInlineResources();
+        $maximumLineLength = $this->bookProjectConfiguration->maximumLineLengthForInlineResources();
 
         $fixedLines = $this->lineFixer->fix(explode("\n", $resource->contents()), $maximumLineLength);
 
