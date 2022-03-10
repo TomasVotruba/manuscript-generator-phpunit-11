@@ -23,6 +23,11 @@ final class Result
         return $this->command;
     }
 
+    public function workingDir(): ExistingDirectory
+    {
+        return $this->workingDir;
+    }
+
     public function standardOutput(): string
     {
         return $this->stripFilesystemContextFromOutput($this->standardOutput);

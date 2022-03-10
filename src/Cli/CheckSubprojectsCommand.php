@@ -11,6 +11,7 @@ use ManuscriptGenerator\Checker\PhpUnitChecker;
 use ManuscriptGenerator\Checker\RectorChecker;
 use ManuscriptGenerator\Dependencies\ComposerDependenciesInstaller;
 use ManuscriptGenerator\FileOperations\ExistingDirectory;
+use ManuscriptGenerator\Process\Result;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,26 +35,58 @@ final class CheckSubprojectsCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $checker = new CombinedChecker(
             [new PhpStanChecker(), new PhpUnitChecker(), new RectorChecker()],
-            new ComposerDependenciesInstaller(new ConsoleLogger($output))
+            new ComposerDependenciesInstaller(new ConsoleLogger($output)),
+            new ConsoleLogger($output),
         );
 
         $directories = $this->collectDirectories($input);
 
         $symfonyStyle = new SymfonyStyle($input, $output);
-        $results = $checker->checkAll($directories, $symfonyStyle);
 
-        $exitCode = self::SUCCESS;
-        foreach ($results as $result) {
-            if (! $result->isSuccessful()) {
-                $exitCode = self::FAILURE;
-            }
+        $progress = new SymfonyStyleCheckProgress($symfonyStyle, count($directories));
+
+        $allResults = [];
+
+        foreach ($directories as $directory) {
+            $dirResults = $checker->check($directory, $progress);
+            $allResults = array_merge($allResults, $dirResults);
         }
 
-        return $exitCode;
+        $progress->finish();
+
+        $symfonyStyle->definitionList();
+
+        /** @var array<Result> $failedResults */
+        $failedResults = array_filter($allResults, fn (Result $result): bool => ! $result->isSuccessful());
+
+        if ($failedResults === []) {
+            $symfonyStyle->success('All checks passed');
+            exit(self::SUCCESS);
+        }
+
+        foreach ($failedResults as $failedResult) {
+            $symfonyStyle->error('Failed check for subproject ' . $failedResult->workingDir()->pathname());
+            $symfonyStyle->definitionList(
+                [
+                    'Working dir' => $failedResult->workingDir()
+                        ->pathname(),
+                ],
+                [
+                    'Failed command' => $failedResult->command(),
+                ],
+                [
+                    'Output' => $failedResult->standardAndErrorOutputCombined(),
+                ],
+            );
+        }
+
+        $symfonyStyle->error(sprintf('Failed checks: %d', count($failedResults)));
+
+        exit(self::FAILURE);
     }
 
     /**

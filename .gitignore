@@ -1,4 +1,3 @@
-vendor
+/vendor
 /cache
 /var
-/tests/**/composer.lock
