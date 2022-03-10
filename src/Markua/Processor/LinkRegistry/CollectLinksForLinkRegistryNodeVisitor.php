@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Markua\Processor\LinkRegistry;
 
 use Assert\Assertion;
-use ManuscriptGenerator\Configuration\LinkRegistryConfiguration;
-use ManuscriptGenerator\Configuration\RuntimeConfiguration;
+use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\FileOperations\File;
 use ManuscriptGenerator\ManuscriptFiles\ManuscriptFiles;
 use ManuscriptGenerator\Markua\Parser\Node;
@@ -20,8 +19,7 @@ final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
     private ExternalLinkCollector $linkCollector;
 
     public function __construct(
-        private LinkRegistryConfiguration $linkRegistryConfiguration,
-        private RuntimeConfiguration $configuration
+        private BookProjectConfiguration $bookProjectConfiguration
     ) {
     }
 
@@ -54,7 +52,8 @@ final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
 
         $this->linkCollector->add($slug, $node->target);
 
-        $node->target = $this->linkRegistryConfiguration->linkRegistryBaseUrl() . $slug;
+        $node->target = $this->bookProjectConfiguration->linkRegistryConfiguration()
+            ->linkRegistryBaseUrl() . $slug;
 
         $node->attributes->remove('slug');
 
@@ -74,13 +73,17 @@ final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
             ->putContents($linksFileContents);
 
         // Copy the file to manuscript, because it's a file that needs to be published in some way
-        $manuscriptFiles->addFile($this->linkRegistryConfiguration->linksFile(), $linksFileContents);
+        $manuscriptFiles->addFile(
+            $this->bookProjectConfiguration->linkRegistryConfiguration()
+                ->linksFile(),
+            $linksFileContents
+        );
     }
 
     private function linksFilePathnameInSrc(): File
     {
-        return $this->configuration->manuscriptSrcDir()
-            ->appendPath($this->linkRegistryConfiguration->linksFile())
+        return $this->bookProjectConfiguration->manuscriptSrcDir()
+            ->appendPath($this->bookProjectConfiguration->linkRegistryConfiguration()->linksFile())
             ->file();
     }
 }

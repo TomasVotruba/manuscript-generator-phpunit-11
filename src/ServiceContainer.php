@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator;
 
 use ManuscriptGenerator\Cli\ResultPrinter;
+use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
 use ManuscriptGenerator\Dependencies\ComposerDependenciesInstaller;
 use ManuscriptGenerator\FileOperations\Directory;
@@ -56,6 +57,7 @@ final class ServiceContainer
 {
     public function __construct(
         private RuntimeConfiguration $configuration,
+        private BookProjectConfiguration $bookProjectConfiguration,
         private OutputInterface $output
     ) {
     }
@@ -64,12 +66,13 @@ final class ServiceContainer
     {
         return new ManuscriptGenerator(
             $this->configuration,
+            $this->bookProjectConfiguration,
             $this->dependenciesInstaller(),
             new AstBasedMarkuaProcessor(
                 $this->markuaNodeVisitors(),
                 $this->markuaLoader(),
                 $this->markuaPrinter(),
-                $this->configuration->titlePageConfiguration()
+                $this->bookProjectConfiguration->titlePageConfiguration()
             ),
             $this->logger(),
             $this->resultPrinter()
@@ -95,7 +98,7 @@ final class ServiceContainer
     {
         return new IncludedResourceGenerator(
             array_merge(
-                $this->configuration->additionalResourceGenerators(),
+                $this->bookProjectConfiguration->resourceGenerators(),
                 [
                     new CopyFromVendorResourceGenerator($this->dependenciesInstaller()),
                     new PhpUnitResourceGenerator($this->dependenciesInstaller()),
@@ -130,12 +133,12 @@ final class ServiceContainer
             new ImportIncludedMarkdownFilesNodeVisitor(
                 $this->resourceLoader(),
                 $this->markuaLoader(),
-                $this->configuration->autoImportMarkdownFiles()
+                $this->bookProjectConfiguration->autoImportMarkdownFiles()
             ),
             new InlineIncludedResourcesNodeVisitor($this->resourceLoader()),
             new ProcessInlineResourcesNodeVisitor(
                 array_merge(
-                    $this->configuration->additionalResourceProcessors(),
+                    $this->bookProjectConfiguration->additionalResourceProcessors(),
                     [
                         new FragmentResourceProcessor(),
                         new SkipPartOfResourceProcessor(),
@@ -143,7 +146,7 @@ final class ServiceContainer
                         new ApplyCropAttributesProcessor(),
                         new RemoveSuperfluousIndentationResourceProcessor(),
                         new FixLongLinesResourceProcessor(
-                            $this->configuration,
+                            $this->bookProjectConfiguration,
                             new DelegatingLineFixer(
                                 [new PhpUseStatementLineFixer(), new RegularWordWrapLineFixer()]
                             )
@@ -156,16 +159,13 @@ final class ServiceContainer
             new CreateSubsetNodeVisitor($this->markuaPrinter()),
             new CapitalizeHeadlinesNodeVisitor(
                 new HeadlineCapitalizer(),
-                $this->configuration->capitalizeHeadlines()
+                $this->bookProjectConfiguration->capitalizeHeadlines()
             ),
             new RemoveCommentsNodeVisitor(),
         ];
 
-        if ($this->configuration->isLinkRegistryEnabled()) {
-            $nodeVisitors[] = new CollectLinksForLinkRegistryNodeVisitor(
-                $this->configuration->linkRegistryConfiguration(),
-                $this->configuration
-            );
+        if ($this->bookProjectConfiguration->isLinkRegistryEnabled()) {
+            $nodeVisitors[] = new CollectLinksForLinkRegistryNodeVisitor($this->bookProjectConfiguration);
         }
 
         return $nodeVisitors;
@@ -173,7 +173,7 @@ final class ServiceContainer
 
     private function tmpDir(): Directory
     {
-        return $this->configuration->tmpDir();
+        return $this->bookProjectConfiguration->tmpDir();
     }
 
     private function dependenciesInstaller(): ComposerDependenciesInstaller

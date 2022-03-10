@@ -71,13 +71,8 @@ final class GenerateManuscriptCommand extends Command
         $updateDependencies = $input->getOption('update-dependencies');
         assert(is_bool($updateDependencies));
 
-        $configuration = new RuntimeConfiguration(
-            $this->loadBookProjectConfiguration($input),
-            $dryRun,
-            $force,
-            $updateDependencies
-        );
-        $container = new ServiceContainer($configuration, $output);
+        $configuration = new RuntimeConfiguration($dryRun, $force, $updateDependencies);
+        $container = new ServiceContainer($configuration, $this->loadBookProjectConfiguration($input), $output);
 
         $manuscriptGenerator = $container->manuscriptGenerator();
 
