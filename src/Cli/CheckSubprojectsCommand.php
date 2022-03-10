@@ -43,8 +43,6 @@ final class CheckSubprojectsCommand extends Command
 
         $directories = $this->collectDirectories($input);
 
-        $results = $checker->checkAll($directories, $output);
-
         $symfonyStyle = new SymfonyStyle($input, $output);
         $results = $checker->checkAll($directories, $symfonyStyle);
 
