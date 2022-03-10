@@ -35,7 +35,7 @@ final class CheckSubprojectsCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $checker = new CombinedChecker(
             [new PhpStanChecker(), new PhpUnitChecker(), new RectorChecker()],
@@ -65,7 +65,7 @@ final class CheckSubprojectsCommand extends Command
 
         if ($failedResults === []) {
             $symfonyStyle->success('All checks passed');
-            exit(self::SUCCESS);
+            return self::SUCCESS;
         }
 
         foreach ($failedResults as $failedResult) {
@@ -86,7 +86,7 @@ final class CheckSubprojectsCommand extends Command
 
         $symfonyStyle->error(sprintf('Failed checks: %d', count($failedResults)));
 
-        exit(self::FAILURE);
+        return self::FAILURE;
     }
 
     /**
