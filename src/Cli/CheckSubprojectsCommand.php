@@ -15,6 +15,7 @@ use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Process\Result;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -34,12 +35,19 @@ final class CheckSubprojectsCommand extends AbstractCommand
                 self::PROJECT_ARGUMENT,
                 InputArgument::OPTIONAL,
                 'Path to the specific subproject you want to check'
+            )
+            ->addOption(
+                'fail-fast',
+                'f',
+                InputOption::VALUE_NONE,
+                'Fail the command on the first subproject that has a failed check'
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $bookProjectConfiguration = $this->loadBookProjectConfiguration($input);
+        $failFast = $input->getOption('fail-fast');
 
         $checker = new CombinedChecker(
             [new PhpStanChecker(), new PhpUnitChecker(), new RectorChecker()],
@@ -58,6 +66,14 @@ final class CheckSubprojectsCommand extends AbstractCommand
         foreach ($directories as $directory) {
             $dirResults = $checker->check($directory, $progress);
             $allResults = array_merge($allResults, $dirResults);
+
+            if ($failFast) {
+                foreach ($dirResults as $result) {
+                    if (! $result->isSuccessful()) {
+                        break 2;
+                    }
+                }
+            }
         }
 
         $progress->finish();
@@ -114,7 +130,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
             ->files()
             ->name('composer.json')
             ->notPath('vendor')
-            ->sortByName();
+            ->sortByName(true);
 
         return array_map(
             fn (SplFileInfo $subprojectMarkerFile): ExistingDirectory => ExistingDirectory::fromPathname(

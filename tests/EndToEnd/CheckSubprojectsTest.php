@@ -30,7 +30,26 @@ final class CheckSubprojectsTest extends AbstractEndToEndTest
         );
 
         $display = $this->tester->getDisplay();
-        self::assertStringContainsString('Failed checks: 1', $display);
+        self::assertStringContainsString('3/3', $display, 'Expected two subprojects to be checked');
+        self::assertStringContainsString('Failed checks: 2', $display);
         self::assertStringContainsString('PHPUnit test failed', $display);
+    }
+
+    public function testCheckSubprojectsFailFast(): void
+    {
+        $this->filesystem->mirror(__DIR__ . '/SubprojectsCi/manuscript-src', $this->manuscriptSrcDir);
+
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+                '--fail-fast' => true,
+            ]
+        );
+
+        $display = $this->tester->getDisplay();
+
+        // Two subprojects will fail, but we expect only the first one to be reported
+        self::assertStringContainsString('Failed checks: 1', $display);
     }
 }
