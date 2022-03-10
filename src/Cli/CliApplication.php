@@ -16,12 +16,7 @@ final class CliApplication extends Application
         $filesystem = new Filesystem();
         $initCommand = new InitCommand($filesystem);
 
-        $this->addCommands([
-            new GenerateManuscriptCommand(),
-            new ListSubprojectsCommand(),
-            $initCommand,
-            new CheckSubprojectsCommand(),
-        ]);
+        $this->addCommands([new GenerateManuscriptCommand(), $initCommand, new CheckSubprojectsCommand()]);
         $this->setDefaultCommand(GenerateManuscriptCommand::COMMAND_NAME);
     }
 }
