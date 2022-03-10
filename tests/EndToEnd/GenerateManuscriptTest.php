@@ -5,43 +5,21 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Test\EndToEnd;
 
 use ManuscriptGenerator\Cli\GenerateManuscriptCommand;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Process\Process;
 
-final class GenerateManuscriptTest extends TestCase
+final class GenerateManuscriptTest extends AbstractEndToEndTest
 {
-    private Filesystem $filesystem;
-
     private CommandTester $tester;
-
-    private string $manuscriptSrcDir;
-
-    private string $manuscriptDir;
 
     protected function setUp(): void
     {
-        $this->filesystem = new Filesystem();
+        parent::setUp();
 
         $this->tester = new CommandTester(new GenerateManuscriptCommand());
-
-        // Create temporary directories
-        $this->manuscriptDir = sys_get_temp_dir() . '/' . uniqid('manuscript');
-        $this->filesystem->mkdir($this->manuscriptDir);
-
-        $this->manuscriptSrcDir = sys_get_temp_dir() . '/' . uniqid('manuscript-src');
-        $this->filesystem->mkdir($this->manuscriptSrcDir);
-    }
-
-    protected function tearDown(): void
-    {
-        // Remove temporary directories
-        $this->filesystem->remove($this->manuscriptDir);
-        $this->filesystem->remove($this->manuscriptSrcDir);
     }
 
     public function testItUpdatesComposerDependenciesIfRequested(): void

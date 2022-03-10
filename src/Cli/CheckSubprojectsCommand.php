@@ -9,10 +9,10 @@ use ManuscriptGenerator\Checker\CombinedChecker;
 use ManuscriptGenerator\Checker\PhpStanChecker;
 use ManuscriptGenerator\Checker\PhpUnitChecker;
 use ManuscriptGenerator\Checker\RectorChecker;
+use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\Dependencies\ComposerDependenciesInstaller;
 use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Process\Result;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
@@ -21,12 +21,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-final class CheckSubprojectsCommand extends Command
+final class CheckSubprojectsCommand extends AbstractCommand
 {
     private const PROJECT_ARGUMENT = 'project';
 
     protected function configure(): void
     {
+        parent::configure();
+
         $this->setName('check')
             ->addArgument(
                 self::PROJECT_ARGUMENT,
@@ -37,13 +39,15 @@ final class CheckSubprojectsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $bookProjectConfiguration = $this->loadBookProjectConfiguration($input);
+
         $checker = new CombinedChecker(
             [new PhpStanChecker(), new PhpUnitChecker(), new RectorChecker()],
             new ComposerDependenciesInstaller(new ConsoleLogger($output)),
             new ConsoleLogger($output),
         );
 
-        $directories = $this->collectDirectories($input);
+        $directories = $this->collectDirectories($bookProjectConfiguration, $input);
 
         $symfonyStyle = new SymfonyStyle($input, $output);
 
@@ -92,19 +96,21 @@ final class CheckSubprojectsCommand extends Command
     /**
      * @return array<ExistingDirectory>
      */
-    private function collectDirectories(InputInterface $input): array
-    {
+    private function collectDirectories(
+        BookProjectConfiguration $bookProjectConfiguration,
+        InputInterface $input
+    ): array {
         $specificProjectDir = $input->getArgument(self::PROJECT_ARGUMENT);
         if ($specificProjectDir !== null) {
             return [ExistingDirectory::fromPathname($specificProjectDir)];
         }
 
-        $dir = getcwd();
+        $dir = $bookProjectConfiguration->manuscriptSrcDir()
+            ->pathname();
         Assertion::string($dir);
 
         $subprojectMarkerFiles = Finder::create()
             ->in($dir)
-            ->depth('> 1')
             ->files()
             ->name('composer.json')
             ->notPath('vendor')
@@ -112,7 +118,7 @@ final class CheckSubprojectsCommand extends Command
 
         return array_map(
             fn (SplFileInfo $subprojectMarkerFile): ExistingDirectory => ExistingDirectory::fromPathname(
-                $subprojectMarkerFile->getRelativePath()
+                $subprojectMarkerFile->getPath()
             ),
             iterator_to_array($subprojectMarkerFiles)
         );
