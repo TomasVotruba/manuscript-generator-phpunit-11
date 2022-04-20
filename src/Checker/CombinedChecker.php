@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Checker;
 
-use ManuscriptGenerator\Cli\CheckProgress;
 use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Process\Result;
@@ -25,11 +24,9 @@ final class CombinedChecker
     /**
      * @return array<Result>
      */
-    public function check(ExistingDirectory $directory, CheckProgress $progress): array
+    public function check(ExistingDirectory $directory): array
     {
         $results = [];
-
-        $progress->startChecking($directory);
 
         $this->dependenciesInstaller->install($directory);
 

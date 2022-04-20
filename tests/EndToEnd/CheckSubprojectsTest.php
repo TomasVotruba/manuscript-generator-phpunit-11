@@ -4,50 +4,76 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Test\EndToEnd;
 
-use ManuscriptGenerator\Cli\CheckSubprojectsCommand;
-use Symfony\Component\Console\Tester\CommandTester;
+use ManuscriptGenerator\Process\Result;
+use Symfony\Component\Process\Process;
 
 final class CheckSubprojectsTest extends AbstractEndToEndTest
 {
-    private CommandTester $tester;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->tester = new CommandTester(new CheckSubprojectsCommand());
-    }
-
     public function testCheckSubprojects(): void
     {
         $this->filesystem->mirror(__DIR__ . '/SubprojectsCi/manuscript-src', $this->manuscriptSrcDir);
 
-        $this->tester->execute(
-            [
-                '--manuscript-dir' => $this->manuscriptDir,
-                '--manuscript-src-dir' => $this->manuscriptSrcDir,
-            ]
-        );
+        $process = new Process([
+            'php',
+            'bin/generate-manuscript',
+            'check',
+            '--manuscript-dir',
+            $this->manuscriptDir,
+            '--manuscript-src-dir',
+            $this->manuscriptSrcDir,
+        ]);
+        $process->run();
+        self::assertFalse($process->isSuccessful());
+        $display = $process->getOutput();
 
-        $display = $this->tester->getDisplay();
-        self::assertStringContainsString('3/3', $display, 'Expected two subprojects to be checked');
-        self::assertStringContainsString('Failed checks: 2', $display);
-        self::assertStringContainsString('PHPUnit test failed', $display);
+        self::assertStringContainsString('Failed checks: 2', $display, $process->getErrorOutput());
+        self::assertStringContainsString('PHPUnit test failed', $display, $process->getErrorOutput());
+    }
+
+    public function testCheckSubprojectsJsonOutput(): void
+    {
+        $this->filesystem->mirror(__DIR__ . '/SubprojectsCi/manuscript-src', $this->manuscriptSrcDir);
+
+        $process = new Process([
+            'php',
+            'bin/generate-manuscript',
+            'check',
+            '--manuscript-dir',
+            $this->manuscriptDir,
+            '--manuscript-src-dir',
+            $this->manuscriptSrcDir,
+            '--json',
+        ]);
+        $process->run();
+        self::assertFalse($process->isSuccessful());
+        $display = $process->getOutput();
+
+        self::assertJson($display);
+
+        $decodedData = json_decode($display, true, 512, JSON_THROW_ON_ERROR);
+        self::assertIsArray($decodedData);
+
+        $results = array_map(fn (array $data): Result => Result::fromArray($data), $decodedData);
+        self::assertCount(3, $results);
     }
 
     public function testCheckSubprojectsFailFast(): void
     {
         $this->filesystem->mirror(__DIR__ . '/SubprojectsCi/manuscript-src', $this->manuscriptSrcDir);
 
-        $this->tester->execute(
-            [
-                '--manuscript-dir' => $this->manuscriptDir,
-                '--manuscript-src-dir' => $this->manuscriptSrcDir,
-                '--fail-fast' => true,
-            ]
-        );
-
-        $display = $this->tester->getDisplay();
+        $process = new Process([
+            'php',
+            'bin/generate-manuscript',
+            'check',
+            '--manuscript-dir',
+            $this->manuscriptDir,
+            '--manuscript-src-dir',
+            $this->manuscriptSrcDir,
+            '--fail-fast',
+        ]);
+        $process->run();
+        self::assertFalse($process->isSuccessful());
+        $display = $process->getOutput();
 
         // Two subprojects will fail, but we expect only the first one to be reported
         self::assertStringContainsString('Failed checks: 1', $display);
