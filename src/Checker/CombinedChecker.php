@@ -25,11 +25,9 @@ final class CombinedChecker
     /**
      * @return array<Result>
      */
-    public function check(ExistingDirectory $directory, CheckProgress $progress): array
+    public function check(ExistingDirectory $directory): array
     {
         $results = [];
-
-        $progress->startChecking($directory);
 
         $this->dependenciesInstaller->install($directory);
 

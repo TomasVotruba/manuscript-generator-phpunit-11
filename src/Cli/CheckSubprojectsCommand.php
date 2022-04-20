@@ -64,7 +64,9 @@ final class CheckSubprojectsCommand extends AbstractCommand
         $allResults = [];
 
         foreach ($directories as $directory) {
-            $dirResults = $checker->check($directory, $progress);
+            $progress->startChecking($directory);
+
+            $dirResults = $checker->check($directory);
             $allResults = array_merge($allResults, $dirResults);
 
             if ($failFast) {
