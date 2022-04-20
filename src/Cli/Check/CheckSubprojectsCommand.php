@@ -117,21 +117,27 @@ final class CheckSubprojectsCommand extends AbstractCommand
         $allDirectories = $this->allProjectDirectories($bookProjectConfiguration);
         $resultPrinter->setNumberOfDirectories(count($allDirectories));
 
-        $directoriesPerJob = (int) ceil(count($allDirectories) / $parallelJobs);
+        $runningCommands = [];
 
-        $chunks = array_chunk($allDirectories, $directoriesPerJob);
+        $runMoreCommandsUntilMaximumIsReached = function () use ($parallelJobs, &$runningCommands, &$allDirectories): void {
+            while (count($runningCommands) < $parallelJobs) {
+                $directory = array_shift($allDirectories);
+                if (! $directory) {
+                    break;
+                }
 
-        $checkCommands = [];
-        foreach ($chunks as $chunk) {
-            $checkCommand = new Process(array_merge($_SERVER['argv'], $chunk, ['--json']));
-            $checkCommands[] = $checkCommand;
-            $checkCommand->start();
-        }
+                $checkCommand = new Process(array_merge($_SERVER['argv'], [$directory], ['--json']));
+                $runningCommands[] = $checkCommand;
+                $checkCommand->start();
+            }
+        };
+
+        $runMoreCommandsUntilMaximumIsReached();
 
         $allResults = [];
 
-        while (count($checkCommands) > 0) {
-            foreach ($checkCommands as $key => $checkCommand) {
+        while (count($runningCommands) > 0) {
+            foreach ($runningCommands as $key => $checkCommand) {
                 if ($checkCommand->isRunning()) {
                     continue;
                 }
@@ -147,9 +153,11 @@ final class CheckSubprojectsCommand extends AbstractCommand
                     return $allResults;
                 }
 
-                unset($checkCommands[$key]);
+                unset($runningCommands[$key]);
 
                 $resultPrinter->advance(count($results));
+
+                $runMoreCommandsUntilMaximumIsReached();
             }
         }
 

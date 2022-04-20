@@ -26,8 +26,8 @@ final class CheckSubprojectsTest extends AbstractEndToEndTest
         self::assertFalse($process->isSuccessful());
         $display = $process->getOutput();
 
-        self::assertStringContainsString('Failed checks: 2', $display);
-        self::assertStringContainsString('PHPUnit test failed', $display);
+        self::assertStringContainsString('Failed checks: 2', $display, $process->getErrorOutput());
+        self::assertStringContainsString('PHPUnit test failed', $display, $process->getErrorOutput());
     }
 
     public function testCheckSubprojectsJsonOutput(): void
