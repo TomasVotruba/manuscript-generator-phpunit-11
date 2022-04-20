@@ -1,29 +1,28 @@
 <?php
+
 declare(strict_types=1);
 
 namespace ManuscriptGenerator\Cli;
 
-use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Process\Result;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class SymfonyStyleCheckResultsPrinter implements ProjectCheckResultsPrinter, CheckProgress
+final class SymfonyStyleCheckResultsPrinter implements ProjectCheckResultsPrinter
 {
     private SymfonyStyle $symfonyStyle;
+
     private ProgressBar $progressBar;
 
     public function __construct(InputInterface $input, OutputInterface $output)
     {
         $this->symfonyStyle = new SymfonyStyle($input, $output);
-        ProgressBar::setFormatDefinition('check', ' %current%/%max% -- %message% (%directory%)');
+        ProgressBar::setFormatDefinition('check', ' %current%/%max%');
 
         $this->progressBar = $this->symfonyStyle->createProgressBar();
         $this->progressBar->setFormat('check');
-        $this->progressBar->setMessage('Start');
-        $this->progressBar->setMessage(getcwd() ?: 'cwd', 'directory');
 
         $this->progressBar->start();
     }
@@ -33,8 +32,7 @@ final class SymfonyStyleCheckResultsPrinter implements ProjectCheckResultsPrinte
         $this->progressBar->finish();
         $this->symfonyStyle->newLine();
 
-        $failedResults = array_filter($allResults, fn(Result $result): bool => !$result->isSuccessful());
-
+        $failedResults = Result::failedResults($allResults);
         foreach ($failedResults as $failedResult) {
             $this->symfonyStyle->error('Failed check for subproject ' . $failedResult->workingDir()->pathname());
             $this->symfonyStyle->definitionList(
@@ -56,16 +54,13 @@ final class SymfonyStyleCheckResultsPrinter implements ProjectCheckResultsPrinte
         $this->symfonyStyle->success('All checks passed');
     }
 
-    public function setNumberOfDirectories(int $number)
+    public function setNumberOfDirectories(int $number): void
     {
         $this->progressBar->setMaxSteps($number);
     }
 
-    public function startChecking(ExistingDirectory $directory): void
+    public function advance(int $numberOfDirs): void
     {
-        $this->progressBar->setMessage($directory->pathname(), 'directory');
-        $this->progressBar->setMessage('Checking');
-
-        $this->progressBar->advance();
+        $this->progressBar->advance($numberOfDirs);
     }
 }

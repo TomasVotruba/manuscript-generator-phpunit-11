@@ -78,15 +78,13 @@ final class Result
         );
     }
 
-    private function stripFilesystemContextFromOutput(string $output): string
+    /**
+     * @param array<Result> $allResults
+     */
+    public static function hasFailingResult(array $allResults): bool
     {
-        return str_replace($this->workingDir->absolute()->pathname() . '/', '', $output);
-    }
-
-    public static function hasFailingResult(array $results): bool
-    {
-        foreach ($results as $result) {
-            if (!$result->isSuccessful()) {
+        foreach ($allResults as $result) {
+            if (! $result->isSuccessful()) {
                 return true;
             }
         }
@@ -95,13 +93,16 @@ final class Result
     }
 
     /**
+     * @param array<Result> $allResults
      * @return array<Result>
      */
-    public static function failingResults(array $results): array
+    public static function failedResults(array $allResults): array
     {
-        return array_filter(
-            $results,
-            fn (Result $result) => ! $result->isSuccessful(),
-        );
+        return array_filter($allResults, fn (Result $result): bool => ! $result->isSuccessful(),);
+    }
+
+    private function stripFilesystemContextFromOutput(string $output): string
+    {
+        return str_replace($this->workingDir->absolute()->pathname() . '/', '', $output);
     }
 }

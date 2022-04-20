@@ -72,7 +72,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
         if (count($projectDirs) > 0) {
             $allResults = $this->checkSpecificProjects(
                 array_map(
-                    fn(string $projectDir): ExistingDirectory => ExistingDirectory::fromPathname($projectDir),
+                    fn (string $projectDir): ExistingDirectory => ExistingDirectory::fromPathname($projectDir),
                     $projectDirs
                 ),
                 $symfonyStyle,
@@ -109,7 +109,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
             ->sortByName(true);
 
         return array_map(
-            fn(SplFileInfo $subprojectMarkerFile): string => $subprojectMarkerFile->getPath(),
+            fn (SplFileInfo $subprojectMarkerFile): string => $subprojectMarkerFile->getPath(),
             iterator_to_array($subprojectMarkerFiles)
         );
     }
@@ -119,12 +119,12 @@ final class CheckSubprojectsCommand extends AbstractCommand
      */
     private function checkAllProjects(
         BookProjectConfiguration $bookProjectConfiguration,
-        CheckProgress $progress,
+        ProjectCheckResultsPrinter $resultPrinter,
         int $parallelJobs,
         bool $failFast,
     ): array {
         $allDirectories = $this->allProjectDirectories($bookProjectConfiguration);
-        $progress->setNumberOfDirectories(count($allDirectories));
+        $resultPrinter->setNumberOfDirectories(count($allDirectories));
 
         $directoriesPerJob = (int) ceil(count($allDirectories) / $parallelJobs);
 
@@ -132,12 +132,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
 
         $checkCommands = [];
         foreach ($chunks as $chunk) {
-            $cleanedUpCommand = array_filter(
-                $_SERVER['argv'],
-                fn (string $value) => $value !== '--fail-fast',
-            );
-
-            $checkCommand = new Process(array_merge($cleanedUpCommand, $chunk, ['--json']));
+            $checkCommand = new Process(array_merge($_SERVER['argv'], $chunk, ['--json']));
             $checkCommands[] = $checkCommand;
             $checkCommand->start();
         }
@@ -154,17 +149,16 @@ final class CheckSubprojectsCommand extends AbstractCommand
                 $decoded = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
                 Assertion::isArray($decoded);
 
-                $allResults = array_merge(
-                    $allResults,
-                    array_map(fn(array $data): Result => Result::fromArray($data), $decoded)
-                );
+                $results = array_map(fn (array $data): Result => Result::fromArray($data), $decoded);
+                $allResults = array_merge($allResults, $results);
 
                 if ($failFast && Result::hasFailingResult($allResults)) {
                     return $allResults;
                 }
 
                 unset($checkCommands[$key]);
-                // TODO update progress when we're done
+
+                $resultPrinter->advance(count($results));
             }
         }
 
@@ -179,7 +173,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
         array $directories,
         SymfonyStyle $symfonyStyle,
         bool $failFast,
-        CheckProgress $progress
+        ProjectCheckResultsPrinter $resultPrinter,
     ): array {
         $checker = new CombinedChecker(
             [new PhpStanChecker(), new PhpUnitChecker(), new RectorChecker()],
@@ -187,19 +181,22 @@ final class CheckSubprojectsCommand extends AbstractCommand
             new ConsoleLogger($symfonyStyle),
         );
 
-        $progress->setNumberOfDirectories(count($directories));
+        $resultPrinter->setNumberOfDirectories(count($directories));
 
         $allResults = [];
 
         foreach ($directories as $directory) {
-            $progress->startChecking($directory);
+            $resultPrinter->advance(1);
 
             $dirResults = $checker->check($directory);
             $allResults = array_merge($allResults, $dirResults);
-
-            if ($failFast && Result::hasFailingResult($dirResults)) {
-                return $allResults;
+            if (!$failFast) {
+                continue;
             }
+            if (!Result::hasFailingResult($dirResults)) {
+                continue;
+            }
+            return $allResults;
         }
 
         return $allResults;
