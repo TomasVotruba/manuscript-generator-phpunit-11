@@ -48,11 +48,9 @@ final class Result
         return $this->exitCode === 0;
     }
 
-    private function stripFilesystemContextFromOutput(string $output): string
-    {
-        return str_replace($this->workingDir->absolute()->pathname() . '/', '', $output);
-    }
-
+    /**
+     * @return array<string,string|int>
+     */
     public function toArray(): array
     {
         return [
@@ -65,6 +63,9 @@ final class Result
         ];
     }
 
+    /**
+     * @param array<string,mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -75,5 +76,10 @@ final class Result
             $data['combinedOutput'],
             $data['exitCode'],
         );
+    }
+
+    private function stripFilesystemContextFromOutput(string $output): string
+    {
+        return str_replace($this->workingDir->absolute()->pathname() . '/', '', $output);
     }
 }

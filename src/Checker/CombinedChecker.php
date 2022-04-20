@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Checker;
 
-use ManuscriptGenerator\Cli\CheckProgress;
 use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Process\Result;

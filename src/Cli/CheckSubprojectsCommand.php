@@ -42,12 +42,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
                 InputOption::VALUE_NONE,
                 'Fail the command on the first subproject that has a failed check'
             )
-            ->addOption(
-                'json',
-                'j',
-                InputOption::VALUE_NONE,
-                'Show the results as JSON'
-            );
+            ->addOption('json', 'j', InputOption::VALUE_NONE, 'Show the results as JSON');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -123,7 +118,10 @@ final class CheckSubprojectsCommand extends AbstractCommand
 
         if ($showResultsAsJson) {
             $output->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
-            $output->writeln(json_encode(array_map(fn (Result $result) => $result->toArray(), $allResults)));
+            $jsonEncodedResults = json_encode(array_map(fn (Result $result): array => $result->toArray(), $allResults), JSON_THROW_ON_ERROR);
+            Assertion::string($jsonEncodedResults);
+
+            $output->writeln($jsonEncodedResults);
         }
 
         return $exitCode;
