@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ManuscriptGenerator\Cli;
+namespace ManuscriptGenerator\Cli\Check;
 
 use Assert\Assertion;
 use ManuscriptGenerator\Process\Result;

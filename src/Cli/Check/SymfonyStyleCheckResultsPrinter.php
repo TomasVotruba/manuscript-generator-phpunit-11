@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ManuscriptGenerator\Cli;
+namespace ManuscriptGenerator\Cli\Check;
 
 use ManuscriptGenerator\Process\Result;
 use Symfony\Component\Console\Helper\ProgressBar;

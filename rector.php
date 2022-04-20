@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Core\Configuration\Option;
+use Rector\EarlyReturn\Rector\If_\ChangeAndIfToEarlyReturnRector;
+use Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector;
 use Rector\Php74\Rector\Property\TypedPropertyRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Set\ValueObject\SetList;
@@ -31,6 +33,7 @@ return static function (
 
     $parameters->set(Option::SKIP, [
         AddArrayReturnDocTypeRector::class,
+        ChangeAndIfToEarlyReturnRector::class,
         '*/tests/EndToEnd/*/*',
     ]);
 
