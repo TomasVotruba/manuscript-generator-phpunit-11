@@ -52,4 +52,28 @@ final class Result
     {
         return str_replace($this->workingDir->absolute()->pathname() . '/', '', $output);
     }
+
+    public function toArray(): array
+    {
+        return [
+            'workingDir' => $this->workingDir->pathname(),
+            'command' => $this->command,
+            'standardOutput' => $this->standardOutput,
+            'errorOutput' => $this->errorOutput,
+            'combinedOutput' => $this->combinedOutput,
+            'exitCode' => $this->exitCode,
+        ];
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            ExistingDirectory::fromPathname($data['workingDir']),
+            $data['command'],
+            $data['standardOutput'],
+            $data['errorOutput'],
+            $data['combinedOutput'],
+            $data['exitCode'],
+        );
+    }
 }
