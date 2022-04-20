@@ -41,6 +41,12 @@ final class CheckSubprojectsCommand extends AbstractCommand
                 'f',
                 InputOption::VALUE_NONE,
                 'Fail the command on the first subproject that has a failed check'
+            )
+            ->addOption(
+                'json',
+                'j',
+                InputOption::VALUE_NONE,
+                'Show the results as JSON'
             );
     }
 
@@ -48,6 +54,11 @@ final class CheckSubprojectsCommand extends AbstractCommand
     {
         $bookProjectConfiguration = $this->loadBookProjectConfiguration($input);
         $failFast = $input->getOption('fail-fast');
+        $showResultsAsJson = $input->getOption('json');
+
+        if ($showResultsAsJson) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+        }
 
         $checker = new CombinedChecker(
             [new PhpStanChecker(), new PhpUnitChecker(), new RectorChecker()],
@@ -87,28 +98,35 @@ final class CheckSubprojectsCommand extends AbstractCommand
 
         if ($failedResults === []) {
             $symfonyStyle->success('All checks passed');
-            return self::SUCCESS;
+            $exitCode = self::SUCCESS;
+        } else {
+            foreach ($failedResults as $failedResult) {
+                $symfonyStyle->error('Failed check for subproject ' . $failedResult->workingDir()->pathname());
+                $symfonyStyle->definitionList(
+                    [
+                        'Working dir' => $failedResult->workingDir()
+                            ->pathname(),
+                    ],
+                    [
+                        'Failed command' => $failedResult->command(),
+                    ],
+                    [
+                        'Output' => $failedResult->standardAndErrorOutputCombined(),
+                    ],
+                );
+            }
+
+            $symfonyStyle->error(sprintf('Failed checks: %d', count($failedResults)));
+
+            $exitCode = self::FAILURE;
         }
 
-        foreach ($failedResults as $failedResult) {
-            $symfonyStyle->error('Failed check for subproject ' . $failedResult->workingDir()->pathname());
-            $symfonyStyle->definitionList(
-                [
-                    'Working dir' => $failedResult->workingDir()
-                        ->pathname(),
-                ],
-                [
-                    'Failed command' => $failedResult->command(),
-                ],
-                [
-                    'Output' => $failedResult->standardAndErrorOutputCombined(),
-                ],
-            );
+        if ($showResultsAsJson) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
+            $output->writeln(json_encode(array_map(fn (Result $result) => $result->toArray(), $allResults)));
         }
 
-        $symfonyStyle->error(sprintf('Failed checks: %d', count($failedResults)));
-
-        return self::FAILURE;
+        return $exitCode;
     }
 
     /**

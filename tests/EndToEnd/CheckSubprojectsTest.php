@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Test\EndToEnd;
 
 use ManuscriptGenerator\Cli\CheckSubprojectsCommand;
+use ManuscriptGenerator\Process\Result;
 use Symfony\Component\Console\Tester\CommandTester;
 
 final class CheckSubprojectsTest extends AbstractEndToEndTest
@@ -33,6 +34,28 @@ final class CheckSubprojectsTest extends AbstractEndToEndTest
         self::assertStringContainsString('3/3', $display, 'Expected two subprojects to be checked');
         self::assertStringContainsString('Failed checks: 2', $display);
         self::assertStringContainsString('PHPUnit test failed', $display);
+    }
+
+    public function testCheckSubprojectsJsonOutput(): void
+    {
+        $this->filesystem->mirror(__DIR__ . '/SubprojectsCi/manuscript-src', $this->manuscriptSrcDir);
+
+        $this->tester->execute(
+            [
+                '--manuscript-dir' => $this->manuscriptDir,
+                '--manuscript-src-dir' => $this->manuscriptSrcDir,
+                '--json' => true
+            ]
+        );
+
+        $display = $this->tester->getDisplay();
+        self::assertJson($display);
+
+        $decodedData = json_decode($display, true);
+        self::assertIsArray($decodedData);
+
+        $results = array_map(fn (array $data) => Result::fromArray($data), $decodedData);
+        self::assertCount(3, $results);
     }
 
     public function testCheckSubprojectsFailFast(): void
