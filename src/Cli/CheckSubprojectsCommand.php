@@ -27,20 +27,6 @@ final class CheckSubprojectsCommand extends AbstractCommand
 {
     private const PROJECT_ARGUMENT = 'project';
 
-    /**
-     * @param array<Result> $results
-     */
-    private static function hasFailingResult(array $results): bool
-    {
-        foreach ($results as $result) {
-            if (!$result->isSuccessful()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     protected function configure(): void
     {
         parent::configure();
@@ -73,15 +59,15 @@ final class CheckSubprojectsCommand extends AbstractCommand
         $showResultsAsJson = $input->getOption('json');
         $parallelJobs = (int) $input->getOption('parallel') ?: 1;
 
-        if ($showResultsAsJson) {
-            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
-        }
-
         $symfonyStyle = new SymfonyStyle($input, $output);
 
-        $projectDirs = $input->getArgument(self::PROJECT_ARGUMENT);
+        if ($showResultsAsJson) {
+            $printer = new JsonProjectCheckResultsPrinter($output);
+        } else {
+            $printer = new SymfonyStyleCheckResultsPrinter($input, $output);
+        }
 
-        $progress = new SymfonyStyleCheckProgress($symfonyStyle);
+        $projectDirs = $input->getArgument(self::PROJECT_ARGUMENT);
 
         if (count($projectDirs) > 0) {
             $allResults = $this->checkSpecificProjects(
@@ -91,56 +77,19 @@ final class CheckSubprojectsCommand extends AbstractCommand
                 ),
                 $symfonyStyle,
                 $failFast,
-                $progress,
+                $printer,
             );
         } else {
-            $allResults = $this->checkAllProjects($bookProjectConfiguration, $progress, $parallelJobs, $failFast);
+            $allResults = $this->checkAllProjects($bookProjectConfiguration, $printer, $parallelJobs, $failFast);
         }
 
-        $progress->finish();
+        $printer->finish($allResults);
 
-        $symfonyStyle->definitionList();
-
-        /** @var array<Result> $failedResults */
-        $failedResults = array_filter($allResults, fn(Result $result): bool => !$result->isSuccessful());
-
-        if ($failedResults === []) {
-            $symfonyStyle->success('All checks passed');
-            $exitCode = self::SUCCESS;
-        } else {
-            foreach ($failedResults as $failedResult) {
-                $symfonyStyle->error('Failed check for subproject ' . $failedResult->workingDir()->pathname());
-                $symfonyStyle->definitionList(
-                    [
-                        'Working dir' => $failedResult->workingDir()
-                            ->pathname(),
-                    ],
-                    [
-                        'Failed command' => $failedResult->command(),
-                    ],
-                    [
-                        'Output' => $failedResult->standardAndErrorOutputCombined(),
-                    ],
-                );
-            }
-
-            $symfonyStyle->error(sprintf('Failed checks: %d', count($failedResults)));
-
-            $exitCode = self::FAILURE;
+        if (Result::hasFailingResult($allResults)) {
+            return self::FAILURE;
         }
 
-        if ($showResultsAsJson) {
-            $output->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
-            $jsonEncodedResults = json_encode(
-                array_map(fn(Result $result): array => $result->toArray(), $allResults),
-                JSON_THROW_ON_ERROR
-            );
-            Assertion::string($jsonEncodedResults);
-
-            $output->writeln($jsonEncodedResults);
-        }
-
-        return $exitCode;
+        return self::SUCCESS;
     }
 
     /**
@@ -177,8 +126,6 @@ final class CheckSubprojectsCommand extends AbstractCommand
         $allDirectories = $this->allProjectDirectories($bookProjectConfiguration);
         $progress->setNumberOfDirectories(count($allDirectories));
 
-        // Here we can start dividing the work
-
         $directoriesPerJob = (int) ceil(count($allDirectories) / $parallelJobs);
 
         $chunks = array_chunk($allDirectories, $directoriesPerJob);
@@ -212,7 +159,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
                     array_map(fn(array $data): Result => Result::fromArray($data), $decoded)
                 );
 
-                if ($failFast && self::hasFailingResult($allResults)) {
+                if ($failFast && Result::hasFailingResult($allResults)) {
                     return $allResults;
                 }
 
@@ -250,7 +197,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
             $dirResults = $checker->check($directory);
             $allResults = array_merge($allResults, $dirResults);
 
-            if ($failFast && self::hasFailingResult($dirResults)) {
+            if ($failFast && Result::hasFailingResult($dirResults)) {
                 return $allResults;
             }
         }

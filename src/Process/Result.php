@@ -82,4 +82,26 @@ final class Result
     {
         return str_replace($this->workingDir->absolute()->pathname() . '/', '', $output);
     }
+
+    public static function hasFailingResult(array $results): bool
+    {
+        foreach ($results as $result) {
+            if (!$result->isSuccessful()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array<Result>
+     */
+    public static function failingResults(array $results): array
+    {
+        return array_filter(
+            $results,
+            fn (Result $result) => ! $result->isSuccessful(),
+        );
+    }
 }

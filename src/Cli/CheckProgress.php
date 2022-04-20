@@ -11,6 +11,4 @@ interface CheckProgress
     public function setNumberOfDirectories(int $number);
 
     public function startChecking(ExistingDirectory $directory): void;
-
-    public function finish(): void;
 }
