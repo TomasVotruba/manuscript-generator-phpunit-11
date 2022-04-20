@@ -27,6 +27,20 @@ final class CheckSubprojectsCommand extends AbstractCommand
 {
     private const PROJECT_ARGUMENT = 'project';
 
+    /**
+     * @param array<Result> $results
+     */
+    private static function hasFailingResult(array $results): bool
+    {
+        foreach ($results as $result) {
+            if (!$result->isSuccessful()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     protected function configure(): void
     {
         parent::configure();
@@ -39,9 +53,15 @@ final class CheckSubprojectsCommand extends AbstractCommand
             )
             ->addOption(
                 'fail-fast',
-                'f',
+                null,
                 InputOption::VALUE_NONE,
                 'Fail the command on the first subproject that has a failed check'
+            )
+            ->addOption(
+                'parallel',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The number of checks that should be started in parallel',
             )
             ->addOption('json', 'j', InputOption::VALUE_NONE, 'Show the results as JSON');
     }
@@ -51,6 +71,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
         $bookProjectConfiguration = $this->loadBookProjectConfiguration($input);
         $failFast = $input->getOption('fail-fast');
         $showResultsAsJson = $input->getOption('json');
+        $parallelJobs = (int) $input->getOption('parallel') ?: 1;
 
         if ($showResultsAsJson) {
             $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
@@ -59,25 +80,29 @@ final class CheckSubprojectsCommand extends AbstractCommand
         $symfonyStyle = new SymfonyStyle($input, $output);
 
         $projectDirs = $input->getArgument(self::PROJECT_ARGUMENT);
+
+        $progress = new SymfonyStyleCheckProgress($symfonyStyle);
+
         if (count($projectDirs) > 0) {
             $allResults = $this->checkSpecificProjects(
                 array_map(
-                    fn (string $projectDir): ExistingDirectory => ExistingDirectory::fromPathname($projectDir),
+                    fn(string $projectDir): ExistingDirectory => ExistingDirectory::fromPathname($projectDir),
                     $projectDirs
                 ),
                 $symfonyStyle,
                 $failFast,
+                $progress,
             );
         } else {
-            $allResults = $this->checkAllProjects($bookProjectConfiguration);
+            $allResults = $this->checkAllProjects($bookProjectConfiguration, $progress, $parallelJobs, $failFast);
         }
 
-//        $progress->finish();
+        $progress->finish();
 
         $symfonyStyle->definitionList();
 
         /** @var array<Result> $failedResults */
-        $failedResults = array_filter($allResults, fn (Result $result): bool => ! $result->isSuccessful());
+        $failedResults = array_filter($allResults, fn(Result $result): bool => !$result->isSuccessful());
 
         if ($failedResults === []) {
             $symfonyStyle->success('All checks passed');
@@ -107,7 +132,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
         if ($showResultsAsJson) {
             $output->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
             $jsonEncodedResults = json_encode(
-                array_map(fn (Result $result): array => $result->toArray(), $allResults),
+                array_map(fn(Result $result): array => $result->toArray(), $allResults),
                 JSON_THROW_ON_ERROR
             );
             Assertion::string($jsonEncodedResults);
@@ -121,7 +146,8 @@ final class CheckSubprojectsCommand extends AbstractCommand
     /**
      * @return array<string>
      */
-    private function allProjectDirectories(BookProjectConfiguration $bookProjectConfiguration): array {
+    private function allProjectDirectories(BookProjectConfiguration $bookProjectConfiguration): array
+    {
         $dir = $bookProjectConfiguration->manuscriptSrcDir()
             ->pathname();
         Assertion::string($dir);
@@ -134,7 +160,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
             ->sortByName(true);
 
         return array_map(
-            fn (SplFileInfo $subprojectMarkerFile): string => $subprojectMarkerFile->getPath(),
+            fn(SplFileInfo $subprojectMarkerFile): string => $subprojectMarkerFile->getPath(),
             iterator_to_array($subprojectMarkerFiles)
         );
     }
@@ -142,33 +168,79 @@ final class CheckSubprojectsCommand extends AbstractCommand
     /**
      * @return array<Result>
      */
-    private function checkAllProjects(BookProjectConfiguration $bookProjectConfiguration): array {
-        $directories = $this->allProjectDirectories($bookProjectConfiguration);
+    private function checkAllProjects(
+        BookProjectConfiguration $bookProjectConfiguration,
+        CheckProgress $progress,
+        int $parallelJobs,
+        bool $failFast,
+    ): array {
+        $allDirectories = $this->allProjectDirectories($bookProjectConfiguration);
+        $progress->setNumberOfDirectories(count($allDirectories));
 
         // Here we can start dividing the work
 
-        $checkCommand = new Process(array_merge($_SERVER['argv'], $directories, ['--json']));
-        $checkCommand->run();
-        $json = $checkCommand->getOutput();
-        $decoded = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-        Assertion::isArray($decoded);
+        $directoriesPerJob = (int) ceil(count($allDirectories) / $parallelJobs);
 
-        return array_map(fn (array $data): Result => Result::fromArray($data), $decoded);
+        $chunks = array_chunk($allDirectories, $directoriesPerJob);
+
+        $checkCommands = [];
+        foreach ($chunks as $chunk) {
+            $cleanedUpCommand = array_filter(
+                $_SERVER['argv'],
+                fn (string $value) => $value !== '--fail-fast',
+            );
+
+            $checkCommand = new Process(array_merge($cleanedUpCommand, $chunk, ['--json']));
+            $checkCommands[] = $checkCommand;
+            $checkCommand->start();
+        }
+
+        $allResults = [];
+
+        while (count($checkCommands) > 0) {
+            foreach ($checkCommands as $key => $checkCommand) {
+                if ($checkCommand->isRunning()) {
+                    continue;
+                }
+
+                $json = $checkCommand->getOutput();
+                $decoded = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+                Assertion::isArray($decoded);
+
+                $allResults = array_merge(
+                    $allResults,
+                    array_map(fn(array $data): Result => Result::fromArray($data), $decoded)
+                );
+
+                if ($failFast && self::hasFailingResult($allResults)) {
+                    return $allResults;
+                }
+
+                unset($checkCommands[$key]);
+                // TODO update progress when we're done
+            }
+        }
+
+        return $allResults;
     }
 
     /**
      * @param array<ExistingDirectory> $directories
      * @return array<Result>
      */
-    private function checkSpecificProjects(array $directories, SymfonyStyle $symfonyStyle, bool $failFast): array
-    {
+    private function checkSpecificProjects(
+        array $directories,
+        SymfonyStyle $symfonyStyle,
+        bool $failFast,
+        CheckProgress $progress
+    ): array {
         $checker = new CombinedChecker(
             [new PhpStanChecker(), new PhpUnitChecker(), new RectorChecker()],
             new ComposerDependenciesInstaller(new ConsoleLogger($symfonyStyle)),
             new ConsoleLogger($symfonyStyle),
         );
 
-        $progress = new SymfonyStyleCheckProgress($symfonyStyle, count($directories));
+        $progress->setNumberOfDirectories(count($directories));
 
         $allResults = [];
 
@@ -178,12 +250,8 @@ final class CheckSubprojectsCommand extends AbstractCommand
             $dirResults = $checker->check($directory);
             $allResults = array_merge($allResults, $dirResults);
 
-            if ($failFast) {
-                foreach ($dirResults as $result) {
-                    if (! $result->isSuccessful()) {
-                        break 2;
-                    }
-                }
+            if ($failFast && self::hasFailingResult($dirResults)) {
+                return $allResults;
             }
         }
 

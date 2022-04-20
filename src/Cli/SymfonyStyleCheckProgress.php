@@ -13,17 +13,21 @@ final class SymfonyStyleCheckProgress implements CheckProgress
     private ProgressBar $progressBar;
 
     public function __construct(
-        private SymfonyStyle $symfonyStyle,
-        int $numberOfDirectories
+        private SymfonyStyle $symfonyStyle
     ) {
         ProgressBar::setFormatDefinition('check', ' %current%/%max% -- %message% (%directory%)');
 
-        $this->progressBar = $this->symfonyStyle->createProgressBar($numberOfDirectories);
+        $this->progressBar = $this->symfonyStyle->createProgressBar();
         $this->progressBar->setFormat('check');
         $this->progressBar->setMessage('Start');
         $this->progressBar->setMessage(getcwd() ?: 'cwd', 'directory');
 
         $this->progressBar->start();
+    }
+
+    public function setNumberOfDirectories(int $number)
+    {
+        $this->progressBar->setMaxSteps($number);
     }
 
     public function startChecking(ExistingDirectory $directory): void
