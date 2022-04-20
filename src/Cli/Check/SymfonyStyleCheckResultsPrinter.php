@@ -49,9 +49,11 @@ final class SymfonyStyleCheckResultsPrinter implements ProjectCheckResultsPrinte
             );
         }
 
-        $this->symfonyStyle->error(sprintf('Failed checks: %d', count($failedResults)));
-
-        $this->symfonyStyle->success('All checks passed');
+        if (count($failedResults) > 0) {
+            $this->symfonyStyle->error(sprintf('Failed checks: %d', count($failedResults)));
+        } else {
+            $this->symfonyStyle->success('All checks passed');
+        }
     }
 
     public function setNumberOfDirectories(int $number): void
