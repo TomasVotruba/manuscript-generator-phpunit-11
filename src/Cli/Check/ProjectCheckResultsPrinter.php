@@ -15,5 +15,5 @@ interface ProjectCheckResultsPrinter
 
     public function setNumberOfDirectories(int $number): void;
 
-    public function advance(int $numberOfDirs): void;
+    public function advance(string $directory): void;
 }

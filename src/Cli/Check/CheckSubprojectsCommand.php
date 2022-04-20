@@ -119,7 +119,11 @@ final class CheckSubprojectsCommand extends AbstractCommand
 
         $runningCommands = [];
 
-        $runMoreCommandsUntilMaximumIsReached = function () use ($parallelJobs, &$runningCommands, &$allDirectories): void {
+        $runMoreCommandsUntilMaximumIsReached = function () use (
+            $parallelJobs,
+            &$runningCommands,
+            &$allDirectories
+        ): void {
             while (count($runningCommands) < $parallelJobs) {
                 $directory = array_shift($allDirectories);
                 if (! $directory) {
@@ -127,7 +131,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
                 }
 
                 $checkCommand = new Process(array_merge($_SERVER['argv'], [$directory], ['--json']));
-                $runningCommands[] = $checkCommand;
+                $runningCommands[$directory] = $checkCommand;
                 $checkCommand->start();
             }
         };
@@ -137,12 +141,15 @@ final class CheckSubprojectsCommand extends AbstractCommand
         $allResults = [];
 
         while (count($runningCommands) > 0) {
-            foreach ($runningCommands as $key => $checkCommand) {
+            foreach ($runningCommands as $directory => $checkCommand) {
+                /** @var Process $checkCommand */
                 if ($checkCommand->isRunning()) {
                     continue;
                 }
 
                 $json = $checkCommand->getOutput();
+                Assertion::isJsonString($json, $checkCommand->getErrorOutput());
+
                 $decoded = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
                 Assertion::isArray($decoded);
 
@@ -153,9 +160,9 @@ final class CheckSubprojectsCommand extends AbstractCommand
                     return $allResults;
                 }
 
-                unset($runningCommands[$key]);
+                unset($runningCommands[$directory]);
 
-                $resultPrinter->advance(count($results));
+                $resultPrinter->advance($directory);
 
                 $runMoreCommandsUntilMaximumIsReached();
             }
@@ -185,7 +192,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
         $allResults = [];
 
         foreach ($directories as $directory) {
-            $resultPrinter->advance(1);
+            $resultPrinter->advance($directory);
 
             $dirResults = $checker->check(ExistingDirectory::fromPathname($directory));
             $allResults = array_merge($allResults, $dirResults);

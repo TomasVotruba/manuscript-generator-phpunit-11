@@ -30,7 +30,7 @@ final class JsonProjectCheckResultsPrinter implements ProjectCheckResultsPrinter
     {
     }
 
-    public function advance(int $numberOfDirs): void
+    public function advance(string $directory): void
     {
     }
 }

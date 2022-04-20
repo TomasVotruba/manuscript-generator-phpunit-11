@@ -19,10 +19,12 @@ final class SymfonyStyleCheckResultsPrinter implements ProjectCheckResultsPrinte
     public function __construct(InputInterface $input, OutputInterface $output)
     {
         $this->symfonyStyle = new SymfonyStyle($input, $output);
-        ProgressBar::setFormatDefinition('check', ' %current%/%max%');
+        ProgressBar::setFormatDefinition('check', ' %current%/%max% -- %message% (%directory%)');
 
         $this->progressBar = $this->symfonyStyle->createProgressBar();
         $this->progressBar->setFormat('check');
+        $this->progressBar->setMessage('Start');
+        $this->progressBar->setMessage(getcwd() ?: 'cwd', 'directory');
 
         $this->progressBar->start();
     }
@@ -61,8 +63,11 @@ final class SymfonyStyleCheckResultsPrinter implements ProjectCheckResultsPrinte
         $this->progressBar->setMaxSteps($number);
     }
 
-    public function advance(int $numberOfDirs): void
+    public function advance(string $directory): void
     {
-        $this->progressBar->advance($numberOfDirs);
+        $this->progressBar->setMessage($directory, 'directory');
+        $this->progressBar->setMessage('Checking');
+
+        $this->progressBar->advance();
     }
 }
