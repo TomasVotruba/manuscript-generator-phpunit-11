@@ -18,6 +18,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -181,6 +182,10 @@ final class CheckSubprojectsCommand extends AbstractCommand
         bool $failFast,
         ProjectCheckResultsPrinter $resultPrinter,
     ): array {
+        if ($output instanceof ConsoleOutputInterface) {
+            $output = $output->getErrorOutput();
+        }
+
         $checker = new CombinedChecker(
             [new PhpStanChecker(), new PhpUnitChecker(), new RectorChecker()],
             new ComposerDependenciesInstaller(new ConsoleLogger($output)),
