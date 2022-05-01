@@ -5,48 +5,30 @@ declare(strict_types=1);
 use PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff;
 use PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitStrictFixer;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
-use Symplify\EasyCodingStandard\ValueObject\Option;
+use Symplify\EasyCodingStandard\Config\ECSConfig;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $services = $containerConfigurator->services();
-    $parameters = $containerConfigurator->parameters();
-    $parameters->set(Option::PATHS, [__DIR__ . '/src', __DIR__ . '/tests', __DIR__ . '/ecs.php']);
+return static function (ECSConfig $ecsConfig): void {
+    $ecsConfig->paths([__DIR__ . '/src', __DIR__ . '/tests', __DIR__ . '/ecs.php']);
 
-    $parameters->set(Option::CACHE_DIRECTORY, getcwd() . '/cache/ecs');
-    $parameters->set(Option::PARALLEL, true);
+    $ecsConfig->sets([SetList::CONTROL_STRUCTURES, SetList::PSR_12, SetList::COMMON, SetList::SYMPLIFY]);
 
-    $containerConfigurator->import(SetList::CONTROL_STRUCTURES);
-    $containerConfigurator->import(SetList::PSR_12);
-    $containerConfigurator->import(SetList::COMMON);
-    $containerConfigurator->import(SetList::SYMPLIFY);
+    $ecsConfig->ruleWithConfiguration(LineLengthFixer::class, [
+        // to keep the code snippets visible on the book page without line-breaking
+        LineLengthFixer::LINE_LENGTH => 120,
+    ]);
 
-    $services->set(LineLengthFixer::class)
-        ->call(
-            'configure',
-            [
-                [
-                    // to keep the code snippets visible on the book page without line-breaking
-                    LineLengthFixer::LINE_LENGTH => 120,
-                ],
-            ]
-        );
+    $ecsConfig->skip([
+        PhpUnitStrictFixer::class,
+        // Because it makes no sense ;) (well, I just need assertEquals())
+        // fixture files
+        '*/tests/EndToEnd/*/*',
 
-    $parameters->set(
-        Option::SKIP,
-        [
-            // Because it makes no sense ;) (well, I just need assertEquals())
-            PhpUnitStrictFixer::class,
-            // fixture files
-            '*/tests/EndToEnd/*/*',
+        // some WTF in new php_code_sniffer
+        AssignmentInConditionSniff::class . '.FoundInWhileCondition',
 
-            // some WTF in new php_code_sniffer
-            AssignmentInConditionSniff::class . '.FoundInWhileCondition',
-
-            // allow @throws
-            GeneralPhpdocAnnotationRemoveFixer::class,
-        ]
-    );
+        // allow @throws
+        GeneralPhpdocAnnotationRemoveFixer::class,
+    ]);
 };
