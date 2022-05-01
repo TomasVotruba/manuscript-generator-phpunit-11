@@ -6,3 +6,10 @@ parameters:
     excludePaths:
         - tests/EndToEnd/GeneratedResources/manuscript-src
         - tests/EndToEnd/LongLines/manuscript-src
+
+    reportUnmatchedIgnoredErrors: false
+
+    ignoreErrors:
+        # locally phpstan does not trust assert
+        - '#Method ManuscriptGenerator\\Configuration\\BookProjectConfiguration::titlePageConfiguration\(\) should return ManuscriptGenerator\\Configuration\\TitlePageConfiguration but returns ManuscriptGenerator\\Configuration\\TitlePageConfiguration\|null#'
+        - '#Parameter \#1 \$pathname of static method ManuscriptGenerator\\FileOperations\\ExistingDirectory::fromPathname\(\) expects string, string\|false given#'

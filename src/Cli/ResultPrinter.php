@@ -8,7 +8,7 @@ use Assert\Assertion;
 use ManuscriptGenerator\ManuscriptFiles\File;
 use ManuscriptGenerator\ManuscriptFiles\ManuscriptDiff;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symplify\ConsoleColorDiff\Console\Output\ConsoleDiffer;
+use Symplify\PackageBuilder\Console\Output\ConsoleDiffer;
 
 final class ResultPrinter
 {
