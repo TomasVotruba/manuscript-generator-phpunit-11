@@ -1,4 +1,4 @@
-{format: txt}
+{format: text}
 ```
 PHPUnit 9.5.5 by Sebastian Bergmann and contributors.
 
@@ -34,12 +34,12 @@ Tests: 1, Assertions: 1, Failures: 1.
 | 5 | `;` | `;` |
 | 5 | `T_WHITESPACE` | `\n` |
 
-{format: txt}
+{format: text}
 ```
 Hello, world!
 ```
 
-{format: txt}
+{format: text}
 ```
 Echo whatever you want
 ```

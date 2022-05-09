@@ -1,4 +1,4 @@
-{format: txt}
+{format: text}
 ```
 PHPUnit 9.5.5 by Sebastian Bergmann and contributors.
 

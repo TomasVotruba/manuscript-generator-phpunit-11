@@ -182,6 +182,10 @@ final class GenerateManuscriptTest extends AbstractEndToEndTest
     public function manuscriptDirProvider(): array
     {
         return [
+            'GuessFormat' => [
+                __DIR__  . '/GuessFormat/manuscript-src',
+                __DIR__  . '/GuessFormat/manuscript-expected',
+            ],
             'DisableMarkdownAutoImport' => [
                 __DIR__ . '/DisableMarkdownAutoImport/manuscript-src',
                 __DIR__ . '/DisableMarkdownAutoImport/manuscript-expected',
