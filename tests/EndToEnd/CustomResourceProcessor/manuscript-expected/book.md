@@ -1,9 +1,9 @@
-{format: txt}
+{format: text}
 ```
 :)
 ```
 
-{format: txt}
+{format: text}
 ```
 This file is called: show_name.php
 ```

@@ -1,4 +1,4 @@
-{format: txt}
+{format: text}
 ```
 :-)
 ```

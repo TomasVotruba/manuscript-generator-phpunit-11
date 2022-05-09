@@ -29,6 +29,7 @@ final class PhpUnitChecker implements Checker
             $configFileName,
             '--bootstrap',
             'vendor/autoload.php',
+            '--do-not-cache-result',
         ], $directory);
 
         return $process->run();

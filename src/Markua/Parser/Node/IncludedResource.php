@@ -60,7 +60,13 @@ final class IncludedResource extends AbstractNode
 
         $extension = pathinfo($this->link, PATHINFO_EXTENSION);
         if ($extension !== '') {
-            return $extension;
+            // Eventually we may want to make this list configurable
+            $map = [
+                'txt' => 'text',
+                'twig' => 'jinja',
+            ];
+
+            return $map[$extension] ?? $extension;
         }
 
         return 'guess';
