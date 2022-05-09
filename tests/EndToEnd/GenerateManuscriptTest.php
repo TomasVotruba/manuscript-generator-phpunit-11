@@ -177,14 +177,14 @@ final class GenerateManuscriptTest extends AbstractEndToEndTest
     }
 
     /**
-     * @return array<string, array{string,string}>
+     * @return array{GuessFormat: string[], DisableMarkdownAutoImport: string[], Project: string[], GeneratedResources: string[], CustomResourceProcessor: string[], LinkRegistry: string[], LinkRegistryWithExistingLinks: string[], CopyTitlePage: string[], Comments: string[], Subset: string[], IncludeRelativePaths: string[], AutomaticCaptions: string[], ComposerDependencies: string[], LongLines: string[], CroppingAndSkipping: string[]}
      */
     public function manuscriptDirProvider(): array
     {
         return [
             'GuessFormat' => [
-                __DIR__  . '/GuessFormat/manuscript-src',
-                __DIR__  . '/GuessFormat/manuscript-expected',
+                __DIR__ . '/GuessFormat/manuscript-src',
+                __DIR__ . '/GuessFormat/manuscript-expected',
             ],
             'DisableMarkdownAutoImport' => [
                 __DIR__ . '/DisableMarkdownAutoImport/manuscript-src',

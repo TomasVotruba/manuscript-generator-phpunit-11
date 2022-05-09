@@ -49,7 +49,7 @@ final class Result
     }
 
     /**
-     * @return array<string,string|int>
+     * @return array{workingDir: string, command: string, standardOutput: string, errorOutput: string, combinedOutput: string, exitCode: int}
      */
     public function toArray(): array
     {
