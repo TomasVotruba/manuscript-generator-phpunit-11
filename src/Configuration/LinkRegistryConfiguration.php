@@ -13,7 +13,6 @@ final class LinkRegistryConfiguration
         private string $linkRegistryBaseUrl
     ) {
         Assert::that($this->linksFile)->notEmpty();
-        Assert::that($this->linksFile)->notContains('/', 'Expected only a file name for the links file');
 
         Assert::that($this->linkRegistryBaseUrl)->url();
     }
