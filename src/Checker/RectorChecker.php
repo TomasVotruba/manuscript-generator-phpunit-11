@@ -17,7 +17,8 @@ final class RectorChecker implements Checker
 
     public function check(ExistingDirectory $directory): ?Result
     {
-        $configFile = $directory->appendPath('rector.ci.php')
+        $rectorConfigFile = 'rector.ci.php';
+        $configFile = $directory->appendPath($rectorConfigFile)
             ->file();
         if (! $configFile->exists()) {
             return null;
@@ -27,13 +28,9 @@ final class RectorChecker implements Checker
             'vendor/bin/rector',
             'process',
             '--config',
-            $configFile->pathname(),
-            '--autoload-file',
-            'vendor/autoload.php',
-            '--working-dir',
-            $directory->pathname(),
+            $rectorConfigFile,
             '--dry-run',
-        ], ExistingDirectory::currentWorkingDirectory());
+        ], $directory);
 
         return $process->run();
     }
