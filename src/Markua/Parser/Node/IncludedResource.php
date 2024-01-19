@@ -12,11 +12,14 @@ use ManuscriptGenerator\Markua\Processor\Meta\MetaAttributes;
 
 final class IncludedResource extends AbstractNode
 {
+    public AttributeList $attributes;
+
     public function __construct(
         public string $link,
         public ?string $caption = null,
-        public AttributeList $attributes = new AttributeList()
+        ?AttributeList $attributes = null
     ) {
+        $this->attributes = $attributes ?? new AttributeList();
     }
 
     public function subnodeNames(): array
