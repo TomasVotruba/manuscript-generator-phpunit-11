@@ -12,7 +12,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Process\Process;
 
-final class GenerateManuscriptTest extends AbstractEndToEndTest
+final class GenerateManuscriptTest extends AbstractEndToEndTestCase
 {
     private CommandTester $tester;
 
