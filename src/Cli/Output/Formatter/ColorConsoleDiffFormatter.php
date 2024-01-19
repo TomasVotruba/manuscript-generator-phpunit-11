@@ -2,6 +2,7 @@
 
 namespace ManuscriptGenerator\Cli\Output\Formatter;
 
+use Nette\Utils\Strings;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 
 /**

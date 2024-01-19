@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator;
 
+use ManuscriptGenerator\Cli\Output\ConsoleDiffer;
+use ManuscriptGenerator\Cli\Output\Formatter\ColorConsoleDiffFormatter;
 use ManuscriptGenerator\Cli\ResultPrinter;
 use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\Configuration\RuntimeConfiguration;
@@ -48,6 +50,7 @@ use ManuscriptGenerator\ResourceProcessor\RemoveSuperfluousIndentationResourcePr
 use ManuscriptGenerator\ResourceProcessor\SkipPartOfResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\StripInsignificantWhitespaceResourceProcessor;
 use SebastianBergmann\Diff\Differ;
+use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -87,7 +90,10 @@ final class ServiceContainer
 
     private function resultPrinter(): ResultPrinter
     {
-        return new ResultPrinter(new ConsoleDiffer(new Differ(), new ColorConsoleDiffFormatter()));
+        $unifiedDiffOutputBuilder = $this->createUnifiedDiffOutputBuilder();
+        $differ = new Differ($unifiedDiffOutputBuilder);
+
+        return new ResultPrinter(new ConsoleDiffer($differ, new ColorConsoleDiffFormatter()));
     }
 
     private function resourceLoader(): FileResourceLoader
@@ -190,5 +196,16 @@ final class ServiceContainer
     private function markuaPrinter(): MarkuaPrinter
     {
         return new MarkuaPrinter();
+    }
+
+    private function createUnifiedDiffOutputBuilder(): UnifiedDiffOutputBuilder
+    {
+        $unifiedDiffOutputBuilder = new UnifiedDiffOutputBuilder('');
+
+        // set private property $contextLines value 10000 to see full diffs
+        $contextLinesReflectionProperty = new \ReflectionProperty($unifiedDiffOutputBuilder, 'contextLines');
+        $contextLinesReflectionProperty->setValue($unifiedDiffOutputBuilder, 10000);
+
+        return $unifiedDiffOutputBuilder;
     }
 }
