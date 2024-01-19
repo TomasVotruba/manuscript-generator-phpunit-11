@@ -13,8 +13,6 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::DEAD_CODE,
         SetList::TYPE_DECLARATION,
         SetList::EARLY_RETURN,
-        PHPUnitSetList::PHPUNIT_100,
-        PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
     ]);
 
     $rectorConfig->paths([
