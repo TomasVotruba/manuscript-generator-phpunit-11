@@ -24,5 +24,9 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->importNames();
 
-    $rectorConfig->skip([ChangeAndIfToEarlyReturnRector::class, '*/tests/EndToEnd/*/*']);
+    $rectorConfig->skip([
+        ChangeAndIfToEarlyReturnRector::class,
+        '*/tests/EndToEnd/*/*',
+        \Rector\Php81\Rector\ClassMethod\NewInInitializerRector::class => [__DIR__ . '/src/Markua/Parser/Node'],
+    ]);
 };
