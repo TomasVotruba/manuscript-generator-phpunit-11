@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Cli;
 
 use Assert\Assertion;
+use ManuscriptGenerator\Cli\Output\ConsoleDiffer;
 use ManuscriptGenerator\ManuscriptFiles\File;
 use ManuscriptGenerator\ManuscriptFiles\ManuscriptDiff;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symplify\PackageBuilder\Console\Output\ConsoleDiffer;
 
 final class ResultPrinter
 {
