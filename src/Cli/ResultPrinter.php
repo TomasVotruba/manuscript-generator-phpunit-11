@@ -10,7 +10,7 @@ use ManuscriptGenerator\ManuscriptFiles\File;
 use ManuscriptGenerator\ManuscriptFiles\ManuscriptDiff;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class ResultPrinter
+final readonly class ResultPrinter
 {
     public function __construct(
         private ConsoleDiffer $consoleDiffer
@@ -37,7 +37,7 @@ final class ResultPrinter
 
     private function printDiff(OutputInterface $output, File $file): void
     {
-        $extension = pathinfo($file->filePathname(), PATHINFO_EXTENSION);
+        $extension = pathinfo((string) $file->filePathname(), PATHINFO_EXTENSION);
         Assertion::string($extension);
 
         if (in_array($extension, ['jpg', 'png'], true)) {

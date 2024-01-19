@@ -23,7 +23,7 @@ final class InitCommand extends Command
     private const NEW_BOOK_TEMPLATES_DIRECTORY = __DIR__ . '/../../templates/new-book';
 
     public function __construct(
-        private Filesystem $filesystem
+        private readonly Filesystem $filesystem
     ) {
         parent::__construct();
     }

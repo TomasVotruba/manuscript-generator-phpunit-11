@@ -49,6 +49,7 @@ use ManuscriptGenerator\ResourceProcessor\LineLength\RegularWordWrapLineFixer;
 use ManuscriptGenerator\ResourceProcessor\RemoveSuperfluousIndentationResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\SkipPartOfResourceProcessor;
 use ManuscriptGenerator\ResourceProcessor\StripInsignificantWhitespaceResourceProcessor;
+use ReflectionProperty;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 use Symfony\Component\Console\Logger\ConsoleLogger;
@@ -57,7 +58,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 //use Symplify\PackageBuilder\Console\Formatter\ColorConsoleDiffFormatter;
 //use Symplify\PackageBuilder\Console\Output\ConsoleDiffer;
 
-final class ServiceContainer
+final readonly class ServiceContainer
 {
     public function __construct(
         private RuntimeConfiguration $configuration,
@@ -203,7 +204,7 @@ final class ServiceContainer
         $unifiedDiffOutputBuilder = new UnifiedDiffOutputBuilder('');
 
         // set private property $contextLines value 10000 to see full diffs
-        $contextLinesReflectionProperty = new \ReflectionProperty($unifiedDiffOutputBuilder, 'contextLines');
+        $contextLinesReflectionProperty = new ReflectionProperty($unifiedDiffOutputBuilder, 'contextLines');
         $contextLinesReflectionProperty->setValue($unifiedDiffOutputBuilder, 10000);
 
         return $unifiedDiffOutputBuilder;

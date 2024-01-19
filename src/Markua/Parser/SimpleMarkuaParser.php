@@ -321,7 +321,7 @@ final class SimpleMarkuaParser
             keepFirst(atLeastOne(char('#')), skipSpace1()),
             atLeastOne(satisfy(fn (string $char): bool => ! in_array($char, ["\n"], true))),
             self::newLineOrEof()
-        )->map(fn (array $output): Heading => new Heading(strlen($output[1]), $output[2], $output[0]));
+        )->map(fn (array $output): Heading => new Heading(strlen((string) $output[1]), $output[2], $output[0]));
     }
 
     /**

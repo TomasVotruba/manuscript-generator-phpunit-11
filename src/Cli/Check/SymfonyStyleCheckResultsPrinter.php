@@ -12,9 +12,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class SymfonyStyleCheckResultsPrinter implements ProjectCheckResultsPrinter
 {
-    private SymfonyStyle $symfonyStyle;
+    private readonly SymfonyStyle $symfonyStyle;
 
-    private ProgressBar $progressBar;
+    private readonly ProgressBar $progressBar;
 
     public function __construct(InputInterface $input, OutputInterface $output)
     {

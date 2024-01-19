@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 
 abstract class AbstractCommand extends Command
 {
-    public const DEFAULT_CONFIG_FILE = 'book.php';
+    final public const DEFAULT_CONFIG_FILE = 'book.php';
 
     protected function configure(): void
     {

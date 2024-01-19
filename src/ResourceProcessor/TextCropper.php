@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceProcessor;
 
-final class TextCropper
+final readonly class TextCropper
 {
     public function __construct(
         private string $cropStartMarker,

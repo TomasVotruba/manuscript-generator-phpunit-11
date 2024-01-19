@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Configuration;
 
-final class RuntimeConfiguration
+final readonly class RuntimeConfiguration
 {
     public function __construct(
         private bool $readOnlyFilesystem = false,

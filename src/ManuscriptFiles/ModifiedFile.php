@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ManuscriptFiles;
 
-final class ModifiedFile implements File
+final readonly class ModifiedFile implements File
 {
     public function __construct(
         private string $filePathname,

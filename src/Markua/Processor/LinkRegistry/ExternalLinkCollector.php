@@ -27,7 +27,7 @@ final class ExternalLinkCollector
                     if (count($parts) !== 2) {
                         throw new RuntimeException('Each line should contain a slug and a URL separated by a space');
                     }
-                    list($slug, $url) = $parts;
+                    [$slug, $url] = $parts;
 
                     return new ExternalLink($url, $slug);
                 },

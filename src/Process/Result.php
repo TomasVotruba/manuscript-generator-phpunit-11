@@ -6,7 +6,7 @@ namespace ManuscriptGenerator\Process;
 
 use ManuscriptGenerator\FileOperations\ExistingDirectory;
 
-final class Result
+final readonly class Result
 {
     public function __construct(
         private ExistingDirectory $workingDir,

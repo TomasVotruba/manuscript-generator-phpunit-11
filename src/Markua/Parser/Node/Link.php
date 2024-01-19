@@ -6,13 +6,10 @@ namespace ManuscriptGenerator\Markua\Parser\Node;
 
 final class Link extends AbstractNode
 {
-    public AttributeList $attributes;
-
     public function __construct(
         public string $target,
         public string $linkText,
-        ?AttributeList $attributes = null
+        public AttributeList $attributes = new AttributeList()
     ) {
-        $this->attributes = $attributes ?? new AttributeList();
     }
 }

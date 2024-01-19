@@ -9,7 +9,7 @@ use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 
-final class DrawioResourceGenerator implements ResourceGenerator
+final readonly class DrawioResourceGenerator implements ResourceGenerator
 {
     public function __construct(
         private Directory $tmpDir

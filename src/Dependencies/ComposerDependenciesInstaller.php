@@ -11,7 +11,7 @@ use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
-final class ComposerDependenciesInstaller implements DependenciesInstaller
+final readonly class ComposerDependenciesInstaller implements DependenciesInstaller
 {
     public const INSTALL_COMMAND = 'install';
 

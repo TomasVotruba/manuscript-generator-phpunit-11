@@ -14,7 +14,7 @@ use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
 final class AddTitlePageResourceNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
-        private TitlePageConfiguration $titlePage
+        private readonly TitlePageConfiguration $titlePage
     ) {
     }
 

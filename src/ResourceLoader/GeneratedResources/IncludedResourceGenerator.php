@@ -10,7 +10,7 @@ use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
-final class IncludedResourceGenerator
+final readonly class IncludedResourceGenerator
 {
     /**
      * @param array<ResourceGenerator> $resourceGenerators

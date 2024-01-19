@@ -13,7 +13,7 @@ use ManuscriptGenerator\Markua\Printer\MarkuaPrinter;
 use ManuscriptGenerator\Markua\Processor\Meta\AddManuscriptFilesNodeVisitor;
 use ManuscriptGenerator\Markua\Processor\Meta\AddTitlePageResourceNodeVisitor;
 
-final class AstBasedMarkuaProcessor implements MarkuaProcessor
+final readonly class AstBasedMarkuaProcessor implements MarkuaProcessor
 {
     /**
      * @param array<NodeVisitor> $nodeVisitors

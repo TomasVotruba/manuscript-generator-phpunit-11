@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\FileOperations;
 
-final class File
+final readonly class File
 {
     private function __construct(
         private string $pathname

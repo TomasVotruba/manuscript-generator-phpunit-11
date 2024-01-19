@@ -7,7 +7,7 @@ namespace ManuscriptGenerator\FileOperations;
 use Assert\Assertion;
 use Symfony\Component\Filesystem\Filesystem;
 
-final class Directory
+final readonly class Directory
 {
     private function __construct(
         private string $pathname

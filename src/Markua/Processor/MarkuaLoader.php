@@ -11,7 +11,7 @@ use ManuscriptGenerator\Markua\Parser\Visitor\NodeTraverser;
 use ManuscriptGenerator\Markua\Processor\Meta\AddFileAttributeNodeVisitor;
 use Parsica\Parsica\ParserHasFailed;
 
-final class MarkuaLoader
+final readonly class MarkuaLoader
 {
     public function __construct(
         private SimpleMarkuaParser $parser

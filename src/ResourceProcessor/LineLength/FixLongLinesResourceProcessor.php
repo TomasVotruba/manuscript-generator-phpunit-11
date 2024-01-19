@@ -8,7 +8,7 @@ use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\ResourceLoader\LoadedResource;
 use ManuscriptGenerator\ResourceProcessor\ResourceProcessor;
 
-final class FixLongLinesResourceProcessor implements ResourceProcessor
+final readonly class FixLongLinesResourceProcessor implements ResourceProcessor
 {
     public function __construct(
         private BookProjectConfiguration $bookProjectConfiguration,
@@ -20,7 +20,7 @@ final class FixLongLinesResourceProcessor implements ResourceProcessor
     {
         $maximumLineLength = $this->bookProjectConfiguration->maximumLineLengthForInlineResources();
 
-        $fixedLines = $this->lineFixer->fix(explode("\n", $resource->contents()), $maximumLineLength);
+        $fixedLines = $this->lineFixer->fix(explode("\n", (string) $resource->contents()), $maximumLineLength);
 
         foreach ($fixedLines as $lineIndex => $fixedLine) {
             if (strlen($fixedLine) > $maximumLineLength) {

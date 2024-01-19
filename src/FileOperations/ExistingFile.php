@@ -9,7 +9,7 @@ use SplFileInfo;
 
 final class ExistingFile
 {
-    private string $pathname;
+    private readonly string $pathname;
 
     private function __construct(string $pathname)
     {

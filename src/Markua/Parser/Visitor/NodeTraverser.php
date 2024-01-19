@@ -7,7 +7,7 @@ namespace ManuscriptGenerator\Markua\Parser\Visitor;
 use ManuscriptGenerator\Markua\Parser\Node;
 use ManuscriptGenerator\Markua\Parser\Node\Document;
 
-final class NodeTraverser
+final readonly class NodeTraverser
 {
     /**
      * @param array<NodeVisitor> $nodeVisitors

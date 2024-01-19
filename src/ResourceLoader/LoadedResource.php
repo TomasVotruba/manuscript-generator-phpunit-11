@@ -11,9 +11,9 @@ use ManuscriptGenerator\Markua\Parser\Node\InlineResource;
 final class LoadedResource
 {
     public function __construct(
-        private string $format,
+        private readonly string $format,
         private string $contents,
-        private AttributeList $attributes
+        private readonly AttributeList $attributes
     ) {
     }
 

@@ -13,8 +13,8 @@ use ManuscriptGenerator\ResourceLoader\ResourceLoader;
 final class ImportIncludedMarkdownFilesNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
-        private ResourceLoader $resourceLoader,
-        private MarkuaLoader $markuaLoader,
+        private readonly ResourceLoader $resourceLoader,
+        private readonly MarkuaLoader $markuaLoader,
         private bool $autoImportMarkdownFiles
     ) {
     }

@@ -7,11 +7,11 @@ namespace ManuscriptGenerator\Cli\Output;
 use ManuscriptGenerator\Cli\Output\Formatter\ColorConsoleDiffFormatter;
 use SebastianBergmann\Diff\Differ;
 
-final class ConsoleDiffer
+final readonly class ConsoleDiffer
 {
     public function __construct(
-        private readonly Differ $differ,
-        private readonly ColorConsoleDiffFormatter $colorConsoleDiffFormatter,
+        private Differ $differ,
+        private ColorConsoleDiffFormatter $colorConsoleDiffFormatter,
     ) {
     }
 

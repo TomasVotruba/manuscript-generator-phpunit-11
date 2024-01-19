@@ -9,7 +9,7 @@ use Symfony\Component\Console\Formatter\OutputFormatter;
  * Inspired by @see https://github.com/FriendsOfPHP/PHP-CS-Fixer/blob/master/src/Differ/DiffConsoleFormatter.php to be
  * used as standalone class, without need to require whole package by Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-final class ColorConsoleDiffFormatter
+final readonly class ColorConsoleDiffFormatter
 {
     /**
      * @var string
@@ -35,7 +35,7 @@ final class ColorConsoleDiffFormatter
      */
     private const NEWLINES_REGEX = "#\n\r|\n#";
 
-    private readonly string $template;
+    private string $template;
 
     public function __construct()
     {
