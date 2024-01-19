@@ -50,8 +50,9 @@ use ManuscriptGenerator\ResourceProcessor\StripInsignificantWhitespaceResourcePr
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symplify\PackageBuilder\Console\Formatter\ColorConsoleDiffFormatter;
-use Symplify\PackageBuilder\Console\Output\ConsoleDiffer;
+
+//use Symplify\PackageBuilder\Console\Formatter\ColorConsoleDiffFormatter;
+//use Symplify\PackageBuilder\Console\Output\ConsoleDiffer;
 
 final class ServiceContainer
 {

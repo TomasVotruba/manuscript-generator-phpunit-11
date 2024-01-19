@@ -26,7 +26,7 @@ Line 2
 Line 3
 Line 4
 CODE_SAMPLE
-,
+            ,
             ApplyCropAttributesProcessor::selectLines($text, 2, null),
         );
 
@@ -34,7 +34,7 @@ CODE_SAMPLE
 Line 2
 Line 3
 CODE_SAMPLE
-, ApplyCropAttributesProcessor::selectLines($text, 2, 3));
+            , ApplyCropAttributesProcessor::selectLines($text, 2, 3));
 
         self::assertSame(
             <<<CODE_SAMPLE
@@ -42,7 +42,7 @@ Line 1
 Line 2
 Line 3
 CODE_SAMPLE
-,
+            ,
             ApplyCropAttributesProcessor::selectLines($text, null, 3)
         );
         self::assertSame(
@@ -52,7 +52,7 @@ Line 2
 Line 3
 Line 4
 CODE_SAMPLE
-,
+            ,
             ApplyCropAttributesProcessor::selectLines($text, null, 5)
         );
     }

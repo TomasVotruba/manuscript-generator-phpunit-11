@@ -98,7 +98,7 @@ final class Result
      */
     public static function failedResults(array $allResults): array
     {
-        return array_filter($allResults, fn (Result $result): bool => ! $result->isSuccessful(),);
+        return array_filter($allResults, fn (Result $result): bool => ! $result->isSuccessful());
     }
 
     private function stripFilesystemContextFromOutput(string $output): string

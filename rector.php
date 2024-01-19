@@ -4,18 +4,14 @@ declare(strict_types=1);
 
 use Rector\Core\Configuration\Option;
 use Rector\EarlyReturn\Rector\If_\ChangeAndIfToEarlyReturnRector;
-use Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector;
 use Rector\Php74\Rector\Property\TypedPropertyRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (
-    ContainerConfigurator $containerConfigurator
-): void {
+return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->import(SetList::DEAD_CODE);
-    $containerConfigurator->import(SetList::TYPE_DECLARATION_STRICT);
     $containerConfigurator->import(SetList::TYPE_DECLARATION);
     $containerConfigurator->import(SetList::PHP_80);
     $containerConfigurator->import(SetList::PHP_74);
@@ -39,9 +35,7 @@ return static function (
 
     $services = $containerConfigurator->services();
 
-    $services->set(
-        ClassPropertyAssignToConstructorPromotionRector::class
-    );
+    $services->set(ClassPropertyAssignToConstructorPromotionRector::class);
     $services->set(TypedPropertyRector::class);
 
     $parameters->set(Option::AUTO_IMPORT_NAMES, true);
