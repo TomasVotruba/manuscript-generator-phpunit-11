@@ -6,14 +6,11 @@ namespace ManuscriptGenerator\Markua\Parser\Node;
 
 final class Heading extends AbstractNode
 {
-    public AttributeList $attributes;
-
     public function __construct(
         public int $level,
         public string $title,
-        ?AttributeList $attributes = null
+        public AttributeList $attributes = new AttributeList()
     ) {
-        $this->attributes = $attributes ?? new AttributeList();
     }
 
     public function subnodeNames(): array

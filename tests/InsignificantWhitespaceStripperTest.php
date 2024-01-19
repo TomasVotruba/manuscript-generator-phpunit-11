@@ -7,6 +7,7 @@ namespace ManuscriptGenerator\Test;
 use Generator;
 use Iterator;
 use ManuscriptGenerator\ResourceProcessor\InsignificantWhitespaceStripper;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class InsignificantWhitespaceStripperTest extends TestCase
@@ -18,9 +19,7 @@ final class InsignificantWhitespaceStripperTest extends TestCase
         $this->service = new InsignificantWhitespaceStripper();
     }
 
-    /**
-     * @dataProvider stringsProvider
-     */
+    #[DataProvider('stringsProvider')]
     public function test(string $original, string $expected): void
     {
         self::assertEquals($expected, $this->service->strip($original));
@@ -29,7 +28,7 @@ final class InsignificantWhitespaceStripperTest extends TestCase
     /**
      * @return Generator<string,array{string,string}>
      */
-    public function stringsProvider(): Iterator
+    public static function stringsProvider(): Iterator
     {
         yield 'remove spaces before the newline' => ["test    \n", "test\n"];
         yield 'remove one space before the newline' => ["test \n", "test\n"];

@@ -8,13 +8,12 @@ use Generator;
 use Iterator;
 use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
 use ManuscriptGenerator\Markua\Printer\MarkuaPrinter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class MarkuaPrinterTest extends TestCase
 {
-    /**
-     * @dataProvider markuaProvider
-     */
+    #[DataProvider('markuaProvider')]
     public function testParseThenPrintBack(string $correctlyFormattedMarkua): void
     {
         $parser = new SimpleMarkuaParser();
@@ -29,7 +28,7 @@ final class MarkuaPrinterTest extends TestCase
     /**
      * @return Generator<array<string>>
      */
-    public function markuaProvider(): Iterator
+    public static function markuaProvider(): Iterator
     {
         yield [<<<CODE_SAMPLE
 {frontmatter}

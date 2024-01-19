@@ -6,14 +6,11 @@ namespace ManuscriptGenerator\Markua\Parser\Node;
 
 final class InlineResource extends AbstractNode
 {
-    public AttributeList $attributes;
-
     public function __construct(
         public string $contents,
         public ?string $format = null,
-        ?AttributeList $attributes = null
+        public AttributeList $attributes = new AttributeList()
     ) {
-        $this->attributes = $attributes ?? new AttributeList();
     }
 
     public function subnodeNames(): array

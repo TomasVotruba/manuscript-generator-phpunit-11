@@ -6,6 +6,7 @@ namespace ManuscriptGenerator\Test;
 
 use Iterator;
 use ManuscriptGenerator\Markua\Processor\Headlines\HeadlineCapitalizer;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class HeadlineCapitalizerTest extends TestCase
@@ -17,9 +18,7 @@ final class HeadlineCapitalizerTest extends TestCase
         $this->headlineCapitalizer = new HeadlineCapitalizer();
     }
 
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData')]
     public function test(string $inputContent, string $expectedCapitalizedContent): void
     {
         $this->assertSame(
@@ -31,7 +30,7 @@ final class HeadlineCapitalizerTest extends TestCase
     /**
      * @return Iterator<string[]>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield ['hi', 'Hi'];
         yield ['put bug in the me', 'Put Bug in the Me'];

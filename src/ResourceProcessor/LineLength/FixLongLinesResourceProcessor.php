@@ -20,7 +20,7 @@ final readonly class FixLongLinesResourceProcessor implements ResourceProcessor
     {
         $maximumLineLength = $this->bookProjectConfiguration->maximumLineLengthForInlineResources();
 
-        $fixedLines = $this->lineFixer->fix(explode("\n", (string) $resource->contents()), $maximumLineLength);
+        $fixedLines = $this->lineFixer->fix(explode("\n", $resource->contents()), $maximumLineLength);
 
         foreach ($fixedLines as $lineIndex => $fixedLine) {
             if (strlen($fixedLine) > $maximumLineLength) {

@@ -37,7 +37,7 @@ final readonly class ResultPrinter
 
     private function printDiff(OutputInterface $output, File $file): void
     {
-        $extension = pathinfo((string) $file->filePathname(), PATHINFO_EXTENSION);
+        $extension = pathinfo($file->filePathname(), PATHINFO_EXTENSION);
         Assertion::string($extension);
 
         if (in_array($extension, ['jpg', 'png'], true)) {
