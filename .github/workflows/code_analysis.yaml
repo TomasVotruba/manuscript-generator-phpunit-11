@@ -17,6 +17,10 @@ jobs:
                         run: vendor/bin/phpstan
 
                     -
+                        name: "Composer Validate"
+                        run: composer validate --ansi
+
+                    -
                         name: "PHPUnit"
                         run: vendor/bin/phpunit --exclude-group shouldFail,wip
 

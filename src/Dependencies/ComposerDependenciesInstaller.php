@@ -13,9 +13,9 @@ use Symfony\Component\Finder\Finder;
 
 final readonly class ComposerDependenciesInstaller implements DependenciesInstaller
 {
-    public const INSTALL_COMMAND = 'install';
+    private const INSTALL_COMMAND = 'install';
 
-    public const UPDATE_COMMAND = 'update';
+    private const UPDATE_COMMAND = 'update';
 
     public function __construct(
         private LoggerInterface $logger

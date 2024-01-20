@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Test;
 
-use Generator;
 use Iterator;
 use ManuscriptGenerator\Markua\Processor\LinkRegistry\CouldNotAddExternalLink;
 use ManuscriptGenerator\Markua\Processor\LinkRegistry\ExternalLink;
@@ -20,9 +19,6 @@ final class ExternalLinkCollectorTest extends TestCase
         self::assertEquals($expectedCollector, ExternalLinkCollector::loadFromString($fileContents));
     }
 
-    /**
-     * @return Generator<array{ExternalLinkCollector,string}>
-     */
     public static function fileContentsProvider(): Iterator
     {
         yield [

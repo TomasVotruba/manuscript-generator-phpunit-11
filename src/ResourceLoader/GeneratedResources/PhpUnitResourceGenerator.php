@@ -26,15 +26,7 @@ final readonly class PhpUnitResourceGenerator implements ResourceGenerator
             ->existing();
         $this->dependenciesInstaller->install($workingDir);
 
-        $process = new Process(
-            [
-                'vendor/bin/phpunit',
-                '--printer',
-                'LeanBookTools\\PHPUnit\\CleanerResultPrinter',
-                '--do-not-cache-result',
-            ],
-            $workingDir
-        );
+        $process = new Process(['vendor/bin/phpunit', '--do-not-cache-result'], $workingDir);
         $result = $process->run();
 
         return $result->standardAndErrorOutputCombined();

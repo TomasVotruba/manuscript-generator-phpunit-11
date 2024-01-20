@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Test\EndToEnd;
 
+use Iterator;
 use ManuscriptGenerator\Cli\GenerateManuscriptCommand;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -175,60 +176,56 @@ final class GenerateManuscriptTest extends AbstractEndToEndTestCase
         self::assertFileExists($this->manuscriptDir . '/resources/title_page.png');
     }
 
-    /**
-     * @return array{GuessFormat: string[], DisableMarkdownAutoImport: string[], Project: string[], GeneratedResources: string[], CustomResourceProcessor: string[], LinkRegistry: string[], LinkRegistryWithExistingLinks: string[], CopyTitlePage: string[], Comments: string[], Subset: string[], IncludeRelativePaths: string[], AutomaticCaptions: string[], ComposerDependencies: string[], LongLines: string[], CroppingAndSkipping: string[]}
-     */
-    public static function manuscriptDirProvider(): array
+    public static function manuscriptDirProvider(): Iterator
     {
-        return [
-            'GuessFormat' => [
-                __DIR__ . '/GuessFormat/manuscript-src',
-                __DIR__ . '/GuessFormat/manuscript-expected',
-            ],
-            'DisableMarkdownAutoImport' => [
-                __DIR__ . '/DisableMarkdownAutoImport/manuscript-src',
-                __DIR__ . '/DisableMarkdownAutoImport/manuscript-expected',
-            ],
-            'Project' => [__DIR__ . '/Project/manuscript-src', __DIR__ . '/Project/manuscript-expected'],
-            'GeneratedResources' => [
-                __DIR__ . '/GeneratedResources/manuscript-src',
-                __DIR__ . '/GeneratedResources/manuscript-expected',
-            ],
-            'CustomResourceProcessor' => [
-                __DIR__ . '/CustomResourceProcessor/manuscript-src',
-                __DIR__ . '/CustomResourceProcessor/manuscript-expected',
-            ],
-            'LinkRegistry' => [
-                __DIR__ . '/LinkRegistry/manuscript-src',
-                __DIR__ . '/LinkRegistry/manuscript-expected',
-            ],
-            'LinkRegistryWithExistingLinks' => [
-                __DIR__ . '/LinkRegistryWithExistingLinks/manuscript-src',
-                __DIR__ . '/LinkRegistryWithExistingLinks/manuscript-expected',
-            ],
-            'CopyTitlePage' => [
-                __DIR__ . '/CopyTitlePage/manuscript-src',
-                __DIR__ . '/CopyTitlePage/manuscript-expected',
-            ],
-            'Comments' => [__DIR__ . '/Comments/manuscript-src', __DIR__ . '/Comments/manuscript-expected'],
-            'Subset' => [__DIR__ . '/Subset/manuscript-src', __DIR__ . '/Subset/manuscript-expected'],
-            'IncludeRelativePaths' => [
-                __DIR__ . '/IncludeRelativePaths/manuscript-src',
-                __DIR__ . '/IncludeRelativePaths/manuscript-expected',
-            ],
-            'AutomaticCaptions' => [
-                __DIR__ . '/AutomaticCaptions/manuscript-src',
-                __DIR__ . '/AutomaticCaptions/manuscript-expected',
-            ],
-            'ComposerDependencies' => [
-                __DIR__ . '/ComposerDependencies/manuscript-src',
-                __DIR__ . '/ComposerDependencies/manuscript-expected',
-            ],
-            'LongLines' => [__DIR__ . '/LongLines/manuscript-src', __DIR__ . '/LongLines/manuscript-expected'],
-            'CroppingAndSkipping' => [
-                __DIR__ . '/CroppingAndSkipping/manuscript-src',
-                __DIR__ . '/CroppingAndSkipping/manuscript-expected',
-            ],
+        yield [__DIR__ . '/GuessFormat/manuscript-src', __DIR__ . '/GuessFormat/manuscript-expected'];
+        yield [
+            __DIR__ . '/DisableMarkdownAutoImport/manuscript-src',
+            __DIR__ . '/DisableMarkdownAutoImport/manuscript-expected',
+        ];
+
+        yield [__DIR__ . '/Project/manuscript-src', __DIR__ . '/Project/manuscript-expected'];
+
+        yield [
+            __DIR__ . '/GeneratedResources/manuscript-src',
+            __DIR__ . '/GeneratedResources/manuscript-expected',
+        ];
+
+        yield [
+            __DIR__ . '/CustomResourceProcessor/manuscript-src',
+            __DIR__ . '/CustomResourceProcessor/manuscript-expected',
+        ];
+
+        yield [__DIR__ . '/LinkRegistry/manuscript-src', __DIR__ . '/LinkRegistry/manuscript-expected'];
+
+        yield [
+            __DIR__ . '/LinkRegistryWithExistingLinks/manuscript-src',
+            __DIR__ . '/LinkRegistryWithExistingLinks/manuscript-expected',
+        ];
+
+        yield [__DIR__ . '/CopyTitlePage/manuscript-src', __DIR__ . '/CopyTitlePage/manuscript-expected'];
+
+        yield [__DIR__ . '/Comments/manuscript-src', __DIR__ . '/Comments/manuscript-expected'];
+
+        yield [__DIR__ . '/Subset/manuscript-src', __DIR__ . '/Subset/manuscript-expected'];
+
+        yield [
+            __DIR__ . '/IncludeRelativePaths/manuscript-src',
+            __DIR__ . '/IncludeRelativePaths/manuscript-expected',
+        ];
+
+        yield [__DIR__ . '/AutomaticCaptions/manuscript-src', __DIR__ . '/AutomaticCaptions/manuscript-expected'];
+
+        yield [
+            __DIR__ . '/ComposerDependencies/manuscript-src',
+            __DIR__ . '/ComposerDependencies/manuscript-expected',
+        ];
+
+        yield [__DIR__ . '/LongLines/manuscript-src', __DIR__ . '/LongLines/manuscript-expected'];
+
+        yield [
+            __DIR__ . '/CroppingAndSkipping/manuscript-src',
+            __DIR__ . '/CroppingAndSkipping/manuscript-expected',
         ];
     }
 

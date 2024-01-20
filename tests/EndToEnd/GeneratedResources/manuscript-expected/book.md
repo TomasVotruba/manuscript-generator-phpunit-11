@@ -1,6 +1,6 @@
 {format: text}
 ```
-PHPUnit 9.5.5 by Sebastian Bergmann and contributors.
+PHPUnit 10.5.8 by Sebastian Bergmann and contributors.
 
 F                                                         1 / 1 (100%)
 
