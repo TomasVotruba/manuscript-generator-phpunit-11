@@ -11,8 +11,8 @@ use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
 final class CapitalizeHeadlinesNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
-        private HeadlineCapitalizer $headlineCapitalizer,
-        private bool $capitalizeHeadlines
+        private readonly HeadlineCapitalizer $headlineCapitalizer,
+        private readonly bool $capitalizeHeadlines
     ) {
     }
 

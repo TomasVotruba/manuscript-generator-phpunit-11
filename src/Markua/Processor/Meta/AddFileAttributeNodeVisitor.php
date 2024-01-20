@@ -12,7 +12,7 @@ use ManuscriptGenerator\Markua\Parser\Visitor\AbstractNodeVisitor;
 final class AddFileAttributeNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
-        private ExistingFile $file
+        private readonly ExistingFile $file
     ) {
     }
 

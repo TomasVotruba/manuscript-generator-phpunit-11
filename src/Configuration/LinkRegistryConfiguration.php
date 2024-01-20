@@ -6,7 +6,7 @@ namespace ManuscriptGenerator\Configuration;
 
 use Assert\Assert;
 
-final class LinkRegistryConfiguration
+final readonly class LinkRegistryConfiguration
 {
     public function __construct(
         private string $linksFile,

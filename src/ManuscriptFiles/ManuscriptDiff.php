@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ManuscriptFiles;
 
-final class ManuscriptDiff
+final readonly class ManuscriptDiff
 {
     /**
      * @param array<NewFile> $newFiles

@@ -8,7 +8,7 @@ use Assert\Assertion;
 use ManuscriptGenerator\Process\Result;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class JsonProjectCheckResultsPrinter implements ProjectCheckResultsPrinter
+final readonly class JsonProjectCheckResultsPrinter implements ProjectCheckResultsPrinter
 {
     public function __construct(
         private OutputInterface $output

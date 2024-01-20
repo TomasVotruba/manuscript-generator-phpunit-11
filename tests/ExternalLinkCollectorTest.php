@@ -9,13 +9,12 @@ use Iterator;
 use ManuscriptGenerator\Markua\Processor\LinkRegistry\CouldNotAddExternalLink;
 use ManuscriptGenerator\Markua\Processor\LinkRegistry\ExternalLink;
 use ManuscriptGenerator\Markua\Processor\LinkRegistry\ExternalLinkCollector;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class ExternalLinkCollectorTest extends TestCase
 {
-    /**
-     * @dataProvider fileContentsProvider
-     */
+    #[DataProvider('fileContentsProvider')]
     public function testLoadFromExistingContents(ExternalLinkCollector $expectedCollector, string $fileContents): void
     {
         self::assertEquals($expectedCollector, ExternalLinkCollector::loadFromString($fileContents));
@@ -24,7 +23,7 @@ final class ExternalLinkCollectorTest extends TestCase
     /**
      * @return Generator<array{ExternalLinkCollector,string}>
      */
-    public function fileContentsProvider(): Iterator
+    public static function fileContentsProvider(): Iterator
     {
         yield [
             new ExternalLinkCollector([]),

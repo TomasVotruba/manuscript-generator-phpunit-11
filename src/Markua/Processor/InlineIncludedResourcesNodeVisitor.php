@@ -13,7 +13,7 @@ use ManuscriptGenerator\ResourceLoader\ResourceLoader;
 final class InlineIncludedResourcesNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
-        private ResourceLoader $resourceLoader
+        private readonly ResourceLoader $resourceLoader
     ) {
     }
 

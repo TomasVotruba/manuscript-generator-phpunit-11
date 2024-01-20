@@ -7,7 +7,7 @@ namespace ManuscriptGenerator\ResourceLoader\GeneratedResources;
 use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 
-final class CopyFromVendorResourceGenerator implements ResourceGenerator
+final readonly class CopyFromVendorResourceGenerator implements ResourceGenerator
 {
     public function __construct(
         private DependenciesInstaller $dependenciesInstaller

@@ -10,7 +10,7 @@ use RuntimeException;
 
 final class ExistingDirectory
 {
-    private string $pathname;
+    private readonly string $pathname;
 
     private function __construct(string $directory)
     {

@@ -6,7 +6,7 @@ namespace ManuscriptGenerator\ResourceProcessor;
 
 use ManuscriptGenerator\ResourceLoader\LoadedResource;
 
-final class CropResourceProcessor implements ResourceProcessor
+final readonly class CropResourceProcessor implements ResourceProcessor
 {
     private const CROP_END_MARKER = '// crop-end';
 

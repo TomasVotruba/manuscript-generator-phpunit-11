@@ -19,7 +19,7 @@ final class IncludedResource extends AbstractNode
         public ?string $caption = null,
         ?AttributeList $attributes = null
     ) {
-        $this->attributes = $attributes === null ? new AttributeList() : $attributes;
+        $this->attributes = $attributes ?? new AttributeList();
     }
 
     public function subnodeNames(): array

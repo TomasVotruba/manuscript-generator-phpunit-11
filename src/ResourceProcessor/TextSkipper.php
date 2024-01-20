@@ -6,7 +6,7 @@ namespace ManuscriptGenerator\ResourceProcessor;
 
 use RuntimeException;
 
-final class TextSkipper
+final readonly class TextSkipper
 {
     public function __construct(
         private string $startMarker,

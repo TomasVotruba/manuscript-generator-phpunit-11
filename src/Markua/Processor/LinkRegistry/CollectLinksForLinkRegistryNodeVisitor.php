@@ -19,7 +19,7 @@ final class CollectLinksForLinkRegistryNodeVisitor extends AbstractNodeVisitor
     private ExternalLinkCollector $linkCollector;
 
     public function __construct(
-        private BookProjectConfiguration $bookProjectConfiguration
+        private readonly BookProjectConfiguration $bookProjectConfiguration
     ) {
     }
 

@@ -14,7 +14,7 @@ use ManuscriptGenerator\Markua\Processor\MarkuaProcessor;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class ManuscriptGenerator
+final readonly class ManuscriptGenerator
 {
     public function __construct(
         private RuntimeConfiguration $configuration,

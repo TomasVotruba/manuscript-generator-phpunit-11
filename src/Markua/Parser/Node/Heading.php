@@ -13,7 +13,7 @@ final class Heading extends AbstractNode
         public string $title,
         ?AttributeList $attributes = null
     ) {
-        $this->attributes = $attributes === null ? new AttributeList() : $attributes;
+        $this->attributes = $attributes ?? new AttributeList();
     }
 
     public function subnodeNames(): array

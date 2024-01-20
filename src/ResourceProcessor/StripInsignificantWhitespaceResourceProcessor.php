@@ -6,7 +6,7 @@ namespace ManuscriptGenerator\ResourceProcessor;
 
 use ManuscriptGenerator\ResourceLoader\LoadedResource;
 
-final class StripInsignificantWhitespaceResourceProcessor implements ResourceProcessor
+final readonly class StripInsignificantWhitespaceResourceProcessor implements ResourceProcessor
 {
     public function __construct(
         private InsignificantWhitespaceStripper $stripper

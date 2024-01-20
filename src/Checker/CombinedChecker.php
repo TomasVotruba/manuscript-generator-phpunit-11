@@ -9,7 +9,7 @@ use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\Process\Result;
 use Psr\Log\LoggerInterface;
 
-final class CombinedChecker
+final readonly class CombinedChecker
 {
     /**
      * @param array<Checker> $checkers

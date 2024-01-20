@@ -16,7 +16,7 @@ final class ProcessInlineResourcesNodeVisitor extends AbstractNodeVisitor
      * @param array<ResourceProcessor> $resourceProcessors
      */
     public function __construct(
-        private array $resourceProcessors
+        private readonly array $resourceProcessors
     ) {
     }
 

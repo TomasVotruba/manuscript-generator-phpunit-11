@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace ManuscriptGenerator\Test\EndToEnd;
 
 use ManuscriptGenerator\Cli\GenerateManuscriptCommand;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Process\Process;
 
-final class GenerateManuscriptTest extends AbstractEndToEndTest
+final class GenerateManuscriptTest extends AbstractEndToEndTestCase
 {
     private CommandTester $tester;
 
@@ -132,9 +133,7 @@ final class GenerateManuscriptTest extends AbstractEndToEndTest
         );
     }
 
-    /**
-     * @dataProvider manuscriptDirProvider
-     */
+    #[DataProvider('manuscriptDirProvider')]
     public function testItGeneratesTheExpectedManuscript(string $manuscriptSrcDir, string $manuscriptExpectedDir): void
     {
         $this->filesystem->mirror($manuscriptSrcDir, $this->manuscriptSrcDir);
@@ -179,7 +178,7 @@ final class GenerateManuscriptTest extends AbstractEndToEndTest
     /**
      * @return array{GuessFormat: string[], DisableMarkdownAutoImport: string[], Project: string[], GeneratedResources: string[], CustomResourceProcessor: string[], LinkRegistry: string[], LinkRegistryWithExistingLinks: string[], CopyTitlePage: string[], Comments: string[], Subset: string[], IncludeRelativePaths: string[], AutomaticCaptions: string[], ComposerDependencies: string[], LongLines: string[], CroppingAndSkipping: string[]}
      */
-    public function manuscriptDirProvider(): array
+    public static function manuscriptDirProvider(): array
     {
         return [
             'GuessFormat' => [

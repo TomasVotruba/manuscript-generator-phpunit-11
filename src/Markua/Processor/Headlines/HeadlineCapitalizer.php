@@ -25,11 +25,11 @@ final class HeadlineCapitalizer
             }
 
             // code, skip it
-            if (\str_ends_with($headlinePart, '()')) {
+            if (\str_ends_with((string) $headlinePart, '()')) {
                 continue;
             }
 
-            $headlineParts[$key] = ucfirst($headlinePart);
+            $headlineParts[$key] = ucfirst((string) $headlinePart);
         }
 
         return implode(' ', $headlineParts);

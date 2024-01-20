@@ -7,6 +7,7 @@
         <testsuite name="default">
             <directory>tests</directory>
             <exclude>tests/EndToEnd/SubprojectsCi</exclude>
+            <exclude>tests/EndToEnd/CustomResourceProcessor/manuscript-src/src/Chapter1/Topic1/Version1/Utils/Rector/ExampleTest.php</exclude>
         </testsuite>
     </testsuites>
     <groups>

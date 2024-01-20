@@ -6,7 +6,7 @@ namespace ManuscriptGenerator\Configuration;
 
 use LogicException;
 
-final class TitlePageConfiguration
+final readonly class TitlePageConfiguration
 {
     private function __construct(
         private bool $includeInManuscript,

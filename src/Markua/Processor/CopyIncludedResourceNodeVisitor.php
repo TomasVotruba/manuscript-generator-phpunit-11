@@ -15,7 +15,7 @@ use ManuscriptGenerator\ResourceLoader\ResourceLoader;
 final class CopyIncludedResourceNodeVisitor extends AbstractNodeVisitor
 {
     public function __construct(
-        private ResourceLoader $resourceLoader
+        private readonly ResourceLoader $resourceLoader
     ) {
     }
 

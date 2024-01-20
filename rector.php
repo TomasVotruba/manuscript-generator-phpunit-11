@@ -1,29 +1,20 @@
 <?php
 
 declare(strict_types=1);
-
-use Rector\Core\Configuration\Option;
+use Rector\Config\RectorConfig;
 use Rector\EarlyReturn\Rector\If_\ChangeAndIfToEarlyReturnRector;
-use Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector;
-use Rector\Php74\Rector\Property\TypedPropertyRector;
-use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
-use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (
-    ContainerConfigurator $containerConfigurator
-): void {
-    $containerConfigurator->import(SetList::DEAD_CODE);
-    $containerConfigurator->import(SetList::TYPE_DECLARATION_STRICT);
-    $containerConfigurator->import(SetList::TYPE_DECLARATION);
-    $containerConfigurator->import(SetList::PHP_80);
-    $containerConfigurator->import(SetList::PHP_74);
-    $containerConfigurator->import(SetList::PHP_73);
-    $containerConfigurator->import(SetList::EARLY_RETURN);
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->sets([
+        LevelSetList::UP_TO_PHP_82,
+        SetList::DEAD_CODE,
+        SetList::TYPE_DECLARATION,
+        SetList::EARLY_RETURN,
+    ]);
 
-    $parameters = $containerConfigurator->parameters();
-    $parameters->set(Option::PATHS, [
+    $rectorConfig->paths([
         __DIR__ . '/bin',
         __DIR__ . '/src',
         __DIR__ . '/tests',
@@ -31,18 +22,11 @@ return static function (
         __DIR__ . '/rector.php',
     ]);
 
-    $parameters->set(Option::SKIP, [
-        AddArrayReturnDocTypeRector::class,
+    $rectorConfig->importNames();
+
+    $rectorConfig->skip([
         ChangeAndIfToEarlyReturnRector::class,
         '*/tests/EndToEnd/*/*',
+        \Rector\Php81\Rector\ClassMethod\NewInInitializerRector::class => [__DIR__ . '/src/Markua/Parser/Node'],
     ]);
-
-    $services = $containerConfigurator->services();
-
-    $services->set(
-        ClassPropertyAssignToConstructorPromotionRector::class
-    );
-    $services->set(TypedPropertyRector::class);
-
-    $parameters->set(Option::AUTO_IMPORT_NAMES, true);
 };

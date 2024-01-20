@@ -17,7 +17,7 @@ final class Blurb extends AbstractNode
         public array $subnodes,
         ?AttributeList $attributes = null
     ) {
-        $this->attributes = $attributes === null ? new AttributeList() : $attributes;
+        $this->attributes = $attributes ?? new AttributeList();
     }
 
     public function subnodeNames(): array

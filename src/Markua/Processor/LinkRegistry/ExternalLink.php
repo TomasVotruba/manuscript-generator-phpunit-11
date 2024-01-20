@@ -6,7 +6,7 @@ namespace ManuscriptGenerator\Markua\Processor\LinkRegistry;
 
 use Assert\Assertion;
 
-final class ExternalLink
+final readonly class ExternalLink
 {
     public function __construct(
         private string $url,

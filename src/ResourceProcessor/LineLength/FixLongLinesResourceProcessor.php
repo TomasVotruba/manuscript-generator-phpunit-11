@@ -8,7 +8,7 @@ use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\ResourceLoader\LoadedResource;
 use ManuscriptGenerator\ResourceProcessor\ResourceProcessor;
 
-final class FixLongLinesResourceProcessor implements ResourceProcessor
+final readonly class FixLongLinesResourceProcessor implements ResourceProcessor
 {
     public function __construct(
         private BookProjectConfiguration $bookProjectConfiguration,

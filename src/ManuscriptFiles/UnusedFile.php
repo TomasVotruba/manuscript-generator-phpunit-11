@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ManuscriptFiles;
 
-final class UnusedFile implements File
+final readonly class UnusedFile implements File
 {
     public function __construct(
         private string $filePathname,

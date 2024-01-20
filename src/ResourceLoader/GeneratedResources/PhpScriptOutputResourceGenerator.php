@@ -8,7 +8,7 @@ use ManuscriptGenerator\Dependencies\DependenciesInstaller;
 use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 
-final class PhpScriptOutputResourceGenerator implements ResourceGenerator
+final readonly class PhpScriptOutputResourceGenerator implements ResourceGenerator
 {
     public function __construct(
         private DependenciesInstaller $dependenciesInstaller

@@ -6,7 +6,7 @@ namespace ManuscriptGenerator\Process;
 
 use ManuscriptGenerator\FileOperations\ExistingDirectory;
 
-final class Result
+final readonly class Result
 {
     public function __construct(
         private ExistingDirectory $workingDir,
@@ -98,7 +98,7 @@ final class Result
      */
     public static function failedResults(array $allResults): array
     {
-        return array_filter($allResults, fn (Result $result): bool => ! $result->isSuccessful(),);
+        return array_filter($allResults, fn (Result $result): bool => ! $result->isSuccessful());
     }
 
     private function stripFilesystemContextFromOutput(string $output): string

@@ -8,7 +8,7 @@ use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use ManuscriptGenerator\FileOperations\ExistingFile;
 use ManuscriptGenerator\FileOperations\File;
 
-final class Source
+final readonly class Source
 {
     public function __construct(
         private string $pathname

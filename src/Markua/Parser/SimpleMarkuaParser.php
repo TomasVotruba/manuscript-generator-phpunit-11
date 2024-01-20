@@ -18,6 +18,8 @@ use ManuscriptGenerator\Markua\Parser\Node\InlineResource;
 use ManuscriptGenerator\Markua\Parser\Node\Link;
 use ManuscriptGenerator\Markua\Parser\Node\Paragraph;
 use ManuscriptGenerator\Markua\Parser\Node\Span;
+use Parsica\Parsica\Parser;
+use Parsica\Parsica\ParserHasFailed;
 use function Parsica\Parsica\alphaChar;
 use function Parsica\Parsica\alphaNumChar;
 use function Parsica\Parsica\any;
@@ -36,8 +38,6 @@ use function Parsica\Parsica\map;
 use function Parsica\Parsica\newline;
 use function Parsica\Parsica\noneOf;
 use function Parsica\Parsica\optional;
-use Parsica\Parsica\Parser;
-use Parsica\Parsica\ParserHasFailed;
 use function Parsica\Parsica\repeat;
 use function Parsica\Parsica\satisfy;
 use function Parsica\Parsica\sepBy;
@@ -205,8 +205,8 @@ final class SimpleMarkuaParser
                     choice(
                         collect(
                             self::textBetweenSquareBrackets()->label('linkText'), // 0
-                                self::uriBetweenBrackets()->label('target'), // 1
-                                optional(self::attributeList()) // 2
+                            self::uriBetweenBrackets()->label('target'), // 1
+                            optional(self::attributeList()) // 2
                         )->map(fn (array $parts): Link => new Link($parts[1], $parts[0], $parts[2])),
                         choice(
                             noneOf(['`', '!', '{', '[', "\n"])
@@ -304,7 +304,7 @@ final class SimpleMarkuaParser
                     choice(
                         satisfy(fn (string $char): bool => ! in_array($char, ['"', '\\'], true)),
                         char('\\')
-                            ->followedBy(choice(char('"')->map(fn ($_): string => '"'),))
+                            ->followedBy(choice(char('"')->map(fn ($_): string => '"')))
                     )
                 )
             )->map(fn ($o): string => (string) $o) // because the empty json string returns null
@@ -321,7 +321,7 @@ final class SimpleMarkuaParser
             keepFirst(atLeastOne(char('#')), skipSpace1()),
             atLeastOne(satisfy(fn (string $char): bool => ! in_array($char, ["\n"], true))),
             self::newLineOrEof()
-        )->map(fn (array $output): Heading => new Heading(strlen($output[1]), $output[2], $output[0]));
+        )->map(fn (array $output): Heading => new Heading(strlen((string) $output[1]), $output[2], $output[0]));
     }
 
     /**

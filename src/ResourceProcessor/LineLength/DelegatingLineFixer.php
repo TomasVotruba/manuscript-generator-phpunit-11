@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\ResourceProcessor\LineLength;
 
-final class DelegatingLineFixer implements LineFixer
+final readonly class DelegatingLineFixer implements LineFixer
 {
     /**
      * @param array<LineFixer> $lineFixers

@@ -22,11 +22,7 @@ final class ApplyCropAttributesProcessor implements ResourceProcessor
             return;
         }
 
-        $croppedContent = $this->selectLines(
-            $resource->contents(),
-            $cropStart === null ? null : $cropStart,
-            $cropEnd === null ? null : $cropEnd,
-        );
+        $croppedContent = self::selectLines($resource->contents(), $cropStart ?? null, $cropEnd ?? null);
 
         $resource->attributes()
             ->remove('crop-start');

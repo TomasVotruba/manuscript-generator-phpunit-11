@@ -8,7 +8,7 @@ use ManuscriptGenerator\FileOperations\ExistingDirectory;
 use RuntimeException;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
-final class Process
+final readonly class Process
 {
     /**
      * @param array<string> $command

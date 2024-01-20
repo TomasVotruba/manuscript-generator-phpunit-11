@@ -20,7 +20,7 @@ final class CreateSubsetNodeVisitor extends AbstractNodeVisitor
     private array $nodes = [];
 
     public function __construct(
-        private MarkuaPrinter $markuaPrinter
+        private readonly MarkuaPrinter $markuaPrinter
     ) {
     }
 

@@ -7,7 +7,7 @@ namespace ManuscriptGenerator\Test\EndToEnd;
 use ManuscriptGenerator\Process\Result;
 use Symfony\Component\Process\Process;
 
-final class CheckSubprojectsTest extends AbstractEndToEndTest
+final class CheckSubprojectsTest extends AbstractEndToEndTestCase
 {
     public function testCheckSubprojects(): void
     {

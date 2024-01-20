@@ -7,7 +7,7 @@ namespace ManuscriptGenerator\Test\EndToEnd;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-abstract class AbstractEndToEndTest extends TestCase
+abstract class AbstractEndToEndTestCase extends TestCase
 {
     protected Filesystem $filesystem;
 

@@ -10,7 +10,7 @@ use ManuscriptGenerator\Markua\Parser\Node\IncludedResource;
 use ManuscriptGenerator\Process\Process;
 use RuntimeException;
 
-final class TitlePageResourceGenerator implements ResourceGenerator
+final readonly class TitlePageResourceGenerator implements ResourceGenerator
 {
     public function __construct(
         private Directory $tmpDir
