@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
-         cacheResult="false">
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+    bootstrap="vendor/autoload.php"
+>
     <testsuites>
         <testsuite name="default">
             <directory>tests</directory>
@@ -10,6 +11,7 @@
             <exclude>tests/EndToEnd/CustomResourceProcessor/manuscript-src/src/Chapter1/Topic1/Version1/Utils/Rector/ExampleTest.php</exclude>
         </testsuite>
     </testsuites>
+
     <groups>
         <exclude>
             <group>shouldFail</group>

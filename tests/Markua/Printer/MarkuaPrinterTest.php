@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ManuscriptGenerator\Test\Markua\Printer;
 
-use Generator;
 use Iterator;
 use ManuscriptGenerator\Markua\Parser\SimpleMarkuaParser;
 use ManuscriptGenerator\Markua\Printer\MarkuaPrinter;
@@ -25,9 +24,6 @@ final class MarkuaPrinterTest extends TestCase
         self::assertEquals($correctlyFormattedMarkua, $printedBack);
     }
 
-    /**
-     * @return Generator<array<string>>
-     */
     public static function markuaProvider(): Iterator
     {
         yield [<<<CODE_SAMPLE

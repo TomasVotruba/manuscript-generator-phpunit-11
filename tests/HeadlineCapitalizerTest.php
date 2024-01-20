@@ -27,9 +27,6 @@ final class HeadlineCapitalizerTest extends TestCase
         );
     }
 
-    /**
-     * @return Iterator<string[]>
-     */
     public static function provideData(): Iterator
     {
         yield ['hi', 'Hi'];

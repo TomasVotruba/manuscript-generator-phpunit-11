@@ -22,6 +22,8 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/rector.php',
     ]);
 
+    $rectorConfig->rules([\Rector\PHPUnit\CodeQuality\Rector\Class_\YieldDataProviderRector::class]);
+
     $rectorConfig->importNames();
 
     $rectorConfig->skip([
