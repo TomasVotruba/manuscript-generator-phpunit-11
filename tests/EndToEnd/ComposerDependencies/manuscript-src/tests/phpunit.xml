@@ -5,7 +5,6 @@
             <directory>test/</directory>
         </testsuite>
     </testsuites>
-
     <extensions>
         <bootstrap class="LeanBookTools\CleanerResultPrinterExtension" />
     </extensions>
