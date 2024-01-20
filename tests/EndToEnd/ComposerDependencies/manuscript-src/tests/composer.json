@@ -6,6 +6,6 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^10.5",
-        "tomasvotruba/phpunit-book-format": "^0.3"
+        "tomasvotruba/phpunit-book-format": "^0.3.2"
     }
 }
