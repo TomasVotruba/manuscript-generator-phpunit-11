@@ -178,51 +178,52 @@ final class GenerateManuscriptTest extends AbstractEndToEndTestCase
 
     public static function manuscriptDirProvider(): Iterator
     {
-        yield 'GuessFormat' => [
-            __DIR__ . '/GuessFormat/manuscript-src',
-            __DIR__ . '/GuessFormat/manuscript-expected',
-        ];
-        yield 'DisableMarkdownAutoImport' => [
+        yield [__DIR__ . '/GuessFormat/manuscript-src', __DIR__ . '/GuessFormat/manuscript-expected'];
+        yield [
             __DIR__ . '/DisableMarkdownAutoImport/manuscript-src',
             __DIR__ . '/DisableMarkdownAutoImport/manuscript-expected',
         ];
-        yield 'Project' => [__DIR__ . '/Project/manuscript-src', __DIR__ . '/Project/manuscript-expected'];
-        yield 'GeneratedResources' => [
+
+        yield [__DIR__ . '/Project/manuscript-src', __DIR__ . '/Project/manuscript-expected'];
+
+        yield [
             __DIR__ . '/GeneratedResources/manuscript-src',
             __DIR__ . '/GeneratedResources/manuscript-expected',
         ];
-        yield 'CustomResourceProcessor' => [
+
+        yield [
             __DIR__ . '/CustomResourceProcessor/manuscript-src',
             __DIR__ . '/CustomResourceProcessor/manuscript-expected',
         ];
-        yield 'LinkRegistry' => [
-            __DIR__ . '/LinkRegistry/manuscript-src',
-            __DIR__ . '/LinkRegistry/manuscript-expected',
-        ];
-        yield 'LinkRegistryWithExistingLinks' => [
+
+        yield [__DIR__ . '/LinkRegistry/manuscript-src', __DIR__ . '/LinkRegistry/manuscript-expected'];
+
+        yield [
             __DIR__ . '/LinkRegistryWithExistingLinks/manuscript-src',
             __DIR__ . '/LinkRegistryWithExistingLinks/manuscript-expected',
         ];
-        yield 'CopyTitlePage' => [
-            __DIR__ . '/CopyTitlePage/manuscript-src',
-            __DIR__ . '/CopyTitlePage/manuscript-expected',
-        ];
-        yield 'Comments' => [__DIR__ . '/Comments/manuscript-src', __DIR__ . '/Comments/manuscript-expected'];
-        yield 'Subset' => [__DIR__ . '/Subset/manuscript-src', __DIR__ . '/Subset/manuscript-expected'];
-        yield 'IncludeRelativePaths' => [
+
+        yield [__DIR__ . '/CopyTitlePage/manuscript-src', __DIR__ . '/CopyTitlePage/manuscript-expected'];
+
+        yield [__DIR__ . '/Comments/manuscript-src', __DIR__ . '/Comments/manuscript-expected'];
+
+        yield [__DIR__ . '/Subset/manuscript-src', __DIR__ . '/Subset/manuscript-expected'];
+
+        yield [
             __DIR__ . '/IncludeRelativePaths/manuscript-src',
             __DIR__ . '/IncludeRelativePaths/manuscript-expected',
         ];
-        yield 'AutomaticCaptions' => [
-            __DIR__ . '/AutomaticCaptions/manuscript-src',
-            __DIR__ . '/AutomaticCaptions/manuscript-expected',
-        ];
-        yield 'ComposerDependencies' => [
+
+        yield [__DIR__ . '/AutomaticCaptions/manuscript-src', __DIR__ . '/AutomaticCaptions/manuscript-expected'];
+
+        yield [
             __DIR__ . '/ComposerDependencies/manuscript-src',
             __DIR__ . '/ComposerDependencies/manuscript-expected',
         ];
-        yield 'LongLines' => [__DIR__ . '/LongLines/manuscript-src', __DIR__ . '/LongLines/manuscript-expected'];
-        yield 'CroppingAndSkipping' => [
+
+        yield [__DIR__ . '/LongLines/manuscript-src', __DIR__ . '/LongLines/manuscript-expected'];
+
+        yield [
             __DIR__ . '/CroppingAndSkipping/manuscript-src',
             __DIR__ . '/CroppingAndSkipping/manuscript-expected',
         ];
