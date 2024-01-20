@@ -6,6 +6,6 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^10.5",
-        "lean-book-tools/phpunit-cleaner-result-printer": "^0.2.4"
+        "tomasvotruba/phpunit-book-format": "^0.3"
     }
 }
