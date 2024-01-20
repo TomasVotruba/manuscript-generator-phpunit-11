@@ -1,5 +1,7 @@
 {
     "name": "lean-book-tools/manuscript-generator",
+    "license": "proprietary",
+    "description": "Generates a manuscript for Leanpub book",
     "autoload": {
         "psr-4": {
             "ManuscriptGenerator\\": "src/"
