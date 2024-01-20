@@ -205,7 +205,7 @@ final readonly class ServiceContainer
 
         // set private property $contextLines value 10000 to see full diffs
         $contextLinesReflectionProperty = new ReflectionProperty($unifiedDiffOutputBuilder, 'contextLines');
-        $contextLinesReflectionProperty->setValue($unifiedDiffOutputBuilder, 10000);
+        $contextLinesReflectionProperty->setValue($unifiedDiffOutputBuilder, 10);
 
         return $unifiedDiffOutputBuilder;
     }
