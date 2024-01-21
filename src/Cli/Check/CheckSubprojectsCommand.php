@@ -8,7 +8,6 @@ use Assert\Assertion;
 use ManuscriptGenerator\Checker\CombinedChecker;
 use ManuscriptGenerator\Checker\PhpStanChecker;
 use ManuscriptGenerator\Checker\PhpUnitChecker;
-use ManuscriptGenerator\Checker\RectorChecker;
 use ManuscriptGenerator\Cli\AbstractCommand;
 use ManuscriptGenerator\Configuration\BookProjectConfiguration;
 use ManuscriptGenerator\Dependencies\ComposerDependenciesInstaller;
@@ -187,7 +186,7 @@ final class CheckSubprojectsCommand extends AbstractCommand
         }
 
         $checker = new CombinedChecker(
-            [new PhpStanChecker(), new PhpUnitChecker(), new RectorChecker()],
+            [new PhpStanChecker(), new PhpUnitChecker()],
             new ComposerDependenciesInstaller(new ConsoleLogger($output)),
             new ConsoleLogger($output),
         );
