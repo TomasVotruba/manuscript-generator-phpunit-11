@@ -17,7 +17,7 @@ final class PhpUnitChecker implements Checker
 
     public function check(ExistingDirectory $directory): ?Result
     {
-        $configFileName = 'phpunit.ci.xml';
+        $configFileName = 'phpunit.xml';
 
         if (! $directory->appendPath($configFileName)->file()->exists()) {
             return null;
