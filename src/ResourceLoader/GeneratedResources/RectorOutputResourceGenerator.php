@@ -26,7 +26,7 @@ final readonly class RectorOutputResourceGenerator implements ResourceGenerator
             ->existing();
         $this->dependenciesInstaller->install($workingDir);
 
-        $process = new Process(['vendor/bin/rector', 'process', '--dry-run'], $workingDir);
+        $process = new Process(['vendor/bin/rector', 'process', '--dry-run', '--no-ansi'], $workingDir);
         $result = $process->run();
 
         return $result->standardOutput();
