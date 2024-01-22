@@ -32,7 +32,7 @@ final class PhpUnitChecker implements Checker
             '--do-not-cache-result',
             // skip test that are marked as @should-fail, as those are desidned to fail
             '--exclude-group',
-            'should-fail'
+            'should-fail',
         ], $directory);
 
         return $process->run();
