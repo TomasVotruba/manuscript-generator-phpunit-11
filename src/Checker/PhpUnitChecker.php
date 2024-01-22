@@ -30,6 +30,9 @@ final class PhpUnitChecker implements Checker
             '--bootstrap',
             'vendor/autoload.php',
             '--do-not-cache-result',
+            // skip test that are marked as @should-fail, as those are desidned to fail
+            '--exclude-group',
+            'should-fail'
         ], $directory);
 
         return $process->run();
