@@ -17,16 +17,8 @@ final class PhpUnitChecker implements Checker
 
     public function check(ExistingDirectory $directory): ?Result
     {
-        $configFileName = 'phpunit.xml';
-
-        if (! $directory->appendPath($configFileName)->file()->exists()) {
-            return null;
-        }
-
         $process = new Process([
             'vendor/bin/phpunit',
-            '--configuration',
-            $configFileName,
             '--bootstrap',
             'vendor/autoload.php',
             '--do-not-cache-result',

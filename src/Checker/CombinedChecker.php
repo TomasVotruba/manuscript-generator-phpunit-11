@@ -30,24 +30,34 @@ final readonly class CombinedChecker
 
         $this->dependenciesInstaller->install($directory);
 
-        foreach ($this->checkers as $checker) {
-            $logContext = [
-                'dir' => $directory->pathname(),
-                'checker' => $checker->name(),
-            ];
-            $this->logger->debug('Running checker {checker} in {dir}', $logContext);
+        $configPath = $directory->appendPath('check.json');
+        if (! $configPath->file()->exists()) {
+            return $results;
+        }
+        $config = CheckerConfig::fromJson($configPath->file()->getContents());
 
-            $result = $checker->check($directory);
-            if ($result !== null) {
-                if (! $result->isSuccessful()) {
-                    $this->logger->debug('Checker {checker} failed in {dir}', $logContext);
-                } else {
-                    $this->logger->debug('Checker {checker} passed {dir}', $logContext);
+        foreach ($config->checkerNames() as $name) {
+            foreach ($this->checkers as $checker) {
+                if ($checker->name() === $name) {
+                    $logContext = [
+                        'dir' => $directory->pathname(),
+                        'checker' => $checker->name(),
+                    ];
+                    $this->logger->debug('Running checker {checker} in {dir}', $logContext);
+
+                    $result = $checker->check($directory);
+                    if ($result !== null) {
+                        if (! $result->isSuccessful()) {
+                            $this->logger->debug('Checker {checker} failed in {dir}', $logContext);
+                        } else {
+                            $this->logger->debug('Checker {checker} passed {dir}', $logContext);
+                        }
+
+                        $results[] = $result;
+                    } else {
+                        $this->logger->debug('Checker {checker} skipped in {dir}', $logContext);
+                    }
                 }
-
-                $results[] = $result;
-            } else {
-                $this->logger->debug('Checker {checker} skipped in {dir}', $logContext);
             }
         }
 
