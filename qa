@@ -2,6 +2,8 @@
 
 set -eu
 vendor/bin/ecs check --fix --ansi
+# Run again, to fix issues produced by the previous fix
+vendor/bin/ecs check --fix --ansi
 vendor/bin/phpstan analyze --ansi
 vendor/bin/phpunit --color
 vendor/bin/rector --ansi
