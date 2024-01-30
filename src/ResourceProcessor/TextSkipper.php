@@ -8,11 +8,26 @@ use RuntimeException;
 
 final readonly class TextSkipper
 {
+    private const DEFAULT_SKIP_START_MARKER = '// skip-start';
+
+    private const DEFAULT_SKIP_END_MARKER = '// skip-end';
+
+    private const DEFAULT_REPLACEMENT = '// ...';
+
+    private string $startMarker;
+
+    private string $endMarker;
+
+    private string $replacement;
+
     public function __construct(
-        private string $startMarker,
-        private string $endMarker,
-        private string $replacement
+        ?string $startMarker = null,
+        ?string $endMarker = null,
+        ?string $replacement = null
     ) {
+        $this->startMarker = $startMarker ?: self::DEFAULT_SKIP_START_MARKER;
+        $this->endMarker = $endMarker ?: self::DEFAULT_SKIP_END_MARKER;
+        $this->replacement = $replacement ?: self::DEFAULT_REPLACEMENT;
     }
 
     public function skipParts(string $text): string
@@ -30,6 +45,14 @@ final readonly class TextSkipper
         }
         if ($endPosition === false) {
             throw new RuntimeException(sprintf('End marker not found (%s)', $this->endMarker));
+        }
+
+        if ($startPosition > $endPosition) {
+            throw new RuntimeException(sprintf(
+                'End marker (%s) found before start marker (%s)',
+                $this->endMarker,
+                $this->startMarker
+            ));
         }
 
         $skipped = substr($text, 0, $startPosition) . $this->replacement . substr(

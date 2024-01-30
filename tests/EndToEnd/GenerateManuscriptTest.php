@@ -6,12 +6,13 @@ namespace ManuscriptGenerator\Test\EndToEnd;
 
 use Iterator;
 use ManuscriptGenerator\Cli\GenerateManuscriptCommand;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\MissingDependency;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\TitlePageResourceGenerator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Symfony\Component\Process\Process;
 
 final class GenerateManuscriptTest extends AbstractEndToEndTestCase
 {
@@ -157,16 +158,10 @@ final class GenerateManuscriptTest extends AbstractEndToEndTestCase
 
     public function testGenerateTitlePage(): void
     {
-        $process = new Process(['which', 'xcf2png']);
-        $process->run();
-        if (! $process->isSuccessful()) {
-            $this->markTestSkipped('xcf2png is needed for generating the title page');
-        }
-
-        $process = new Process(['which', 'magick']);
-        $process->run();
-        if (! $process->isSuccessful()) {
-            $this->markTestSkipped('magick is needed for generating the title page');
+        try {
+            TitlePageResourceGenerator::checkDependencies();
+        } catch (MissingDependency $exception) {
+            $this->markTestSkipped($exception->getMessage());
         }
 
         $this->filesystem->mirror(__DIR__ . '/GenerateTitlePage/manuscript-src', $this->manuscriptSrcDir);
@@ -233,6 +228,8 @@ final class GenerateManuscriptTest extends AbstractEndToEndTestCase
             __DIR__ . '/CroppingAndSkipping/manuscript-src',
             __DIR__ . '/CroppingAndSkipping/manuscript-expected',
         ];
+
+        yield [__DIR__ . '/PhpStanOutput/manuscript-src', __DIR__ . '/PhpStanOutput/manuscript-expected'];
     }
 
     public function testItGeneratesResourcesOnlyIfTheyNeedToBeRefreshed(): void

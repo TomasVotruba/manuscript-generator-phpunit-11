@@ -21,7 +21,9 @@ final readonly class Process
 
     public function run(): Result
     {
-        $process = new SymfonyProcess($this->command, $this->workingDir->pathname());
+        $process = new SymfonyProcess($this->command, $this->workingDir->pathname(), [
+            'COLUMNS' => '72',
+        ]);
 
         $combinedOutput = '';
 
