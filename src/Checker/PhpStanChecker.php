@@ -17,17 +17,9 @@ final class PhpStanChecker implements Checker
 
     public function check(ExistingDirectory $directory): ?Result
     {
-        $configFile = $directory->appendPath('phpstan.neon')
-            ->file();
-        if (! $configFile->exists()) {
-            return null;
-        }
-
         $process = new Process([
             'vendor/bin/phpstan',
             'analyze',
-            '-c',
-            $configFile->pathname(),
             '-a',
             $directory->appendPath('vendor/autoload.php')
                 ->pathname(),

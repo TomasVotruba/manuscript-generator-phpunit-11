@@ -48,7 +48,7 @@ final class CheckSubprojectsTest extends AbstractEndToEndTestCase
         $this->processShouldHaveFailed($process);
         $display = $process->getOutput();
 
-        self::assertJson($display);
+        self::assertJson($display, $display);
 
         $decodedData = json_decode($display, true, 512, JSON_THROW_ON_ERROR);
         self::assertIsArray($decodedData);
