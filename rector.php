@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use Rector\Php81\Rector\ClassMethod\NewInInitializerRector;
 use Rector\Config\RectorConfig;
 use Rector\EarlyReturn\Rector\If_\ChangeAndIfToEarlyReturnRector;
 use Rector\Set\ValueObject\LevelSetList;
@@ -27,6 +28,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->skip([
         ChangeAndIfToEarlyReturnRector::class,
         '*/tests/EndToEnd/*/*',
-        \Rector\Php81\Rector\ClassMethod\NewInInitializerRector::class => [__DIR__ . '/src/Markua/Parser/Node'],
+        NewInInitializerRector::class => [__DIR__ . '/src/Markua/Parser/Node'],
     ]);
 };

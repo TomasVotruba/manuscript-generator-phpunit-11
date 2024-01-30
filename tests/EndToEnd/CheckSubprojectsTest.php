@@ -23,7 +23,7 @@ final class CheckSubprojectsTest extends AbstractEndToEndTestCase
             $this->manuscriptSrcDir,
         ]);
         $process->run();
-        self::assertFalse($process->isSuccessful());
+        $this->processShouldHaveFailed($process);
         $display = $process->getOutput();
 
         self::assertStringContainsString('Failed checks: 2', $display, $process->getErrorOutput());
@@ -45,7 +45,7 @@ final class CheckSubprojectsTest extends AbstractEndToEndTestCase
             '--json',
         ]);
         $process->run();
-        self::assertFalse($process->isSuccessful());
+        $this->processShouldHaveFailed($process);
         $display = $process->getOutput();
 
         self::assertJson($display);
@@ -72,10 +72,18 @@ final class CheckSubprojectsTest extends AbstractEndToEndTestCase
             '--fail-fast',
         ]);
         $process->run();
-        self::assertFalse($process->isSuccessful());
+        $this->processShouldHaveFailed($process);
         $display = $process->getOutput();
 
         // Two subprojects will fail, but we expect only the first one to be reported
         self::assertStringContainsString('Failed checks: 1', $display);
+    }
+
+    public function processShouldHaveFailed(Process $process): void
+    {
+        self::assertFalse(
+            $process->isSuccessful(),
+            'Process should have failed. Output: ' . $process->getOutput() . $process->getErrorOutput()
+        );
     }
 }

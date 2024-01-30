@@ -163,6 +163,12 @@ final class GenerateManuscriptTest extends AbstractEndToEndTestCase
             $this->markTestSkipped('xcf2png is needed for generating the title page');
         }
 
+        $process = new Process(['which', 'magick']);
+        $process->run();
+        if (! $process->isSuccessful()) {
+            $this->markTestSkipped('magick is needed for generating the title page');
+        }
+
         $this->filesystem->mirror(__DIR__ . '/GenerateTitlePage/manuscript-src', $this->manuscriptSrcDir);
 
         $this->tester->execute(
