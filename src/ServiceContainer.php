@@ -34,6 +34,7 @@ use ManuscriptGenerator\ResourceLoader\GeneratedResources\DrawioResourceGenerato
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\GenerateIncludedResourceNodeVisitor;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\IncludedResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpScriptOutputResourceGenerator;
+use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpStanOutputResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\PhpUnitResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\RectorOutputResourceGenerator;
 use ManuscriptGenerator\ResourceLoader\GeneratedResources\TableOfTokensResourceGenerator;
@@ -115,6 +116,7 @@ final readonly class ServiceContainer
                     new PhpScriptOutputResourceGenerator($this->dependenciesInstaller()),
                     new DrawioResourceGenerator($this->tmpDir()),
                     new TitlePageResourceGenerator($this->tmpDir()),
+                    new PhpStanOutputResourceGenerator($this->dependenciesInstaller()),
                 ]
             ),
             new DetermineLastModifiedTimestamp(),

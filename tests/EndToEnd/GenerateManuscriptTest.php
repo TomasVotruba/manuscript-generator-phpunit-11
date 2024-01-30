@@ -228,6 +228,8 @@ final class GenerateManuscriptTest extends AbstractEndToEndTestCase
             __DIR__ . '/CroppingAndSkipping/manuscript-src',
             __DIR__ . '/CroppingAndSkipping/manuscript-expected',
         ];
+
+        yield [__DIR__ . '/PhpStanOutput/manuscript-src', __DIR__ . '/PhpStanOutput/manuscript-expected'];
     }
 
     public function testItGeneratesResourcesOnlyIfTheyNeedToBeRefreshed(): void
